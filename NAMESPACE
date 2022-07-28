@@ -2,6 +2,7 @@
 
 export("%>%")
 export(add_na_variable)
+export(multiple_plot_output)
 export(multiple_table_output)
 export(naming_conventions)
 export(summary_calculation)
