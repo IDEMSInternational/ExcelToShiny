@@ -1,4 +1,4 @@
-#' Change naming in tables/data sets
+#' Quick change to naming conventions in tables/data frames
 #' @description Quick and simple way to remove strings in a variable name, and have consistent naming structure in the package.
 #'
 #' @param x String containing variable name(s) to change.

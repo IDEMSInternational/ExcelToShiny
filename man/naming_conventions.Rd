@@ -2,7 +2,7 @@
 % Please edit documentation in R/naming_conventions.R
 \name{naming_conventions}
 \alias{naming_conventions}
-\title{Change naming in tables/data sets}
+\title{Quick change to naming conventions in tables/data frames}
 \usage{
 naming_conventions(x, replace, replace_after)
 }
