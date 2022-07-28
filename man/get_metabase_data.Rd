@@ -12,7 +12,7 @@ get_metabase_data(site, name = "app_users")
 \item{name}{Data to call from connection. Default \code{"app_users"}, but also takes \code{"app_notification_interaction"}.}
 }
 \value{
-Data from Metabase site
+Data from Metabase
 }
 \description{
 Call ParentApp data from Metabase
