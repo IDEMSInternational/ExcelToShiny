@@ -4,7 +4,7 @@
 \alias{get_nf_data}
 \title{Get notification data from metabase site}
 \usage{
-get_nf_data(site = plh_con)
+get_nf_data(site)
 }
 \arguments{
 \item{site}{Connection to database to get original data (using DBI::dbConnect).}

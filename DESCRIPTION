@@ -13,6 +13,7 @@ Imports:
     DBI,
     dplyr,
     forcats,
+    fuzzyjoin,
     ggplot2,
     gt,
     jsonlite,
@@ -20,6 +21,9 @@ Imports:
     plyr,
     purrr,
     rlang,
+    stats,
     tibble,
     tidyr,
-    viridis
+    utils,
+    viridis,
+    yesno

@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @examples #TODO
-get_nf_data <- function(site = plh_con){
+get_nf_data <- function(site){
   df <- get_metabase_data(site = site, name = "app_notification_interaction")
   appdata_df <- list()
   
