@@ -4,7 +4,7 @@
 #'
 #' @param data Data frame to calculate summaries from.
 #' @param factors List of factors to group by.
-#' @param columns_to_summarise Variables to dplyr::summarise.
+#' @param columns_to_summarise Variables to summarise.
 #' @param summaries Whether `frequencies` or `mean` summaries are calculated.
 #' @param include_margins logical. Default `FALSE`. Whether to include margins.
 #' @param include_country_margins logical. Whether to include the country margins.

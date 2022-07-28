@@ -27,7 +27,7 @@ summary_table(
 
 \item{factors}{List of factors to group by.}
 
-\item{columns_to_summarise}{Variables to dplyr::summarise.}
+\item{columns_to_summarise}{Variables to summarise.}
 
 \item{summaries}{Whether \code{frequencies} or \code{mean} summaries are calculated.}
 

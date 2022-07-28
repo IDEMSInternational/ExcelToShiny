@@ -15,6 +15,7 @@ Imports:
     ggplot2,
     gt,
     magrittr,
+    purrr,
     rlang,
     tibble,
     tidyr,
