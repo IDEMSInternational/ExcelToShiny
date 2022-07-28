@@ -1,12 +1,13 @@
 Package: plhR
-Title: What the Package Does (One Line, Title Case)
+Title: Functions useful in PLH analysis
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Lily", "Clements", , "lily@idems.international", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-8864-0552"))
+Description: Convenience functions to analyse PLH data
+License: LGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.1.1
+Imports: 
+    dplyr,
