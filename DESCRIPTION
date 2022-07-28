@@ -12,4 +12,7 @@ RoxygenNote: 7.1.2
 Imports: 
     dplyr,
     forcats,
-    magrittr
+    gt,
+    magrittr,
+    tibble,
+    tidyr

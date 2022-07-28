@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_calculation.R
 \name{summary_calculation}
 \alias{summary_calculation}
-\title{Calculate summaries in PLH data}
+\title{Calculate summaries from PLH data}
 \usage{
 summary_calculation(
   data = plhdata_org_clean,
@@ -39,7 +39,7 @@ summary_calculation(
 Summaries table
 }
 \description{
-Calculate summaries in PLH data
+Calculate summaries from PLH data
 }
 \examples{
 # TODO

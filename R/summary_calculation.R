@@ -1,4 +1,4 @@
-#' Calculate summaries in PLH data
+#' Calculate summaries from PLH data
 #'
 #' @param data Data frame to calculate summaries from.
 #' @param factors List of factors to group by.
