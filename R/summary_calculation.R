@@ -21,27 +21,27 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
   if (summaries == "frequencies"){
     summary_output <- data %>%
       dplyr::group_by(dplyr::across(c({{ columns_to_summarise }}, {{ factors }})), .drop = FALSE) %>%
-      dplyr::summarise(n = n())
+      dplyr::summarise(n = dplyr::n())
     
     if (include_margins){
       cts_margin <- data %>%
         dplyr::group_by(dplyr::across(c({{ columns_to_summarise }})), .drop = FALSE) %>%
-        dplyr::summarise(n = n())
+        dplyr::summarise(n = dplyr::n())
       
       ftr_margin <- data %>%
         dplyr::group_by(dplyr::across(c({{ factors }})), .drop = FALSE) %>%
-        dplyr::summarise(n = n())
+        dplyr::summarise(n = dplyr::n())
       
       corner_margin <- data %>%
-        dplyr::summarise(n = n())
+        dplyr::summarise(n = dplyr::n())
       
       if (include_country_margins){
         summary_output_country <- data %>%
           dplyr::group_by(dplyr::across(c({{ columns_to_summarise }}, {{ country_factor }})), .drop = FALSE) %>%
-          dplyr::summarise(n = n())
+          dplyr::summarise(n = dplyr::n())
         corner_margin_country <- data %>%
           dplyr::group_by(dplyr::across(c({{ country_factor }})), .drop = FALSE) %>%
-          dplyr::summarise(n = n())
+          dplyr::summarise(n = dplyr::n())
         names(summary_output_country)[length(summary_output_country)-1] <- names(summary_output)[length(summary_output)-1]
         names(corner_margin_country)[length(corner_margin_country)-1] <- names(summary_output)[length(summary_output)-1]
         #summary_output_country <- dplyr::rename(summary_output_country, Org = {{ country_factor }}) #"{{ factors }}" := {{ country_factor }})
@@ -51,10 +51,10 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
         corner_margin_country <- NULL
       }
       
-      summary_output <- bind_rows(summary_output, cts_margin, ftr_margin, corner_margin, summary_output_country, corner_margin_country, .id = "id")
+      summary_output <- dplyr::bind_rows(summary_output, cts_margin, ftr_margin, corner_margin, summary_output_country, corner_margin_country, .id = "id")
       
       summary_output <- summary_output %>%
-        ungroup() %>%
+        dplyr::ungroup() %>%
         dplyr::mutate(dplyr::across({{ factors }}, as.character)) %>%
         dplyr::mutate(dplyr::across({{ factors }}, ~ifelse(id %in% c(2, 4), "Total", .x))) %>%
         dplyr::mutate(dplyr::across({{ columns_to_summarise }}, ~ifelse(id %in% c(3, 4, 6), "Total", .x)))
@@ -74,10 +74,10 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
       corner_margin <- data %>%
         dplyr::summarise(dplyr::across(c({{ columns_to_summarise }}), ~mean(.x, na.rm  = na.rm)))
       
-      summary_output <- bind_rows(summary_output, corner_margin, .id = "id")
+      summary_output <- dplyr::bind_rows(summary_output, corner_margin, .id = "id")
       
       summary_output <- summary_output %>%
-        ungroup() %>%
+        dplyr::ungroup() %>%
         dplyr::mutate(dplyr::across({{ factors }}, as.character)) %>%
         dplyr::mutate(dplyr::across({{ factors }}, ~ifelse(id == 2, "Total", .x)))
       
