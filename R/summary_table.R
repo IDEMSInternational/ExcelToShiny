@@ -20,6 +20,7 @@
 #'
 #' @return Summaries table as `tibble` or `gt`.
 #' @export
+#' @importFrom rlang .data
 #'
 #' @examples # TODO
 summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise, summaries = c("frequencies", "mean"),
@@ -47,25 +48,25 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
   }
   if (display_table){
     if (summaries == "frequencies"){
-      return_table <- return_table %>% tidyr::pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = n)
+      return_table <- return_table %>% tidyr::pivot_wider(id_cols = {{ factors }}, names_from =  {{ columns_to_summarise }}, values_from = dplyr::n)
     }
     
     return_table <- gt::gt(tibble::as_tibble(return_table)) %>%
-      tab_header(
+      gt::tab_header(
         title = paste(return_table_names[1], "by", return_table_names[2])  # fix up. 
       ) %>%
-      tab_style(locations = list(cells_body(columns = 1)),
-                style = list(cell_borders(
+      gt::tab_style(locations = list(gt::cells_body(columns = 1)),
+                style = list(gt::cell_borders(
                   sides = "right",
                   color = "black",
-                  weight = px(2)),
-                  cell_text(weight = "bold"))) %>%
-      tab_style(locations = list(cells_column_labels(columns = gt::everything())),
-                style = list(cell_borders( 
+                  weight = gt::px(2)),
+                  gt::cell_text(weight = "bold"))) %>%
+      gt::tab_style(locations = list(gt::cells_column_labels(columns = gt::everything())),
+                style = list(gt::cell_borders( 
                   sides = "bottom",
                   color = "black",
-                  weight = px(2)),
-                  cell_text(weight = "bold")))
+                  weight = gt::px(2)),
+                  gt::cell_text(weight = "bold")))
     #if (summaries == "mean"){
     #  names(return_table$`_data`) <- naming_conventions(names(return_table$`_data`), replace = replace)
     #}

@@ -12,7 +12,10 @@ RoxygenNote: 7.1.2
 Imports: 
     dplyr,
     forcats,
+    ggplot2,
     gt,
     magrittr,
+    rlang,
     tibble,
-    tidyr
+    tidyr,
+    viridis
