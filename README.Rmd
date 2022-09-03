@@ -1,10 +1,21 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # plhR
 
 <!-- badges: start -->
-
 [![R-CMD-check](https://github.com/IDEMSInternational/plhR/workflows/R-CMD-check/badge.svg)](https://github.com/IDEMSInternational/plhR/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/IDEMSInternational/plhR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/IDEMSInternational/plhR?branch=main)
@@ -16,12 +27,11 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 [![license](https://img.shields.io/badge/license-LGPL%20(%3E=%203)-lightgrey.svg)](https://www.gnu.org/licenses/lgpl-3.0.en.html)
 <!-- badges: end -->
 
-The goal of plhR is to …
+The goal of plhR is to ...
 
 ## Installation
 
-You can install the development version of plhR from
-[GitHub](https://github.com/) with:
+You can install the development version of plhR from [GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -32,7 +42,7 @@ devtools::install_github("lilyclements/plhR")
 
 This is a basic example which shows you how to solve a common problem:
 
-``` r
+```{r example}
 library(plhR)
 ## basic example code
 ```
