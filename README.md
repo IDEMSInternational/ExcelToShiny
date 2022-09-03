@@ -16,7 +16,7 @@ public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostat
 [![license](https://img.shields.io/badge/license-LGPL%20(%3E=%203)-lightgrey.svg)](https://www.gnu.org/licenses/lgpl-3.0.en.html)
 <!-- badges: end -->
 
-The goal of plhR is to …
+A set of functions useful in analysing PLH data.
 
 ## Installation
 
