@@ -16,9 +16,10 @@ Imports:
   gt, 
   magrittr,
   plyr,
-  postgresr,
   purrr, 
   rlang,
   tibble,
   tidyr,
   viridis
+Remotes:
+    IDEMSInternational/postgresr
