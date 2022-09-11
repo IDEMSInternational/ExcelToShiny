@@ -7,13 +7,11 @@
 summary_calculation(
   data = plhdata_org_clean,
   factors,
-  columns_to_summarise,
+  columns_to_summarise = NULL,
   summaries = c("frequencies", "mean"),
-  include_country_margins,
-  country_factor,
   together = FALSE,
   include_margins = FALSE,
-  na.rm = TRUE
+  drop = FALSE
 )
 }
 \arguments{
@@ -21,26 +19,19 @@ summary_calculation(
 
 \item{factors}{List of factors to group by.}
 
-\item{columns_to_summarise}{Variables to summarise.}
+\item{columns_to_summarise}{Variables to dplyr::summarise.}
 
 \item{summaries}{Whether \code{frequencies} or \code{mean} summaries are calculated.}
-
-\item{include_country_margins}{logical. Whether to include the country margins.}
-
-\item{country_factor}{If \code{include_country_margins = TRUE}, the factor variable for the country.}
 
 \item{together}{logical. Default \code{FALSE}. If \code{summaries = "frequencies"}, whether to combine the count and percentage into one cell.}
 
 \item{include_margins}{logical. Default \code{FALSE}. Whether to include margins.}
 
-\item{na.rm}{logical. Default \code{TRUE}. If \code{summaries = "mean"}, whether to include \code{NA} values.}
+\item{drop}{logical. Default \code{FALSE}. Whether to drop columns in \code{group_by}.}
 }
 \value{
 Summaries table
 }
 \description{
 Calculate summaries from PLH data
-}
-\examples{
-# TODO
 }

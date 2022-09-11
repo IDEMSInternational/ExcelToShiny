@@ -7,19 +7,16 @@
 summary_table(
   data = plhdata_org_clean,
   factors = Org,
-  columns_to_summarise,
+  columns_to_summarise = NULL,
   summaries = c("frequencies", "mean"),
+  replace = "rp.contact.field.",
   include_margins = FALSE,
-  include_country_margins = TRUE,
-  country_factor = "country",
-  include_percentages = FALSE,
-  together = TRUE,
-  na.rm = TRUE,
   wider_table = TRUE,
   display_table = FALSE,
   naming_convention = TRUE,
-  replace = "rp.contact.field.",
-  replace_after = NULL
+  include_percentages = FALSE,
+  together = TRUE,
+  drop = FALSE
 )
 }
 \arguments{
@@ -31,17 +28,9 @@ summary_table(
 
 \item{summaries}{Whether \code{frequencies} or \code{mean} summaries are calculated.}
 
+\item{replace}{String of values in the \code{columns_to_summarise} variable to remove in the table (before the value to keep).}
+
 \item{include_margins}{logical. Default \code{FALSE}. Whether to include margins.}
-
-\item{include_country_margins}{logical. Whether to include the country margins.}
-
-\item{country_factor}{If \code{include_country_margins = TRUE}, the factor variable for the country.}
-
-\item{include_percentages}{logical. Default \code{FALSE}. Whether to include percentages when \code{summaries = "frequencies"}.}
-
-\item{together}{logical. Default \code{FALSE}. If \code{summaries = "frequencies"}, whether to combine the count and percentage into one cell.}
-
-\item{na.rm}{logical. Default \code{TRUE}. If \code{summaries = "mean"}, whether to include \code{NA} values.}
 
 \item{wider_table}{logical. Default \code{TRUE}. Whether to have a wider table if \code{summaries = "frequencies"}.}
 
@@ -49,9 +38,11 @@ summary_table(
 
 \item{naming_convention}{logical. Default \code{TRUE}. Whether to apply naming conventions when \code{summaries = "mean"}.}
 
-\item{replace}{String of values in the \code{columns_to_summarise} variable to remove in the table (before the value to keep).}
+\item{include_percentages}{logical. Default \code{FALSE}. Whether to include percentages when \code{summaries = "frequencies"}.}
 
-\item{replace_after}{String of values in the \code{columns_to_summarise} variable to remove in the table (after the value to keep).}
+\item{together}{logical. Default \code{FALSE}. If \code{summaries = "frequencies"}, whether to combine the count and percentage into one cell.}
+
+\item{drop}{logical. Default \code{FALSE}. When running \code{group_by}, whether to drop unused columns.}
 }
 \value{
 Summaries table as \code{tibble} or \code{gt}.
