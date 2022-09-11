@@ -9,9 +9,8 @@
 #' @return Shiny App
 #' @export
 #'
-PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_from = "2021-10-14") 
+PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_from = "2021-10-14"){
   colour <- tolower(colour)
-{
   if (colour == "blue") {
     status = "primary"
   }
@@ -40,10 +39,10 @@ PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_fro
                                                                  "value_box")
   row_1_box <- NULL
   for (i in 1:length(box_titles)) {
-    row_1_box[[i]] <- box_function1(data_frame = data_frame, 
-                                    text = box_titles[i], colour = box_colours[i], variable = box_variables[i], 
-                                    label_table = paste0("table_1_", i), label_plot = paste0("plot_1_", 
-                                                                                             i))
+    row_1_box[[i]] <- box_function(data_frame = data_frame, 
+                                   text = box_titles[i], colour = box_colours[i], variable = box_variables[i], 
+                                   label_table = paste0("table_1_", i), label_plot = paste0("plot_1_", 
+                                                                                            i))
   }
   if (i < 9) {
     for (i in (i + 1):9) {
@@ -174,4 +173,4 @@ PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_fro
     })
   }
   shiny::shinyApp(ui = ui, server = server)
-  }
+}
