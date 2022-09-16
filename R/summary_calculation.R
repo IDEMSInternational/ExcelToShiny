@@ -18,20 +18,20 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
       dplyr::mutate(dplyr::across(c({{ columns_to_summarise }}), ~ (as.character(.x)))) %>%
       dplyr::group_by(dplyr::across(c({{ columns_to_summarise }}, {{ factors }})), .drop = drop) %>%
       dplyr::summarise(n = dplyr::n(),
-                       perc = dplyr::n()/nrow(.) * 100) %>%
+                       perc = dplyr::n()/nrow(data) * 100) %>%
       dplyr::ungroup()
     if (include_margins){
       cts_margin <- data %>%
         dplyr::group_by(dplyr::across(c({{ columns_to_summarise }})), .drop = drop) %>%
         dplyr::summarise(n = dplyr::n(),
-                         perc = dplyr::n()/nrow(.) * 100)      
+                         perc = dplyr::n()/nrow(data) * 100)      
       ftr_margin <- data %>%
         dplyr::group_by(dplyr::across(c({{ factors }})), .drop = drop) %>%
         dplyr::summarise(n = dplyr::n(),
-                         perc = dplyr::n()/nrow(.) * 100)      
+                         perc = dplyr::n()/nrow(data) * 100)      
       corner_margin <- data %>%
         dplyr::summarise(n = dplyr::n(),
-                         perc = dplyr::n()/nrow(.) * 100)
+                         perc = dplyr::n()/nrow(data) * 100)
       summary_output <- dplyr::bind_rows(summary_output, cts_margin, ftr_margin, corner_margin, .id = "id")
       
       summary_output <- summary_output %>%

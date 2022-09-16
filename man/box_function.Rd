@@ -12,6 +12,10 @@ box_function(data_frame, spreadsheet, unique_ID, label_table, label_plot)
 \item{spreadsheet}{Spreadsheet that contains the template.}
 
 \item{unique_ID}{Unique identifier.}
+
+\item{label_table}{ID for the table.}
+
+\item{label_plot}{ID for the plot.}
 }
 \value{
 Box for use in \code{Shiny}

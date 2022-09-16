@@ -3,6 +3,8 @@
 #' @param data_frame Data frame that contains the data to analyse.
 #' @param spreadsheet Spreadsheet that contains the template.
 #' @param unique_ID Unique identifier.
+#' @param label_table ID for the table.
+#' @param label_plot ID for the plot.
 #'
 #' @return Box for use in `Shiny`
 #' @export
