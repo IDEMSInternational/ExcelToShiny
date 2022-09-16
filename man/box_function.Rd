@@ -4,20 +4,14 @@
 \alias{box_function}
 \title{Creating box to be used in \code{PLH_shiny} function}
 \usage{
-box_function(data_frame, text, colour, label_table, label_plot, variable)
+box_function(data_frame, spreadsheet, unique_ID, label_table, label_plot)
 }
 \arguments{
 \item{data_frame}{Data frame that contains the data to analyse.}
 
-\item{text}{Variable containing titles for each box.}
+\item{spreadsheet}{Spreadsheet that contains the template.}
 
-\item{colour}{Variable containing colours for each box.}
-
-\item{label_table}{Variable containing the table label for each box.}
-
-\item{label_plot}{Variable containing the plot label for each box.}
-
-\item{variable}{Variable containing the variable for each box.}
+\item{unique_ID}{Unique identifier.}
 }
 \value{
 Box for use in \code{Shiny}

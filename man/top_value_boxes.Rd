@@ -2,26 +2,20 @@
 % Please edit documentation in R/top_value_boxes.R
 \name{top_value_boxes}
 \alias{top_value_boxes}
-\title{Creating top value boxes to be used in \code{PLH_shiny} function}
+\title{Creating top value box to be used in \code{PLH_shiny} function}
 \usage{
-top_value_boxes(data_frame, variable, value_to_display, colour, text, icon_pic)
+top_value_boxes(data_frame, spreadsheet, unique_ID)
 }
 \arguments{
 \item{data_frame}{Data frame that contains the data to analyse.}
 
-\item{variable}{Variable containing the variable to use in each value box.}
+\item{spreadsheet}{Spreadsheet that contains the template.}
 
-\item{value_to_display}{Variable containing the value from the variable to display.}
-
-\item{colour}{Variable containing colours to use in each value box.}
-
-\item{text}{Variable containing titles to use in each value box.}
-
-\item{icon_pic}{Variable containing icons to use in each value box.}
+\item{unique_ID}{Unique identifier.}
 }
 \value{
-Value box for use in \code{Shiny}.
+Top value box for use in \code{Shiny}
 }
 \description{
-Creating top value boxes to be used in \code{PLH_shiny} function
+Creating top value box to be used in \code{PLH_shiny} function
 }
