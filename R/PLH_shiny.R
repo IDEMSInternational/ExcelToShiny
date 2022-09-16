@@ -30,19 +30,16 @@ PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_fro
     warning("Valid colours are blue, green, light blue, orange, red")
     status = "primary"
   }
-  spreadsheet_shiny_box <- spreadsheet %>% dplyr::filter(location == 
-                                                           "box")
-  box_titles <- as.character(spreadsheet_shiny_box$box_title)
-  box_colours <- as.character(spreadsheet_shiny_box$colour)
-  box_variables <- as.character(spreadsheet_shiny_box$variable)
-  spreadsheet_shiny_value_box <- spreadsheet %>% dplyr::filter(location == 
-                                                                 "value_box")
+  spreadsheet_shiny_box <- spreadsheet %>% dplyr::filter(type == "box")
+  spreadsheet_shiny_value_box <- spreadsheet %>% dplyr::filter(type == "value_box")
   row_1_box <- NULL
-  for (i in 1:length(box_titles)) {
+  for (i in 1:nrow(spreadsheet_shiny_box)) {
+    ID <- spreadsheet_shiny_box[i,]$name
     row_1_box[[i]] <- box_function(data_frame = data_frame, 
-                                   text = box_titles[i], colour = box_colours[i], variable = box_variables[i], 
-                                   label_table = paste0("table_1_", i), label_plot = paste0("plot_1_", 
-                                                                                            i))
+                                   spreadsheet = spreadsheet,
+                                   unique_ID = ID,
+                                   label_table = paste0("table_1_", i),
+                                   label_plot = paste0("plot_1_", i))
   }
   if (i < 9) {
     for (i in (i + 1):9) {
@@ -138,39 +135,17 @@ PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_fro
     output$table_1_9 <- shiny::renderTable({
       (row_1_box[[9]][[2]])
     }, striped = TRUE)
-    spreadsheet_shiny_value_box_text <- as.character(spreadsheet_shiny_value_box$box_title)
-    spreadsheet_shiny_value_box_factor <- as.character(spreadsheet_shiny_value_box$variable)
-    spreadsheet_shiny_value_box_icon <- as.character(spreadsheet_shiny_value_box$icon)
-    spreadsheet_shiny_value_box_value_to_display <- as.character(spreadsheet_shiny_value_box$value_to_display)
-    spreadsheet_shiny_value_box_colour <- as.character(spreadsheet_shiny_value_box$colour)
-    output$myvaluebox1 <- shinydashboard::renderValueBox({
-      top_value_boxes(data_frame = data_frame, variable = spreadsheet_shiny_value_box_factor[1], 
-                      value_to_display = spreadsheet_shiny_value_box_value_to_display[1], 
-                      colour = spreadsheet_shiny_value_box_colour[1], 
-                      icon_pic = spreadsheet_shiny_value_box_icon[1], 
-                      text = spreadsheet_shiny_value_box_text[1])
-    })
-    output$myvaluebox2 <- shinydashboard::renderValueBox({
-      top_value_boxes(data_frame = data_frame, variable = spreadsheet_shiny_value_box_factor[2], 
-                      value_to_display = spreadsheet_shiny_value_box_value_to_display[2], 
-                      colour = spreadsheet_shiny_value_box_colour[2], 
-                      icon_pic = spreadsheet_shiny_value_box_icon[2], 
-                      text = spreadsheet_shiny_value_box_text[2])
-    })
-    output$myvaluebox3 <- shinydashboard::renderValueBox({
-      top_value_boxes(data_frame = data_frame, variable = spreadsheet_shiny_value_box_factor[3], 
-                      value_to_display = spreadsheet_shiny_value_box_value_to_display[3], 
-                      colour = spreadsheet_shiny_value_box_colour[3], 
-                      icon_pic = spreadsheet_shiny_value_box_icon[3], 
-                      text = spreadsheet_shiny_value_box_text[3])
-    })
-    output$myvaluebox4 <- shinydashboard::renderValueBox({
-      top_value_boxes(data_frame = data_frame, variable = spreadsheet_shiny_value_box_factor[4], 
-                      value_to_display = spreadsheet_shiny_value_box_value_to_display[4], 
-                      colour = spreadsheet_shiny_value_box_colour[4], 
-                      icon_pic = spreadsheet_shiny_value_box_icon[4], 
-                      text = spreadsheet_shiny_value_box_text[4])
-    })
+
+    top_box <- NULL
+    for (i in 1:nrow(spreadsheet_shiny_value_box)) {
+      ID <- spreadsheet_shiny_value_box[i,]$name
+      top_box[[i]] <- top_value_boxes(data_frame = data_frame, spreadsheet = spreadsheet_shiny_value_box, unique_ID = ID)
+    }
+    output$myvaluebox1 <- shinydashboard::renderValueBox({ top_box[[1]] })
+    output$myvaluebox2 <- shinydashboard::renderValueBox({ top_box[[2]] })
+    output$myvaluebox3 <- shinydashboard::renderValueBox({ top_box[[3]] })
+    output$myvaluebox4 <- shinydashboard::renderValueBox({ top_box[[4]] })
+    
   }
   shiny::shinyApp(ui = ui, server = server)
 }
