@@ -9,7 +9,7 @@
 #' @return Shiny App
 #' @export
 #'
-PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_from = "2021-10-14"){
+PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from = "2021-10-14"){
   colour <- tolower(colour)
   if (colour == "blue") {
     status = "primary"
@@ -30,57 +30,62 @@ PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_fro
     warning("Valid colours are blue, green, light blue, orange, red")
     status = "primary"
   }
-  spreadsheet_shiny_box <- spreadsheet %>% dplyr::filter(type == "box")
-  spreadsheet_shiny_value_box <- spreadsheet %>% dplyr::filter(type == "value_box")
-  row_1_box <- NULL
-  for (i in 1:nrow(spreadsheet_shiny_box)) {
-    ID <- spreadsheet_shiny_box[i,]$name
-    row_1_box[[i]] <- box_function(data_frame = data_frame, 
-                                   spreadsheet = spreadsheet,
-                                   unique_ID = ID,
-                                   label_table = paste0("table_1_", i),
-                                   label_plot = paste0("plot_1_", i))
-  }
-  if (i < 9) {
-    for (i in (i + 1):9) {
-      row_1_box[[i]] <- c(list(""), list(""), list(""))
+  
+  # Setting up bits to insert into sheets
+  contents <- data_list$contents
+  no_display <- nrow(contents %>% filter(type == "Display"))
+  for (i in 1:nrow(contents)){
+    if (contents$type[[i]] == "Display"){
+      display_box <- NULL
+      for (j in 1:no_display){
+        display_box[[j]] <- display_sheet_setup(spreadsheet_data = data_list$demographics,
+                                                data_frame = data_frame)
+      }
     }
   }
-  ui <- shinydashboard::dashboardPage(header = shinydashboard::dashboardHeader(title = paste(title, 
-                                                                                             "Dashboard")), skin = colour, sidebar = shinydashboard::dashboardSidebar(shinydashboard::sidebarMenu(shinydashboard::menuItem("Demographics", 
-                                                                                                                                                                                                                           tabName = "demographics", icon = shiny::icon("users")))), 
-                                      shinydashboard::dashboardBody(shiny::fluidRow(shinydashboard::valueBoxOutput("myvaluebox1", 
-                                                                                                                   width = 3), shinydashboard::valueBoxOutput("myvaluebox2", 
-                                                                                                                                                              width = 3), shinydashboard::valueBoxOutput("myvaluebox3", 
-                                                                                                                                                                                                         width = 3), shinydashboard::valueBoxOutput("myvaluebox4", 
-                                                                                                                                                                                                                                                    width = 3)), shiny::column(6, align = "center", 
-                                                                                                                                                                                                                                                                               shinydashboard::box(width = NULL, collapsible = FALSE, 
-                                                                                                                                                                                                                                                                                                   solidHeader = TRUE, shiny::splitLayout(shiny::textInput(inputId = "datefrom_text", 
-                                                                                                                                                                                                                                                                                                                                                           label = "Date from:", value = date_from), 
-                                                                                                                                                                                                                                                                                                                                          cellArgs = list(style = "vertical-align: top"), 
-                                                                                                                                                                                                                                                                                                                                          cellWidths = c("80%", "20%")))), shinydashboard::tabItems(shinydashboard::tabItem(tabName = "demographics", 
-                                                                                                                                                                                                                                                                                                                                                                                                                            shiny::fluidRow(shiny::column(12, align = "center", 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                          shinydashboard::box(shiny::splitLayout(shiny::h2("Demographics"), 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 shiny::icon("users", "fa-6x"), cellArgs = list(style = "vertical-align: top"), 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 cellWidths = c("80%", "20%")), status = status, 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                              background = colour, width = 10, title = NULL, 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                              collapsible = FALSE, solidHeader = TRUE, height = "95px"))), 
-                                                                                                                                                                                                                                                                                                                                                                                                                            shiny::fluidRow(shiny::column(12, align = "center", 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                          shiny::splitLayout(row_1_box[[1]][[1]], row_1_box[[2]][[1]], 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                             row_1_box[[3]][[1]], cellWidths = c("33.3%", 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 "33.3%", "33.3%"), cellArgs = list(style = "vertical-align: top"))), 
-                                                                                                                                                                                                                                                                                                                                                                                                                                            width = 10), shiny::fluidRow(shiny::column(12, 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       align = "center", shiny::splitLayout(row_1_box[[4]][[1]], 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            row_1_box[[5]][[1]], row_1_box[[6]][[1]], 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            cellWidths = c("33.3%", "33.3%", "33.3%"), 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            cellArgs = list(style = "vertical-align: top"))), 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                         width = 10), shiny::fluidRow(shiny::column(12, 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    align = "center", shiny::splitLayout(row_1_box[[7]][[1]], 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         row_1_box[[8]][[1]], row_1_box[[9]][[1]], 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         cellWidths = c("33.3%", "33.3%", "33.3%"), 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         cellArgs = list(style = "vertical-align: top"))), 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      width = 10)))))
+  
+  my_tab_items <- create_tab_items(data_list = data_list,
+                                   row_1_box = display_box,
+                                   status = status,
+                                   colour = colour)
+  
+  
+  #spreadsheet_shiny_value_box <- spreadsheet %>% dplyr::filter(type == "value_box")
+  
+  ui <- shiny::fluidPage(
+    shinyjs::useShinyjs(),
+    dashboardPage(
+      # 
+      header = shinydashboard::dashboardHeader(title = paste(title, "Dashboard")),
+      skin = colour,
+      
+      sidebar = dashboardSidebar(sidebarMenu(menu_items(data_list$contents)[[1]])),
+      # TODO: paste them all here, separated by a comma.
+      
+      shinydashboard::dashboardBody(
+        # value input boxes
+        # shiny::fluidRow(shinydashboard::valueBoxOutput("myvaluebox1", width = 3),
+        #            shinydashboard::valueBoxOutput("myvaluebox2", width = 3),
+        #            shinydashboard::valueBoxOutput("myvaluebox3", width = 3),
+        #            shinydashboard::valueBoxOutput("myvaluebox4", width = 3)),
+        shiny::column(6, align = "center",
+                      shinydashboard::box(width = NULL,
+                                          collapsible = FALSE,
+                                          solidHeader = TRUE,
+                                          shiny::splitLayout(shiny::textInput(inputId = "datefrom_text", 
+                                                                              label = "Date from:", value = date_from), 
+                                                             cellArgs = list(style = "vertical-align: top"),
+                                                             cellWidths = c("80%", "20%")))),
+        tab_items(my_tab_items)
+        
+      )
+    )
+  )
+  
   server <- function(input, output) {
+    
+    row_1_box <- display_box[[1]]
+    
     output$table_1_1 <- shiny::renderTable({
       (row_1_box[[1]][[2]])
     }, striped = TRUE)
@@ -135,16 +140,16 @@ PLH_shiny <- function (title, spreadsheet, data_frame, colour = "blue", date_fro
     output$table_1_9 <- shiny::renderTable({
       (row_1_box[[9]][[2]])
     }, striped = TRUE)
-
-    top_box <- NULL
-    for (i in 1:nrow(spreadsheet_shiny_value_box)) {
-      ID <- spreadsheet_shiny_value_box[i,]$name
-      top_box[[i]] <- top_value_boxes(data_frame = data_frame, spreadsheet = spreadsheet_shiny_value_box, unique_ID = ID)
-    }
-    output$myvaluebox1 <- shinydashboard::renderValueBox({ top_box[[1]] })
-    output$myvaluebox2 <- shinydashboard::renderValueBox({ top_box[[2]] })
-    output$myvaluebox3 <- shinydashboard::renderValueBox({ top_box[[3]] })
-    output$myvaluebox4 <- shinydashboard::renderValueBox({ top_box[[4]] })
+    
+    #top_box <- NULL
+    # for (i in 1:nrow(spreadsheet_shiny_value_box)) {
+    #   ID <- spreadsheet_shiny_value_box[i,]$name
+    #   top_box[[i]] <- top_value_boxes(data_frame = data_frame, spreadsheet = spreadsheet_shiny_value_box, unique_ID = ID)
+    # }
+    # output$myvaluebox1 <- shinydashboard::renderValueBox({ top_box[[1]] })
+    # output$myvaluebox2 <- shinydashboard::renderValueBox({ top_box[[2]] })
+    # output$myvaluebox3 <- shinydashboard::renderValueBox({ top_box[[3]] })
+    # output$myvaluebox4 <- shinydashboard::renderValueBox({ top_box[[4]] })
     
   }
   shiny::shinyApp(ui = ui, server = server)
