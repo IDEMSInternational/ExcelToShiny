@@ -6,28 +6,35 @@ menu_items <- function(contents_list = data_list$contents){
   return(add_menu)
 }
 
-display_sheet_setup <- function(spreadsheet_data, data_frame){
+# for (i in 1:length(data_list$contents)){
+#   sidebarMenu(menu_items(data_list$contents)[[1]],
+#               menu_items(data_list$contents)[[2]])
+# }
+
+            
+
+display_sheet_setup <- function(spreadsheet_data, data_frame, j){
   spreadsheet_shiny_box <- spreadsheet_data %>% dplyr::filter(type == "box")
-  row_1_box <- NULL
+  d_box <- NULL
   for (i in 1:nrow(spreadsheet_shiny_box)) {
     ID <- spreadsheet_shiny_box[i,]$name
-    row_1_box[[i]] <- box_function(data_frame = data_frame, 
+    d_box[[i]] <- box_function(data_frame = data_frame, 
                                    spreadsheet = spreadsheet_data,
                                    unique_ID = ID,
-                                   label_table = paste0("table_1_", i),
-                                   label_plot = paste0("plot_1_", i))
+                                   label_table = paste0("table_", j, "_", i),
+                                   label_plot = paste0("plot_", j, "_", i))
   }
   if (i < 9) {
     for (i in (i + 1):9) {
-      row_1_box[[i]] <- c(list(""), list(""), list(""))
+      d_box[[i]] <- c(list(""), list(""), list(""))
     }
   }
-  return(row_1_box)
+  return(d_box)
 }
 
-display_sheet <- function(data_list = data_list, row_1_box, status, colour){
-  tab_item <-
-    shinydashboard::tabItem(tabName = data_list$contents$ID[[1]],
+display_sheet <- function(data_list = data_list, d_box, status, colour, j = 1){
+  
+  tab_item <- shinydashboard::tabItem(tabName = data_list$contents$ID[[j]],
     
     # Stuff for the top of the tab
     shiny::fluidRow(shiny::column(12,
@@ -47,23 +54,23 @@ display_sheet <- function(data_list = data_list, row_1_box, status, colour){
     # Tab contents
     shiny::fluidRow(shiny::column(12,
                                   align = "center",
-                                  shiny::splitLayout(row_1_box[[1]][[1]],
-                                                     row_1_box[[2]][[1]], 
-                                                     row_1_box[[3]][[1]],
+                                  shiny::splitLayout(d_box[[1]][[1]],
+                                                     d_box[[2]][[1]], 
+                                                     d_box[[3]][[1]],
                                                      cellWidths = c("33.3%", "33.3%", "33.3%"),
                                                      cellArgs = list(style = "vertical-align: top"))), width = 10),
     shiny::fluidRow(shiny::column(12, 
                                   align = "center",
-                                  shiny::splitLayout(row_1_box[[4]][[1]], 
-                                                     row_1_box[[5]][[1]],
-                                                     row_1_box[[6]][[1]], 
+                                  shiny::splitLayout(d_box[[4]][[1]], 
+                                                     d_box[[5]][[1]],
+                                                     d_box[[6]][[1]], 
                                                      cellWidths = c("33.3%", "33.3%", "33.3%"), 
                                                      cellArgs = list(style = "vertical-align: top"))), width = 10),
     shiny::fluidRow(shiny::column(12, 
                                   align = "center",
-                                  shiny::splitLayout(row_1_box[[7]][[1]], 
-                                                     row_1_box[[8]][[1]],
-                                                     row_1_box[[9]][[1]], 
+                                  shiny::splitLayout(d_box[[7]][[1]], 
+                                                     d_box[[8]][[1]],
+                                                     d_box[[9]][[1]], 
                                                      cellWidths = c("33.3%", "33.3%", "33.3%"), 
                                                      cellArgs = list(style = "vertical-align: top"))), width = 10)
   )
@@ -89,17 +96,17 @@ tab_items <- function(...) {
   div(class = "tab-content", ...)
 }
 
-create_tab_items <- function(data_list, row_1_box, status, colour){
+create_tab_items <- function(data_list, d_box, status, colour){
   my_tab_items <- NULL
   i_disp <- 1
   
   for (i in 1:nrow(data_list$contents)){
-    
     if (data_list$contents$type[[i]] == "Display"){
-      my_tab_items[[1]] <- display_sheet(data_list = data_list,
-                                         row_1_box = row_1_box[[i_disp]],
+      my_tab_items[[i]] <- display_sheet(data_list = data_list,
+                                         d_box = d_box[[i_disp]],
                                          status = status,
-                                         colour = colour)
+                                         colour = colour,
+                                         j = i)
       i_disp <- i_disp + 1
     } # if it is another type of sheet then ... etc
   }

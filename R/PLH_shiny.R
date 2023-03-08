@@ -31,21 +31,27 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     status = "primary"
   }
   
-  # Setting up bits to insert into sheets
+  # Setting up bits to insert into sheets --------------------
   contents <- data_list$contents
-  no_display <- nrow(contents %>% filter(type == "Display"))
+  # Display type sheets --------------------------------------
+  sheets_to_display <- contents %>% filter(type == "Display")
+  no_display <- nrow(sheets_to_display)
+  names_display <- sheets_to_display$ID
+  display_box <- NULL
   for (i in 1:nrow(contents)){
     if (contents$type[[i]] == "Display"){
-      display_box <- NULL
-      for (j in 1:no_display){
-        display_box[[j]] <- display_sheet_setup(spreadsheet_data = data_list$demographics,
-                                                data_frame = data_frame)
+      spreadsheet <- data_list[[names_display[[i]]]]
+      display_box[[i]] <- display_sheet_setup(spreadsheet_data = spreadsheet,
+                                              data_frame = data_frame,
+                                              j = i)
       }
     }
-  }
   
+  #print(length(display_box))
+  
+  # Populate items for the tabs
   my_tab_items <- create_tab_items(data_list = data_list,
-                                   row_1_box = display_box,
+                                   d_box = display_box,
                                    status = status,
                                    colour = colour)
   
@@ -59,9 +65,10 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       header = shinydashboard::dashboardHeader(title = paste(title, "Dashboard")),
       skin = colour,
       
-      sidebar = dashboardSidebar(sidebarMenu(menu_items(data_list$contents)[[1]])),
-      # TODO: paste them all here, separated by a comma.
-      
+      # todo: fix up this function
+      sidebar = dashboardSidebar(sidebarMenu(menu_items(data_list$contents)[[1]],
+                                             menu_items(data_list$contents)[[2]])),
+
       shinydashboard::dashboardBody(
         # value input boxes
         # shiny::fluidRow(shinydashboard::valueBoxOutput("myvaluebox1", width = 3),
@@ -83,64 +90,23 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   )
   
   server <- function(input, output) {
-    
-    row_1_box <- display_box[[1]]
-    
-    output$table_1_1 <- shiny::renderTable({
-      (row_1_box[[1]][[2]])
-    }, striped = TRUE)
-    output$plot_1_1 <- plotly::renderPlotly({
-      row_1_box[[1]][[3]]
-    })
-    output$plot_1_2 <- plotly::renderPlotly({
-      row_1_box[[2]][[3]]
-    })
-    output$table_1_2 <- shiny::renderTable({
-      (row_1_box[[2]][[2]])
-    }, striped = TRUE)
-    output$plot_1_3 <- plotly::renderPlotly({
-      row_1_box[[3]][[3]]
-    })
-    output$table_1_3 <- shiny::renderTable({
-      (row_1_box[[3]][[2]])
-    }, striped = TRUE)
-    output$table_1_4 <- shiny::renderTable({
-      (row_1_box[[4]][[2]])
-    }, striped = TRUE)
-    output$plot_1_4 <- plotly::renderPlotly({
-      row_1_box[[4]][[3]]
-    })
-    output$plot_1_5 <- plotly::renderPlotly({
-      row_1_box[[5]][[3]]
-    })
-    output$table_1_5 <- shiny::renderTable({
-      (row_1_box[[5]][[2]])
-    }, striped = TRUE)
-    output$plot_1_6 <- plotly::renderPlotly({
-      row_1_box[[6]][[3]]
-    })
-    output$table_1_6 <- shiny::renderTable({
-      (row_1_box[[6]][[2]])
-    }, striped = TRUE)
-    output$plot_1_7 <- plotly::renderPlotly({
-      row_1_box[[7]][[3]]
-    })
-    output$table_1_7 <- shiny::renderTable({
-      (row_1_box[[7]][[2]])
-    }, striped = TRUE)
-    output$plot_1_8 <- plotly::renderPlotly({
-      row_1_box[[8]][[3]]
-    })
-    output$table_1_8 <- shiny::renderTable({
-      (row_1_box[[8]][[2]])
-    }, striped = TRUE)
-    output$plot_1_9 <- plotly::renderPlotly({
-      row_1_box[[9]][[3]]
-    })
-    output$table_1_9 <- shiny::renderTable({
-      (row_1_box[[9]][[2]])
-    }, striped = TRUE)
-    
+      
+      # To get all the "display" sheets sorted -----------------------------------------
+      display_sheet_plot <- function(j = 1, i){
+        return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
+      }
+      display_sheet_table <- function(j = 1, i){
+        return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
+      }
+      print(length(display_box))
+      for (j in 1:length(display_box)){
+        for (i in 1:length(display_box[[j]])){
+          display_sheet_plot(j = j, i = i)
+          display_sheet_table(j = j, i = i)
+        }
+      }
+      
+      
     #top_box <- NULL
     # for (i in 1:nrow(spreadsheet_shiny_value_box)) {
     #   ID <- spreadsheet_shiny_value_box[i,]$name
