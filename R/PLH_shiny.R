@@ -45,7 +45,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
                                               data_frame = data_frame,
                                               j = i)
       }
-    }
+  }
   
   #print(length(display_box))
   
