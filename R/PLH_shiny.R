@@ -44,9 +44,9 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       display_box[[i]] <- display_sheet_setup(spreadsheet_data = spreadsheet,
                                               data_frame = data_frame,
                                               j = i)
-      }
+    }
   }
-
+  
   # Populate items for the tabs
   my_tab_items <- create_tab_items(data_list = data_list,
                                    d_box = display_box,
@@ -58,9 +58,9 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   
   shiny_top_box_i <- NULL
   for (i in 1:nrow(spreadsheet_shiny_value_box)){
-    shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 3)
+    shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
   }
-
+  
   ui <- shiny::fluidPage(
     shinyjs::useShinyjs(),
     dashboardPage(
@@ -71,10 +71,11 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       # todo: fix up this function
       sidebar = dashboardSidebar(sidebarMenu(menu_items(data_list$contents)[[1]],
                                              menu_items(data_list$contents)[[2]])),
-
+      
       shinydashboard::dashboardBody(
         #value input boxes
         shiny::fluidRow(shiny_top_box_i),
+        
         # tabs info
         shiny::column(6, align = "center",
                       shinydashboard::box(width = NULL,
@@ -91,41 +92,32 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   )
   
   server <- function(input, output) {
+    # value boxes
+    display_value_boxes <- function(i = 1){
+      ID <- spreadsheet_shiny_value_box[i,]$name
+      top_box <- top_value_boxes(data_frame = data_frame,
+                                 spreadsheet = spreadsheet_shiny_value_box,
+                                 unique_ID = ID)
       
-      # To get all the "display" sheets sorted -----------------------------------------
-      display_sheet_plot <- function(j = 1, i){
-        return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
-      }
-      display_sheet_table <- function(j = 1, i){
-        return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
-      }
-      for (j in 1:length(display_box)){
-        for (i in 1:length(display_box[[j]])){
-          display_sheet_plot(j = j, i = i)
-          display_sheet_table(j = j, i = i)
-        }
-      }
-      
-      
-      # value boxes
-      display_value_boxes <- function(i = 1){
-        ID <- spreadsheet_shiny_value_box[i,]$name
-        top_box <- top_value_boxes(data_frame = data_frame,
-                                   spreadsheet = spreadsheet_shiny_value_box,
-                                   unique_ID = ID)
-        
-        output[[ID]] <- shinydashboard::renderValueBox({ top_box })
-      }
-      
-     for (i in 1:nrow(spreadsheet_shiny_value_box)) {
-       display_value_boxes(i = i)
-     }
+      output[[ID]] <- shinydashboard::renderValueBox({ top_box })
+    }
+    for (i in 1:nrow(spreadsheet_shiny_value_box)) {
+      display_value_boxes(i = i)
+    }
     
-    # 
-    # 
-    # output$myvaluebox2 <- shinydashboard::renderValueBox({ top_box[[2]] })
-    # output$myvaluebox3 <- shinydashboard::renderValueBox({ top_box[[3]] })
-    # output$myvaluebox4 <- shinydashboard::renderValueBox({ top_box[[4]] })
+    # To get all the "display" sheets sorted -----------------------------------------
+    display_sheet_plot <- function(j = 1, i){
+      return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
+    }
+    display_sheet_table <- function(j = 1, i){
+      return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
+    }
+    for (j in 1:length(display_box)){
+      for (i in 1:length(display_box[[j]])){
+        display_sheet_plot(j = j, i = i)
+        display_sheet_table(j = j, i = i)
+      }
+    }
     
   }
   shiny::shinyApp(ui = ui, server = server)
