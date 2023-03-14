@@ -46,18 +46,21 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
                                               j = i)
       }
   }
-  
-  #print(length(display_box))
-  
+
   # Populate items for the tabs
   my_tab_items <- create_tab_items(data_list = data_list,
                                    d_box = display_box,
                                    status = status,
                                    colour = colour)
   
+  # value box
+  spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type == "value_box")
   
-  #spreadsheet_shiny_value_box <- spreadsheet %>% dplyr::filter(type == "value_box")
-  
+  shiny_top_box_i <- NULL
+  for (i in 1:nrow(spreadsheet_shiny_value_box)){
+    shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 3)
+  }
+
   ui <- shiny::fluidPage(
     shinyjs::useShinyjs(),
     dashboardPage(
@@ -70,11 +73,9 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
                                              menu_items(data_list$contents)[[2]])),
 
       shinydashboard::dashboardBody(
-        # value input boxes
-        # shiny::fluidRow(shinydashboard::valueBoxOutput("myvaluebox1", width = 3),
-        #            shinydashboard::valueBoxOutput("myvaluebox2", width = 3),
-        #            shinydashboard::valueBoxOutput("myvaluebox3", width = 3),
-        #            shinydashboard::valueBoxOutput("myvaluebox4", width = 3)),
+        #value input boxes
+        shiny::fluidRow(shiny_top_box_i),
+        # tabs info
         shiny::column(6, align = "center",
                       shinydashboard::box(width = NULL,
                                           collapsible = FALSE,
@@ -98,7 +99,6 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       display_sheet_table <- function(j = 1, i){
         return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
       }
-      print(length(display_box))
       for (j in 1:length(display_box)){
         for (i in 1:length(display_box[[j]])){
           display_sheet_plot(j = j, i = i)
@@ -107,12 +107,22 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       }
       
       
-    #top_box <- NULL
-    # for (i in 1:nrow(spreadsheet_shiny_value_box)) {
-    #   ID <- spreadsheet_shiny_value_box[i,]$name
-    #   top_box[[i]] <- top_value_boxes(data_frame = data_frame, spreadsheet = spreadsheet_shiny_value_box, unique_ID = ID)
-    # }
-    # output$myvaluebox1 <- shinydashboard::renderValueBox({ top_box[[1]] })
+      # value boxes
+      display_value_boxes <- function(i = 1){
+        ID <- spreadsheet_shiny_value_box[i,]$name
+        top_box <- top_value_boxes(data_frame = data_frame,
+                                   spreadsheet = spreadsheet_shiny_value_box,
+                                   unique_ID = ID)
+        
+        output[[ID]] <- shinydashboard::renderValueBox({ top_box })
+      }
+      
+     for (i in 1:nrow(spreadsheet_shiny_value_box)) {
+       display_value_boxes(i = i)
+     }
+    
+    # 
+    # 
     # output$myvaluebox2 <- shinydashboard::renderValueBox({ top_box[[2]] })
     # output$myvaluebox3 <- shinydashboard::renderValueBox({ top_box[[3]] })
     # output$myvaluebox4 <- shinydashboard::renderValueBox({ top_box[[4]] })

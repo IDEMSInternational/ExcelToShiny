@@ -1,6 +1,9 @@
 library(rio)
 library(plhR)
 library(readxl)
+library(tidyverse)
+library(shiny)
+library(shinydashboard)
 excel_template_shiny <- read_excel("~/GitHub/plhR/excel_template_shiny.xlsx",
                                    sheet = "demographics")
 
@@ -20,3 +23,6 @@ PLH_shiny(title = "Testing Shiny Dashboard",
 # [1] 2
 # we should though.
 # So is it just taking ages?
+
+
+# 

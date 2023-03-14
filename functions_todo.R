@@ -24,11 +24,6 @@ display_sheet_setup <- function(spreadsheet_data, data_frame, j){
                                    label_table = paste0("table_", j, "_", i),
                                    label_plot = paste0("plot_", j, "_", i))
   }
-  if (i < 9) {
-    for (i in (i + 1):9) {
-      d_box[[i]] <- c(list(""), list(""), list(""))
-    }
-  }
   return(d_box)
 }
 
@@ -85,56 +80,28 @@ display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j 
     split_row_j[[i]] <- d_box[[i]][[1]]
     k <- k + 1
   }
-  
-  # TODO: get following to work
-  # split_A<- NULL
-  # for (j in 1:3){
-  #   test_hi <- NULL
-  #   row_j <- (spreadsheet %>% filter(row == j))$name
-  #   k <- 1
-  #   for (i in 1:length(d_box)){
-  #     if (d_box[[i]]$ID %in% row_j){
-  #       test_hi[[k]] <- split_row_j[[i]]
-  #       k <- k + 1
-  #     } else {
-  #       print("no")
-  #     }
-  #   }
-  # split_A[[j]] <- split_layout(test_hi)
-  # }
-  
-  
-  # TODO: generalise this for all j's from 1 to max(row) value in the data frame
-  
-  test_hi <- NULL
-  split_2 <- NULL
-  split_3 <- NULL
-  
-  row_1 <- (spreadsheet %>% filter(row == 1))$name
-  row_1_set <- NULL
-  k <- 1
-  for (i in 1:length(d_box)){
-    if (d_box[[i]]$ID %in% row_1){
-      row_1_set[k] <- i
-      k <- k + 1
+
+  tab_item_objects <- NULL
+  print(max(spreadsheet[["row"]]))
+  for (l in 1:max(spreadsheet[["row"]])){    # todo: 1 : max(rows) in the spreadsheet
+    row_l_set <- list()
+    row_l <- (spreadsheet %>% filter(row == l))$name
+    k <- 1
+    for (i in 1:length(d_box)){
+      if (d_box[[i]]$ID %in% row_l){
+        row_l_set[[k]] <- split_row_j[[i]]
+        k <- k + 1
+      }
     }
+    tab_item_objects[[l]] <- split_layout(row_l_set)
   }
-  for (i in row_1_set){
-    test_hi[[i]] <- split_row_j[[i]]
+  
+  for (l in 1:length(tab_item_objects)){
+    tab_item_objects[[l]] <- shiny::fluidRow(shiny::column(12,
+                                  align = "center",
+                                  tab_item_objects[[l]]),
+                    width = 10)
   }
-  test_hi <- split_layout(test_hi)
-  k <- 1
-  for (i in 4:6){
-    split_2[[k]] <- split_row_j[[i]]
-    k <- k + 1
-  }
-  split_2 <- split_layout(split_2)
-  k <- 1
-  for (i in 7:9){
-    split_3[[k]] <- split_row_j[[i]]
-    k <- k + 1
-  }
-  split_3 <- split_layout(split_3)
   
   tab_item <- shinydashboard::tabItem(tabName = data_list$contents$ID[[j]],
                                       
@@ -154,18 +121,8 @@ display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j 
                                                                                         height = "95px"))),
                                       
                                       # Tab contents
-                                      shiny::fluidRow(shiny::column(12,
-                                                                    align = "center",
-                                                                    test_hi),
-                                                      width = 10),
-                                      shiny::fluidRow(shiny::column(12,
-                                                                    align = "center",
-                                                                    split_2),
-                                                      width = 10),
-                                      shiny::fluidRow(shiny::column(12,
-                                                                    align = "center",
-                                                                    split_3),
-                                                      width = 10)
+                                      tab_item_objects
+
   )
   return(tab_item)
 }
@@ -192,7 +149,7 @@ tab_items <- function(...) {
 create_tab_items <- function(data_list, d_box, status, colour){
   my_tab_items <- NULL
   i_disp <- 1
-  
+
   for (i in 1:nrow(data_list$contents)){
     if (data_list$contents$type[[i]] == "Display"){
       my_tab_items[[i]] <- display_sheet(data_list = data_list,
@@ -204,5 +161,21 @@ create_tab_items <- function(data_list, d_box, status, colour){
       i_disp <- i_disp + 1
     } # if it is another type of sheet then ... etc
   }
+
   return(my_tab_items)
 }
+# 
+# my_tab_items <- create_tab_items(data_list = data_l,
+#                                  d_box = display_box,
+#                                  status = "info",
+#                                  colour = "red")
+# 
+# 
+# display_sheet(data_list = data_l,
+#               spreadsheet_name = data_l$contents$ID[[i]],
+#               d_box = d_box[[i_disp]],
+#               status = status,
+#               colour = colour,
+#               j = i)
+# 
+# 
