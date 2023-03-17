@@ -70,7 +70,6 @@ split_layout <- function(..., cellWidths = NULL, cellArgs = list()){
 
 
 display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j = 1){
-  
   # Create the "div" for each row.
   # each row is stored in a list, split_row[[j]] (j = row)
   spreadsheet <- data_list[[spreadsheet_name]]
@@ -82,8 +81,7 @@ display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j 
   }
 
   tab_item_objects <- NULL
-  print(max(spreadsheet[["row"]]))
-  for (l in 1:max(spreadsheet[["row"]])){    # todo: 1 : max(rows) in the spreadsheet
+  for (l in 1:max(spreadsheet[["row"]])){
     row_l_set <- list()
     row_l <- (spreadsheet %>% filter(row == l))$name
     k <- 1
@@ -146,6 +144,7 @@ tab_items <- function(...) {
   div(class = "tab-content", ...)
 }
 
+# what kind of sheet is it?
 create_tab_items <- function(data_list, d_box, status, colour){
   my_tab_items <- NULL
   i_disp <- 1
@@ -159,23 +158,60 @@ create_tab_items <- function(data_list, d_box, status, colour){
                                          colour = colour,
                                          j = i)
       i_disp <- i_disp + 1
-    } # if it is another type of sheet then ... etc
+    } else if (data_list$contents$type[[i]] == "Download"){
+      my_tab_items[[i]] <- download_sheet(data_list = data_list,
+                                          spreadsheet_name = data_list$contents$ID[[i]],
+                                          j = i)
+    }
   }
 
   return(my_tab_items)
 }
-# 
-# my_tab_items <- create_tab_items(data_list = data_l,
-#                                  d_box = display_box,
-#                                  status = "info",
-#                                  colour = "red")
-# 
-# 
-# display_sheet(data_list = data_l,
-#               spreadsheet_name = data_l$contents$ID[[i]],
-#               d_box = d_box[[i_disp]],
-#               status = status,
-#               colour = colour,
-#               j = i)
-# 
-# 
+
+
+download_sheet <- function(data_list, spreadsheet_name, j = 1){
+  # this is jth sheet on downloading data - does this work for multiple sheets?
+  # what about multiple downloads on one page?
+  spreadsheet <- data_list[[spreadsheet_name]]
+  data_label <- (spreadsheet %>% filter(type == "Data label"))$name
+  download_label <- (spreadsheet %>% filter(type == "Download label"))$name
+  data_names <- (spreadsheet %>% filter(type == "Data"))$name
+  
+  # be able to edit choices, format (csv, etc), table name.
+  tab_item_objects <- fluidRow(
+    box(width = 6, 
+        selectInput(paste0("dataset", j), data_label,
+                    choices = data_names),
+        # Button
+        downloadButton(paste0("downloadData", j), download_label)),
+    fluidRow(box(width = 12,
+                 dataTableOutput(paste0("table", j))))
+  )
+  
+  tab_item <- shinydashboard::tabItem(tabName = data_list$contents$ID[[j]],
+                                      
+                                      # Stuff for the top of the tab
+                                      shiny::fluidRow(shiny::column(12,
+                                                                    align = "center",
+                                                                    shinydashboard::box(shiny::splitLayout(shiny::h2(data_list$contents$name[[1]]), 
+                                                                                                           shiny::icon(data_list$contents$icon[[1]], "fa-6x"),
+                                                                                                           cellArgs = list(style = "vertical-align: top"), 
+                                                                                                           cellWidths = c("80%", "20%")),
+                                                                                        status = status,
+                                                                                        background = colour,
+                                                                                        width = 10,
+                                                                                        title = NULL,
+                                                                                        collapsible = FALSE,
+                                                                                        solidHeader = TRUE,
+                                                                                        height = "95px"))),
+                                      
+                                      # Tab contents
+                                      tab_item_objects
+  )
+  
+  return(tab_item)
+}
+
+get_data_download <- function(data_to_download, i){
+  return(eval(parse(text = data_to_download$value[i])))
+}

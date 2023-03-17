@@ -33,7 +33,8 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   
   # Setting up bits to insert into sheets --------------------
   contents <- data_list$contents
-  # Display type sheets --------------------------------------
+  
+  # Display type sheets ---------------------------------------------
   sheets_to_display <- contents %>% filter(type == "Display")
   no_display <- nrow(sheets_to_display)
   names_display <- sheets_to_display$ID
@@ -47,13 +48,13 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     }
   }
   
-  # Populate items for the tabs
+  # Populate items for the tabs -------------------------------------
   my_tab_items <- create_tab_items(data_list = data_list,
                                    d_box = display_box,
                                    status = status,
                                    colour = colour)
   
-  # value box
+  # value box for main page -----------------------------------------
   spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type == "value_box")
   
   shiny_top_box_i <- NULL
@@ -61,6 +62,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
   }
   
+  # Set up UI -------------------------------------------------------
   ui <- shiny::fluidPage(
     shinyjs::useShinyjs(),
     dashboardPage(
@@ -70,7 +72,8 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       
       # todo: fix up this function
       sidebar = dashboardSidebar(sidebarMenu(menu_items(data_list$contents)[[1]],
-                                             menu_items(data_list$contents)[[2]])),
+                                             menu_items(data_list$contents)[[2]],
+                                             menu_items(data_list$contents)[[3]])),
       
       shinydashboard::dashboardBody(
         #value input boxes
@@ -90,7 +93,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       )
     )
   )
-  
+
   server <- function(input, output) {
     # value boxes
     display_value_boxes <- function(i = 1){
@@ -105,20 +108,64 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       display_value_boxes(i = i)
     }
     
-    # To get all the "display" sheets sorted -----------------------------------------
+    # The "display" sheets -----------------------------------------
     display_sheet_plot <- function(j = 1, i){
       return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
     }
     display_sheet_table <- function(j = 1, i){
       return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
     }
-    for (j in 1:length(display_box)){
+    for (j in which(data_l$contents$type == "Display")){ #1:length(display_box)){
       for (i in 1:length(display_box[[j]])){
         display_sheet_plot(j = j, i = i)
         display_sheet_table(j = j, i = i)
       }
     }
     
-  }
+    # The "download" sheets -----------------------------------------
+    # todo: CSV set up - function that writes multiple formats to use instead of write.csv
+    # `write`?
+    render_table <- function(j = 1){
+      return(output[[paste0("table", j)]] <- shiny::renderDataTable({datasetInput()}))
+    }
+    download_table <- function(j){
+      download_item <- downloadHandler(
+        filename = function() {
+          paste(input[[paste0("dataset", j)]], ".csv", sep = "")
+        },
+        content = function(file) {
+          write.csv(datasetInput(), file, row.names = FALSE)
+        }
+      )
+      return(output[[paste0("downloadData", j)]] <- download_item)
+    }
+    
+    for (j in which(data_list$contents$type == "Download")){
+      
+      spreadsheet <- data_list$contents$ID[j]
+      # hi <- NULL
+      # for (i in 1:2){
+      #   hi[[i]] <- get_data_download(data_to_download = data_list[[spreadsheet]] %>% filter(type == "Data"), i = i)
+      # }
+      # names(hi) <- (data_list[[spreadsheet]] %>% filter(type == "Data"))$name
+      
+      # hi[[1]], hi[[2]]
+      # wrote a function to separate by comma that we don't use (see functions_todo?)
+      # paste0 stuff to do demographics before, etc
+      
+        datasetInput <- reactive({
+          # TODO: look at switch for doing this for this situation
+          # https://stackoverflow.com/questions/31538340/using-a-list-of-possible-values-in-a-switch-command
+          switch(input[[paste0("dataset", j)]],
+                 #hi)
+                 "Demographics Data" = get_data_download(data_to_download = data_list[[spreadsheet]] %>% filter(type == "Data"), i = 1),
+                 "Demo2" = get_data_download(data_to_download = data_list[[spreadsheet]] %>% filter(type == "Data"), i = 2))
+       })
+
+      render_table(j = j)
+      download_table(j = j)
+    }
+    
+    }
   shiny::shinyApp(ui = ui, server = server)
 }
