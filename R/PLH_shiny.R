@@ -11,30 +11,20 @@
 #'
 PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from = "2021-10-14"){
   colour <- tolower(colour)
-  if (colour == "blue") {
-    status = "primary"
-  }
-  else if (colour == "green") {
-    status = "success"
-  }
-  else if (colour == "light blue") {
-    status = "info"
-  }
-  else if (colour == "orange") {
-    status = "warning"
-  }
-  else if (colour == "red") {
-    status = "danger"
-  }
-  else {
+  if (colour == "blue") { status = "primary"
+  } else if (colour == "green") { status = "success"
+  } else if (colour == "light blue") { status = "info"
+  } else if (colour == "orange") { status = "warning"
+  } else if (colour == "red") { status = "danger"
+  } else {
     warning("Valid colours are blue, green, light blue, orange, red")
     status = "primary"
   }
   
-  # Setting up bits to insert into sheets --------------------
+  # Setting up (pre-UI and pre-server items) --------------------------------
   contents <- data_list$contents
   
-  # Display type sheets ---------------------------------------------
+  # Display type sheets ---
   sheets_to_display <- contents %>% filter(type == "Display")
   no_display <- nrow(sheets_to_display)
   names_display <- sheets_to_display$ID
@@ -48,13 +38,13 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     }
   }
   
-  # Populate items for the tabs -------------------------------------
+  # Populate items for the tabs ---
   my_tab_items <- create_tab_items(data_list = data_list,
                                    d_box = display_box,
                                    status = status,
                                    colour = colour)
   
-  # value box for main page -----------------------------------------
+  # value box for main page ---
   spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type == "value_box")
   
   shiny_top_box_i <- NULL
@@ -70,7 +60,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       header = shinydashboard::dashboardHeader(title = paste(title, "Dashboard")),
       skin = colour,
       
-      # todo: fix up this function
+      # todo: fix up this function to allow N items (rather than having to tell it how many)
       sidebar = dashboardSidebar(sidebarMenu(menu_items(data_list$contents)[[1]],
                                              menu_items(data_list$contents)[[2]],
                                              menu_items(data_list$contents)[[3]])),
@@ -109,18 +99,21 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     }
     
     # The "display" sheets -----------------------------------------
+    
+    #Overview and Demographics plot and table
     display_sheet_plot <- function(j = 1, i){
       return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
     }
     display_sheet_table <- function(j = 1, i){
       return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
     }
+    
     for (j in which(data_l$contents$type == "Display")){ #1:length(display_box)){
-      for (i in 1:length(display_box[[j]])){
-        display_sheet_plot(j = j, i = i)
-        display_sheet_table(j = j, i = i)
-      }
+      map(display_box[[j]], .f = ~ display_sheet_table(j = j, i = .x))
+      map(display_box[[j]], .f = ~ display_sheet_plot(j = j, i = .x))
     }
+    # TODO: use map2 instead of for loop:
+    
     
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv
