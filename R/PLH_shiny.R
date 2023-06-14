@@ -11,7 +11,8 @@
 #'
 PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from = "2021-10-14"){
   colour <- tolower(colour)
-  if (colour == "blue") { status = "primary"
+  if (colour == "blue") { 
+    status = "primary"
   } else if (colour == "green") { status = "success"
   } else if (colour == "light blue") { status = "info"
   } else if (colour == "orange") { status = "warning"
@@ -37,7 +38,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
                                               j = i)
     }
   }
-  
+
   # Populate items for the tabs ---
   my_tab_items <- create_tab_items(data_list = data_list,
                                    d_box = display_box,
@@ -62,8 +63,8 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       
       # todo: fix up this function to allow N items (rather than having to tell it how many)
       sidebar = dashboardSidebar(sidebarMenu(menu_items(data_list$contents)[[1]],
-                                             menu_items(data_list$contents)[[2]],
-                                             menu_items(data_list$contents)[[3]])),
+                                             menu_items(data_list$contents)[[2]])),
+                                             #menu_items(data_list$contents)[[3]])),
       
       shinydashboard::dashboardBody(
         #value input boxes
@@ -107,10 +108,17 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     display_sheet_table <- function(j = 1, i){
       return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
     }
+
+    # for (j in which(data_l$contents$type == "Display")){ #1:length(display_box)){
+    #   for (i in 1:length(display_box[[j]])){
+    #     display_sheet_plot(j = j, i = i)
+    #     display_sheet_table(j = j, i = i)
+    #   }
+    # }
     
     for (j in which(data_l$contents$type == "Display")){ #1:length(display_box)){
-      map(display_box[[j]], .f = ~ display_sheet_table(j = j, i = .x))
-      map(display_box[[j]], .f = ~ display_sheet_plot(j = j, i = .x))
+      map(1:length(display_box[[j]]), .f = ~ display_sheet_table(j = j, i = .x))
+      map(1:length(display_box[[j]]), .f = ~ display_sheet_plot(j = j, i = .x))
     }
     # TODO: use map2 instead of for loop:
     

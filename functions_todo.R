@@ -24,6 +24,7 @@ display_sheet_setup <- function(spreadsheet_data, data_frame, j){
                                    label_table = paste0("table_", j, "_", i),
                                    label_plot = paste0("plot_", j, "_", i))
   }
+  print(names(d_box[[1]]))
   return(d_box)
 }
 

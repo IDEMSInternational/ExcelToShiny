@@ -16,7 +16,7 @@ summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_
                          replace_after = NULL,
                          plot_type = c("histogram", "boxplot")) {	
   plot_type <- match.arg(plot_type)
-  x_axis_label = naming_conventions(colnames(data %>% dplyr::select(.data[[columns_to_summarise]])), replace = replace, replace_after = replace_after)	
+  x_axis_label = naming_conventions(colnames(data %>% dplyr::select(all_of(columns_to_summarise))), replace = replace, replace_after = replace_after)	
   
   return_plot <- ggplot2::ggplot(data) +	
     viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +	

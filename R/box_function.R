@@ -80,6 +80,7 @@ bar_table <- function(data_frame, spreadsheet, unique_ID, label_table, label_plo
   all_return[[3]] <- plot_to_return
   all_return[[4]] <- label_table
   all_return[[5]] <- label_plot
-  names(all_return) <- c("gui_obj", "table_obj", "plot_obj", "label_table", "label_plot")
+  all_return[[6]] <- unique_ID
+  names(all_return) <- c("gui_obj", "table_obj", "plot_obj", "label_table", "label_plot", "ID")
   return(all_return)
 }
