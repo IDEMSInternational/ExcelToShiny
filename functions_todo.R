@@ -14,11 +14,12 @@ menu_items <- function(contents_list = data_list$contents){
             
 
 display_sheet_setup <- function(spreadsheet_data, data_frame, j){
-  spreadsheet_shiny_box <- spreadsheet_data %>% dplyr::filter(type == "bar_table")
+  # read in 
+  spreadsheet_shiny_box <- spreadsheet_data %>% dplyr::filter(type %in% c("bar_table", "boxplot_table"))
   d_box <- NULL
   for (i in 1:nrow(spreadsheet_shiny_box)) {
     ID <- spreadsheet_shiny_box[i,]$name
-    d_box[[i]] <- bar_table(data_frame = data_frame, 
+    d_box[[i]] <- box_function(data_frame = data_frame, 
                                    spreadsheet = spreadsheet_data,
                                    unique_ID = ID,
                                    label_table = paste0("table_", j, "_", i),

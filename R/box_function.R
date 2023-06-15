@@ -8,7 +8,7 @@
 #'
 #' @return Box for use in `Shiny`
 #' @export
-bar_table <- function(data_frame, spreadsheet, unique_ID, label_table, label_plot){
+box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_plot){
   all_return <- NULL
   
   # we repeat for each row later in the plh_shiny function
@@ -23,7 +23,7 @@ bar_table <- function(data_frame, spreadsheet, unique_ID, label_table, label_plo
   values <- spreadsheet_parameters_values
   names <- spreadsheet_parameters_names
   spreadsheet_df <- data.frame(names, values)
-
+  
   #repeat for all variables like text, etc. so make into a function?
   text <- spreadsheet_finder(data = spreadsheet_df, "text ")
   width <- spreadsheet_finder(data = spreadsheet_df, "width ")
@@ -58,29 +58,20 @@ bar_table <- function(data_frame, spreadsheet, unique_ID, label_table, label_plo
                                          solidHeader = TRUE,
                                          plotly::plotlyOutput(outputId = label_plot, height = "240"),
                                          shiny::tableOutput(label_table))
-  plot_to_return <- ggplot2::ggplot()
-  if (is.numeric(data_frame[[variable]])){
-    plot_to_return <- plot_to_return +
-      ggplot2::geom_boxplot(data = data_frame, ggplot2::aes(y = .data[[variable]])) +
-      ggplot2::labs(x = "Count")
-    table_to_return <- data_frame %>%
-      dplyr::summarise(Mean = round(mean(data_frame[[variable]], na.rm = TRUE), 2),
-                SD = round(stats::sd(data_frame[[variable]], na.rm = TRUE), 2))
-  } else {
-    table_to_return <- summary_table(data = data_frame,
-                                     factors = .data[[variable]],
-                                     include_margins = TRUE,
-                                     replace = NULL)
-    plot_to_return <- plot_to_return +
-      ggplot2::geom_histogram(data = data_frame, ggplot2::aes(x = .data[[variable]]), stat = "count")  +
-      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-      ggplot2::labs(y = "Count", x = naming_conventions(variable))
+  
+  type <- spreadsheet$type
+  variable <- spreadsheet$variable
+  if (type == "bar_table"){
+    return_object <- bar_table(data = data_frame, variable = variable)
+  } else if (type == "boxplot_table"){
+    return_object <- boxplot_table(data = data_frame, variable = variable)
   }
-  all_return[[2]] <- table_to_return
-  all_return[[3]] <- plot_to_return
+  all_return[[2]] <- return_object[[1]]
+  all_return[[3]] <- return_object[[2]]
   all_return[[4]] <- label_table
   all_return[[5]] <- label_plot
   all_return[[6]] <- unique_ID
   names(all_return) <- c("gui_obj", "table_obj", "plot_obj", "label_table", "label_plot", "ID")
+  
   return(all_return)
 }

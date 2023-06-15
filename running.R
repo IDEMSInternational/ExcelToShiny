@@ -7,10 +7,9 @@ library(shinydashboard)
 source("functions_todo.R")
 #excel_template_shiny <- read_excel("~/GitHub/plhR/excel_template_shiny.xlsx",
 #                                   sheet = "demographics")
+#data_l <- import_list("~/GitHub/plhR/excel_template_shiny.xlsx")
 
-data_l <- import_list("~/GitHub/plhR/excel_template_shiny.xlsx")
 data_l <- import_list("C:/Users/lclem/Downloads/Shiny-Excel authoring demo.xlsx")
-
 our_data <- readRDS("plh_pilot_230614.xlsx")
 our_data$last_sync <- difftime(lubridate::now(tzone = "UTC"), as.POSIXct(our_data$updatedAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"), units = "hours")
 
