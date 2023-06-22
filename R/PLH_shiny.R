@@ -159,8 +159,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
           # https://stackoverflow.com/questions/31538340/using-a-list-of-possible-values-in-a-switch-command
           switch(input[[paste0("dataset", j)]],
                  #hi)
-                 "Demographics Data" = get_data_download(data_to_download = data_list[[spreadsheet]] %>% filter(type == "Data"), i = 1),
-                 "Demo2" = get_data_download(data_to_download = data_list[[spreadsheet]] %>% filter(type == "Data"), i = 2))
+                 "Demographics Data" = get_data_download(data_to_download = data_list[[spreadsheet]] %>% filter(type == "Data"), i = 1))
        })
 
       render_table(j = j)
