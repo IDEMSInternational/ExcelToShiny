@@ -6,7 +6,7 @@
 \usage{
 PLH_shiny(
   title,
-  spreadsheet,
+  data_list,
   data_frame,
   colour = "blue",
   date_from = "2021-10-14"
@@ -15,13 +15,13 @@ PLH_shiny(
 \arguments{
 \item{title}{Title of the dashboard.}
 
-\item{spreadsheet}{Spreadsheet that contains meta information to put in the box.}
-
 \item{data_frame}{Spreadsheet that contains information to put in the box.}
 
 \item{colour}{Skin colour of the Shiny App.}
 
 \item{date_from}{Initial date to filter from.}
+
+\item{spreadsheet}{Spreadsheet that contains meta information to put in the box.}
 }
 \value{
 Shiny App
