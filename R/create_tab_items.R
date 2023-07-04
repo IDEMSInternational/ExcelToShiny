@@ -13,6 +13,7 @@
 create_tab_items <- function(data_list, d_box, status, colour){
   my_tab_items <- NULL
   i_disp <- 1
+  i_tb_disp <- 1
   
   for (i in 1:nrow(data_list$contents)){
     if (data_list$contents$type[[i]] == "Display"){
@@ -27,6 +28,12 @@ create_tab_items <- function(data_list, d_box, status, colour){
       my_tab_items[[i]] <- download_sheet(data_list = data_list,
                                           spreadsheet_name = data_list$contents$ID[[i]],
                                           j = i)
+    } else if (data_list$contents$type[[i]] == "Tabbed_display"){
+      my_tab_items[[i]] <- tabbed_sheet(data_list = data_list,
+                                        spreadsheet_name = data_list$contents$ID[[i]],
+                                        d_box = d_box[[i]],
+                                        j = i)
+      
     }
   }
   

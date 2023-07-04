@@ -1,52 +1,31 @@
-#' Title
-#'
-#' @param data_list todo
-#' @param spreadsheet_name todo
-#' @param d_box todo
-#' @param status todo
-#' @param colour todo
-#' @param j todo
-#'
-#' @return todo
-#' @export
-#'
-#' @examples #todo
-display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j = 1){
-  # Create the "div" for each row.
-  # each row is stored in a list, split_row[[j]] (j = row)
+tabbed_sheet <- function(data_list = data_list,
+                         spreadsheet_name = data_list$contents$ID[[i]],
+                         d_box,
+                         j = 1){
+  
+  # TODO: tabbed_sheet only works for display types at the moment!
   spreadsheet <- data_list[[spreadsheet_name]]
-  split_row_j <- NULL
-  k <- 1
-  for (i in 1:length(d_box)){
-    split_row_j[[i]] <- d_box[[i]][[1]]
-    k <- k + 1
+  spreadsheet_display <- spreadsheet %>% filter(type == "Display")
+  
+  tab_panel_i <- NULL
+  for (i in 1:nrow(spreadsheet_display)){
+    tab_item_objects <- tabbed_display_display(spreadsheet_ID_names = spreadsheet_display[["ID"]],
+                                               data_list = data_list,
+                                               d_box = d_box,
+                                               q = i) # q = 1 then 2. 
+    tab_panel_i[[i]] <- shiny::tabPanel(spreadsheet_display[["name"]][[i]],
+                                        tab_item_objects
+    ) 
   }
   
-  # split across rows
-  tab_item_objects <- NULL
-  for (l in 1:max(spreadsheet[["row"]])){
-    row_l_set <- list()
-    row_l <- (spreadsheet %>% filter(row == l))$name
-    k <- 1
-    for (i in 1:length(d_box)){
-      if (d_box[[i]]$ID %in% row_l){
-        row_l_set[[k]] <- split_row_j[[i]]
-        k <- k + 1
-      }
-    }
-    tab_item_objects[[l]] <- split_layout(row_l_set)
+  for (i in 1:length(tab_panel_i)){
+    tab_panel_i[[i]]
   }
   
-  for (l in 1:length(tab_item_objects)){
-    tab_item_objects[[l]] <- shiny::fluidRow(shiny::column(12,
-                                                           align = "center",
-                                                           tab_item_objects[[l]]),
-                                             width = 10)
-  }
+  # assuming only two tab items
+  tab_panel_items <- do.call(shiny::tabsetPanel, tab_panel_i)
   
   tab_item <- shinydashboard::tabItem(tabName = data_list$contents$ID[[j]],
-                                      
-                                      # Stuff for the top of the tab
                                       shiny::fluidRow(shiny::column(12,
                                                                     align = "center",
                                                                     shinydashboard::box(shiny::splitLayout(shiny::h2(data_list$contents$name[[1]]), 
@@ -61,9 +40,7 @@ display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j 
                                                                                         solidHeader = TRUE,
                                                                                         height = "95px"))),
                                       
-                                      # Tab contents
-                                      tab_item_objects
-                                      
-  )
+                                      tab_panel_items
+  ) #closes tabItem
   return(tab_item)
 }

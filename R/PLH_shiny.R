@@ -25,21 +25,10 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   # Setting up (pre-UI and pre-server items) --------------------------------
   contents <- data_list$contents
   
-  # Display type sheets ---
-  sheets_to_display <- contents %>% filter(type == "Display")
-  no_display <- nrow(sheets_to_display)
-  names_display <- sheets_to_display$ID
-  display_box <- NULL
-  for (i in 1:nrow(contents)){
-    if (contents$type[[i]] == "Display"){
-      spreadsheet <- data_list[[names_display[[i]]]]
-      display_box[[i]] <- display_sheet_setup(spreadsheet_data = spreadsheet,
-                                              data_frame = data_frame,
-                                              j = i)
-    }
-  }
-
+  # Contents to display
+  display_box <- display_contents(contents1 = contents, data_frame = data_frame)
   # Populate items for the tabs ---
+  # investigate my_tab_items[[4]]
   my_tab_items <- create_tab_items(data_list = data_list,
                                    d_box = display_box,
                                    status = status,
@@ -53,6 +42,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
   }
   
+  sidebar_menu <- do.call(sidebarMenu, menu_items(data_list$contents))
   # Set up UI -------------------------------------------------------
   ui <- shiny::fluidPage(
     shinyjs::useShinyjs(),
@@ -62,9 +52,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       skin = colour,
       
       # todo: fix up this function to allow N items (rather than having to tell it how many)
-      sidebar = dashboardSidebar(sidebarMenu(menu_items(data_list$contents)[[1]],
-                                             menu_items(data_list$contents)[[2]])),
-                                             #menu_items(data_list$contents)[[3]])),
+      sidebar = dashboardSidebar(sidebar_menu),
       
       shinydashboard::dashboardBody(
         #value input boxes
@@ -108,20 +96,22 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     display_sheet_table <- function(j = 1, i){
       return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
     }
-
-    # for (j in which(data_l$contents$type == "Display")){ #1:length(display_box)){
-    #   for (i in 1:length(display_box[[j]])){
-    #     display_sheet_plot(j = j, i = i)
-    #     display_sheet_table(j = j, i = i)
-    #   }
-    # }
-    
-    for (j in which(data_l$contents$type == "Display")){ #1:length(display_box)){
+    for (j in which(data_list$contents$type == "Display")){
       map(1:length(display_box[[j]]), .f = ~ display_sheet_table(j = j, i = .x))
       map(1:length(display_box[[j]]), .f = ~ display_sheet_plot(j = j, i = .x))
     }
-    # TODO: use map2 instead of for loop:
     
+    #Overview and Demographics plot and table
+    tab_display_sheet_plot <- function(j = 1, i){ # TODO fix for all tab 1_
+      return(output[[paste0("1_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
+    }
+    tab_display_sheet_table <- function(j = 1, i){
+      return(output[[paste0("1_table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
+    }
+    for (j in which(data_list$contents$type == "Tabbed_display")){
+      map(1:length(display_box[[j]]), .f = ~ tab_display_sheet_table(j = j, i = .x))
+      map(1:length(display_box[[j]]), .f = ~ tab_display_sheet_plot(j = j, i = .x))
+    }    
     
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv
