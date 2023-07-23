@@ -1,3 +1,10 @@
+library(rio)
+library(plhR)
+library(readxl)
+library(tidyverse)
+library(shiny)
+library(shinydashboard)
+
 ## Testing with WASH data
 data_l <- import_list("~/GitHub/plhR/WASH_shiny.xlsx")
 #source("our_data_manipulation.R")
