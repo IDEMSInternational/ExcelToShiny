@@ -26,7 +26,8 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   contents <- data_list$contents
   
   # Contents to display
-  display_box <- display_contents(contents1 = contents, data_frame = data_frame)
+  # TODO: hopefully works for multiple tab displays! :) 
+  display_box <- display_contents(contents1 = contents, data_frame = data_frame, k = which(data_list$contents$type == "Tabbed_display"))
   # Populate items for the tabs ---
   # investigate my_tab_items[[4]]
   my_tab_items <- create_tab_items(data_list = data_list,
@@ -74,7 +75,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   )
 
   server <- function(input, output) {
-    # value boxes
+    # value boxes at the top of the thing --------------------------------
     display_value_boxes <- function(i = 1){
       ID <- spreadsheet_shiny_value_box[i,]$name
       top_box <- top_value_boxes(data_frame = data_frame,
@@ -88,8 +89,6 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     }
     
     # The "display" sheets -----------------------------------------
-    
-    #Overview and Demographics plot and table
     display_sheet_plot <- function(j = 1, i){
       return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
     }
@@ -101,17 +100,22 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       map(1:length(display_box[[j]]), .f = ~ display_sheet_plot(j = j, i = .x))
     }
     
-    #Overview and Demographics plot and table
-    tab_display_sheet_plot <- function(j = 1, i){ # TODO fix for all tab 1_
-      return(output[[paste0("1_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
+    # The tab-display sheets ---------------------------------------------
+    tab_display_sheet_plot <- function(k = 4, j = 1, i){ # TODO fix for all tab 1_
+      # instead of 1_ we want to say k_ really.
+      return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[k]][[j]][[i]]$plot_obj}))
     }
-    tab_display_sheet_table <- function(j = 1, i){
-      return(output[[paste0("1_table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
+    tab_display_sheet_table <- function(k = 4, j = 1, i){
+      return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
     }
-    for (j in which(data_list$contents$type == "Tabbed_display")){
-      map(1:length(display_box[[j]]), .f = ~ tab_display_sheet_table(j = j, i = .x))
-      map(1:length(display_box[[j]]), .f = ~ tab_display_sheet_plot(j = j, i = .x))
-    }    
+    #for (k in which(data_list$contents$type == "Tabbed_display")){
+      # TODO: works for multiple tab displays?
+    k <- 4
+    for (j in 1:length(display_box[[k]])){
+        map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_table(k = k, j = j, i = .x))
+        map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_plot(k = k, j = j, i = .x))
+    }
+    #}
     
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv

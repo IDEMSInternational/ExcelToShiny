@@ -21,10 +21,11 @@ display_contents <- function(contents1 = contents, data_frame, loop = NULL, k = 
                                               loop = loop)
     }
     if (contents_type[[i]] == "Tabbed_display"){
+      k <- dplyr::first(k)
       spreadsheet <- data_list[[names_display[[i]]]]
       # todo: can we have a tabbed display in a tabbed display - if so, looping it.
       display_box[[i]] <- display_contents(contents1 = spreadsheet, data_frame = data_frame, loop = k)
-      k <- k + 1
+      k <- k[-1]
     }
   }
   return(display_box)
