@@ -11,8 +11,7 @@
 #'
 PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from = "2021-10-14"){
   colour <- tolower(colour)
-  if (colour == "blue") { 
-    status = "primary"
+  if (colour == "blue") status = "primary"
   } else if (colour == "green") { status = "success"
   } else if (colour == "light blue") { status = "info"
   } else if (colour == "orange") { status = "warning"
@@ -36,11 +35,12 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
                                    colour = colour)
   
   # value box for main page ---
-  spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type == "value_box")
-  
   shiny_top_box_i <- NULL
-  for (i in 1:nrow(spreadsheet_shiny_value_box)){
-    shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
+  if (!is.null(data_list$main_page)){
+    spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type == "value_box")
+    for (i in 1:nrow(spreadsheet_shiny_value_box)){
+      shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
+    } 
   }
   
   sidebar_menu <- do.call(sidebarMenu, menu_items(data_list$contents))
@@ -76,16 +76,19 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
 
   server <- function(input, output) {
     # value boxes at the top of the thing --------------------------------
-    display_value_boxes <- function(i = 1){
-      ID <- spreadsheet_shiny_value_box[i,]$name
-      top_box <- top_value_boxes(data_frame = data_frame,
-                                 spreadsheet = spreadsheet_shiny_value_box,
-                                 unique_ID = ID)
-      
-      output[[ID]] <- shinydashboard::renderValueBox({ top_box })
-    }
-    for (i in 1:nrow(spreadsheet_shiny_value_box)) {
-      display_value_boxes(i = i)
+    if (!is.null(data_list$main_page)){
+      print("A")
+      display_value_boxes <- function(i = 1){
+        ID <- spreadsheet_shiny_value_box[i,]$name
+        top_box <- top_value_boxes(data_frame = data_frame,
+                                   spreadsheet = spreadsheet_shiny_value_box,
+                                   unique_ID = ID)
+        
+        output[[ID]] <- shinydashboard::renderValueBox({ top_box })
+      }
+      for (i in 1:nrow(spreadsheet_shiny_value_box)) {
+        display_value_boxes(i = i)
+      }
     }
     
     # The "display" sheets -----------------------------------------
@@ -101,21 +104,22 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     }
     
     # The tab-display sheets ---------------------------------------------
-    tab_display_sheet_plot <- function(k = 4, j = 1, i){ # TODO fix for all tab 1_
-      # instead of 1_ we want to say k_ really.
-      return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[k]][[j]][[i]]$plot_obj}))
-    }
-    tab_display_sheet_table <- function(k = 4, j = 1, i){
-      return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
-    }
-    #for (k in which(data_list$contents$type == "Tabbed_display")){
+    if (nrow(data_list$contents %>% filter(type == "Tabbed_display")) > 0){
+      tab_display_sheet_plot <- function(k = 4, j = 1, i){ # TODO fix for all tab 1_
+        # instead of 1_ we want to say k_ really.
+        return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[k]][[j]][[i]]$plot_obj}))
+      }
+      tab_display_sheet_table <- function(k = 4, j = 1, i){
+        return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
+      }
+      #for (k in which(data_list$contents$type == "Tabbed_display")){
       # TODO: works for multiple tab displays?
-    k <- 4
-    for (j in 1:length(display_box[[k]])){
+      k <- 4
+      for (j in 1:length(display_box[[k]])){
         map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_table(k = k, j = j, i = .x))
         map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_plot(k = k, j = j, i = .x))
+      }
     }
-    #}
     
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv
