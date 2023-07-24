@@ -11,10 +11,6 @@ source("functions_todo.R")
 data_l <- import_list("~/GitHub/plhR/excel_template_shiny.xlsx")
 our_data <- readRDS("srh_df.RDS")
 
-#data_l <- import_list("C:/Users/lclem/Downloads/Shiny-Excel authoring demo.xlsx")
-#our_data <- readRDS("plh_pilot_230614.xlsx")
-#our_data$last_sync <- difftime(lubridate::now(tzone = "UTC"), as.POSIXct(our_data$updatedAt, format="%Y-%m-%dT%H:%M:%OS", tz = "UTC"), units = "hours")
-
 status = "primary"
 colour = "blue"
 data_list = data_l

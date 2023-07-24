@@ -7,12 +7,7 @@ library(shinydashboard)
 
 ## Testing with WASH data
 data_l <- import_list("~/GitHub/plhR/WASH_shiny.xlsx")
-#source("our_data_manipulation.R")
-
-# this bit will eventually be in a data manipulation code file
-our_data <- readRDS(file="C:/Users/lclem/OneDrive/Documents/GitHub/ParentAppDataScripts/WASHapp20230710.RDS")
-our_data$rp.contact.field.app_launch_count <- as.numeric(our_data$rp.contact.field.app_launch_count)
-our_data$rp.contact.field.max_days_between_app_launches <- as.numeric(our_data$rp.contact.field.max_days_between_app_launches)
+source("WASH_setup.R")
 
 # Then actually running it!
 status = "primary"
