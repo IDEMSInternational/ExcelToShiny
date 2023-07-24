@@ -1,3 +1,14 @@
+#' Title
+#'
+#' @param contents1 
+#' @param data_frame 
+#' @param loop 
+#' @param k 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 display_contents <- function(contents1 = contents, data_frame, loop = NULL, k = 1){
   # Contents to display
   names_display <- contents1[["ID"]]

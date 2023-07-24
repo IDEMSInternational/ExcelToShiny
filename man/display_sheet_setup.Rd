@@ -4,7 +4,7 @@
 \alias{display_sheet_setup}
 \title{Title}
 \usage{
-display_sheet_setup(spreadsheet_data, data_frame, j)
+display_sheet_setup(spreadsheet_data, data_frame, j, loop)
 }
 \arguments{
 \item{spreadsheet_data}{todo}

@@ -11,7 +11,8 @@
 #'
 PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from = "2021-10-14"){
   colour <- tolower(colour)
-  if (colour == "blue") status = "primary"
+  if (colour == "blue") {
+    status = "primary"
   } else if (colour == "green") { status = "success"
   } else if (colour == "light blue") { status = "info"
   } else if (colour == "orange") { status = "warning"
@@ -42,7 +43,6 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
     } 
   }
-  
   sidebar_menu <- do.call(sidebarMenu, menu_items(data_list$contents))
   # Set up UI -------------------------------------------------------
   ui <- shiny::fluidPage(
