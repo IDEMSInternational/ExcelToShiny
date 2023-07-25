@@ -4,19 +4,28 @@ get_var_names <- function(data, field){
   var_names <- names(data %>% dplyr::select(starts_with(paste0("rp.contact.field.", field))))
   return(var_names)
 }
-# started a module?
+# started a module? 
 started_module <- function(data, var_list = "introduction"){
   #var_list <- paste0(var, "_all_started")
   data <- data %>%
     dplyr::select(c(app_user_id, all_of(var_list))) %>%
-    mutate(x = ifelse(rowSums(!is.na(across(var_list))) == 0, "No", "Yes")) %>%
-    mutate(x = fct_relevel(x, c("Yes", "No")))
+    dplyr::mutate(x = ifelse(rowSums(!is.na(across(var_list))) == 0, "No", "Yes")) %>%
+    dplyr::mutate(x = fct_relevel(x, c("Yes", "No")))
+  return(data %>% dplyr::pull(x))
+}
+
+completed_module <- function(data, var_list = "introduction"){
+  #var_list <- paste0(var, "_all_started")
+  data <- data %>%
+    dplyr::select(c(app_user_id, all_of(var_list))) %>%
+    dplyr::mutate(x = ifelse(rowSums(!is.na(across(var_list))) == length(var_list), "Yes", "No")) %>%
+    dplyr::mutate(x = fct_relevel(x, c("Yes", "No")))
   return(data %>% dplyr::pull(x))
 }
 
 ### DATA 
 # this bit will eventually be in a data manipulation code file
-our_data <- readRDS(file="C:/Users/lclem/OneDrive/Documents/GitHub/ParentAppDataScripts/WASHapp20230710.RDS")
+our_data <- readRDS(file="C:/Users/lclem/OneDrive/Documents/GitHub/ParentAppDataScripts/WASHData_20230725.RDS")
 our_data$rp.contact.field.app_launch_count <- as.numeric(our_data$rp.contact.field.app_launch_count)
 our_data$rp.contact.field.max_days_between_app_launches <- as.numeric(our_data$rp.contact.field.max_days_between_app_launches)
 
@@ -32,9 +41,58 @@ our_data <- our_data %>%
 
 var_names <- purrr::map(.x = module_names, .f = ~ get_var_names(our_data, .x))
 names(var_names) <- paste0(module_names, "_all")
-var_names_started <- purrr::map(.x = names(var_names),
+var_names$how_to_wash_your_hands_all[which(var_names$how_to_wash_your_hands_all == "rp.contact.field.how_to_wash_your_hands_when_handwash_card_click_history")] <- ""
+# variables related to started
+var_names_non_toggle <- purrr::map(.x = names(var_names),
                                 .f = ~var_names[[.x]][grepl("_card_click_history", var_names[[.x]])])
-names(var_names_started) <- paste0(module_names, "_started")
-x <- purrr::map(.x = var_names_started, .f = ~ started_module(our_data, var_list = .x))
-our_data <- dplyr::bind_cols(our_data, x)
+names(var_names_non_toggle) <- paste0(module_names, "_started_not_toggle")
+var_names_non_toggle$introduction_started_not_toggle <- "rp.contact.field.introduction_card_click_history"
+var_names_non_toggle$celebration_started_not_toggle <- "rp.contact.field.celebration_card_click_history"
+start_non_tog <- purrr::map(.x = var_names_non_toggle, .f = ~ started_module(our_data, var_list = .x))
+names(var_names_non_toggle) <- paste0(module_names, "_completed_not_toggle")
+var_names_non_toggle$introduction_completed_not_toggle <- "rp.contact.field.introduction_card_click_history"
+var_names_non_toggle$celebration_completed_not_toggle <- "rp.contact.field.celebration_card_click_history"
+complete_non_tog <- purrr::map(.x = var_names_non_toggle, .f = ~ completed_module(our_data, var_list = .x))
 
+var_names_toggle <- purrr::map(.x = names(var_names), .f = ~var_names[[.x]][grepl("_completed_history", var_names[[.x]])])
+names(var_names_toggle) <- paste0(module_names, "_started_toggle")
+start_tog <- purrr::map(.x = var_names_toggle, .f = ~ started_module(our_data, var_list = .x))
+names(var_names_toggle) <- paste0(module_names, "_completed_toggle")
+complete_tog <- purrr::map(.x = var_names_toggle, .f = ~ completed_module(our_data, var_list = .x))
+
+start_non_tog$introduction_started_not_toggle
+introduction_card_click_history
+celebration_card_click_history
+
+our_data <- dplyr::bind_cols(our_data, start_non_tog)
+our_data <- dplyr::bind_cols(our_data, complete_non_tog)
+our_data <- dplyr::bind_cols(our_data, start_tog)
+our_data <- dplyr::bind_cols(our_data, complete_tog)
+
+# 
+# saveRDS(our_data, "our_data.RDS")
+# View(our_data %>% dplyr::select(var_names$how_to_wash_your_hands_all[1:8],
+#                                 "how_to_wash_your_hands_started_not_toggle",
+#                                 "how_to_wash_your_hands_completed_not_toggle",
+#                                 "how_to_wash_your_hands_started_toggle",
+#                                 "how_to_wash_your_hands_completed_toggle"))
+# 
+# View(our_data %>% dplyr::select(var_names$introduction_all,
+#                                 "introduction_started_not_toggle",
+#                                 "introduction_completed_not_toggle",
+#                                 "introduction_started_toggle",
+#                                 "introduction_completed_toggle"))
+# 
+# # and for completed
+# 
+# 
+# 
+# 
+# # our_data %>% filter(healthy_homes_started_not_toggle != healthy_homes_started_toggle) %>% View()
+# 
+# # if these are all NOT NA, then they have "completed" it in terms of the parentapp completion
+# # if at least one NA, then they have "completed" it in terms of the parentapp completion
+# our_data$rp.contact.field.waste_how_card_click_history
+# our_data$rp.contact.field.waste_why_card_click_history
+# our_data$rp.contact.field.waste_what_card_click_history
+# our_data$rp.contact.field.waste_reduce_card_click_history
