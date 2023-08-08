@@ -105,21 +105,23 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
     
     # The tab-display sheets ---------------------------------------------
     if (nrow(data_list$contents %>% filter(type == "Tabbed_display")) > 0){
-      tab_display_sheet_plot <- function(k = 4, j = 1, i){ # TODO fix for all tab 1_
-        # instead of 1_ we want to say k_ really.
-        return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[k]][[j]][[i]]$plot_obj}))
-      }
-      tab_display_sheet_table <- function(k = 4, j = 1, i){
-        return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
-      }
-      #for (k in which(data_list$contents$type == "Tabbed_display")){
-      # TODO: works for multiple tab displays?
-      k <-  dplyr::first(which(data_l$contents$type == "Tabbed_display"))
-      for (j in 1:length(display_box[[k]])){
-        map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_table(k = k, j = j, i = .x))
-        map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_plot(k = k, j = j, i = .x))
+      for (k in which(data_l$contents$type == "Tabbed_display")){
+        tab_display_sheet_plot <- function(k = 4, j = 1, i){ # TODO fix for all tab 1_
+          # instead of 1_ we want to say k_ really.
+          return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[k]][[j]][[i]]$plot_obj}))
+        }
+        tab_display_sheet_table <- function(k = 4, j = 1, i){
+          return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
+        }
+        #for (k in which(data_list$contents$type == "Tabbed_display")){
+        # TODO: works for multiple tab displays?
+        for (j in 1:length(display_box[[k]])){
+          map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_table(k = k, j = j, i = .x))
+          map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_plot(k = k, j = j, i = .x))
+        }
       }
     }
+
     
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv

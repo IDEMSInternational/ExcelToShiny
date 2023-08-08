@@ -23,6 +23,23 @@ completed_module <- function(data, var_list = "introduction"){
   return(data %>% dplyr::pull(x))
 }
 
+module_completion_level <- function(data, var_list = "introduction", incl_first = TRUE){
+  if (incl_first == FALSE) var_list <- var_list[-1]
+  data <- data %>%
+    dplyr::select(c(app_user_id, all_of(var_list))) %>% 
+    mutate(across(var_list,
+                  #~str_count(., ";") + 1)) %>%
+                  ~!is.na(.))) %>%
+    pivot_longer(cols = var_list) %>%
+    group_by(name) %>%
+    mutate(nrow = n()) %>%
+    group_by(name, value, nrow) %>%
+    summarise(prop = n()) %>%
+    filter(value == TRUE) %>%
+    mutate(started = prop / nrow * 100)
+  return(data)
+}
+
 ### DATA 
 # this bit will eventually be in a data manipulation code file
 our_data <- readRDS(file="C:/Users/lclem/OneDrive/Documents/GitHub/ParentAppDataScripts/WASHData_20230725.RDS")
@@ -61,8 +78,6 @@ names(var_names_toggle) <- paste0(module_names, "_completed_toggle")
 complete_tog <- purrr::map(.x = var_names_toggle, .f = ~ completed_module(our_data, var_list = .x))
 
 start_non_tog$introduction_started_not_toggle
-introduction_card_click_history
-celebration_card_click_history
 
 our_data <- dplyr::bind_cols(our_data, start_non_tog)
 our_data <- dplyr::bind_cols(our_data, complete_non_tog)
@@ -70,7 +85,18 @@ our_data <- dplyr::bind_cols(our_data, start_tog)
 our_data <- dplyr::bind_cols(our_data, complete_tog)
 
 # 
-# saveRDS(our_data, "our_data.RDS")
+
+# started a module
+# add data column in shiny sheet, but it's a list. 
+# state that it is a list, then we read in the list name (e..g, "handwashing_with_soap_started_not_toggle")
+mod_compl_nt <- purrr::map(.x = var_names_non_toggle[c(2:5, 7:12)], .f = ~ module_completion_level(our_data, .x, FALSE))
+mod_compl_t <- purrr::map(.x = var_names_toggle[c(2:5, 7:12)], .f = ~ module_completion_level(our_data, .x))
+
+
+
+
+
+#saveRDS(our_data, "WASHData_with_toggles_20230725.RDS")
 # View(our_data %>% dplyr::select(var_names$how_to_wash_your_hands_all[1:8],
 #                                 "how_to_wash_your_hands_started_not_toggle",
 #                                 "how_to_wash_your_hands_completed_not_toggle",

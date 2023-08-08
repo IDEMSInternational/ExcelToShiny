@@ -11,6 +11,12 @@
 box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_plot){
   all_return <- NULL
   
+  if (is.null(spreadsheet$data)) { 
+    data_frame_read <- data_frame
+  } else {
+    data_frame_read <- get(spreadsheet$data[[1]]) # todo, work for different data frames in the same tab.
+  }
+  
   # we repeat for each row later in the plh_shiny function
   # for now, just get the data
   #spreadsheet <- testing_shiny
@@ -44,7 +50,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
     status = "primary"
   }
   variable <- spreadsheet$variable
-  if (!variable %in% names(data_frame)) stop(paste0(variable, " not in data."))
+  if (!variable %in% names(data_frame_read)) stop(paste0(variable, " not in data."))
   
   #label_ID <- (stringr::str_split(spreadsheet$value, ", ", simplify = TRUE))
   #label_ID <- paste0(spreadsheet$name, "_", label_ID)
@@ -61,10 +67,11 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   
   type <- spreadsheet$type
   variable <- spreadsheet$variable
+  
   if (type == "bar_table"){
-    return_object <- bar_table(data = data_frame, variable = variable)
+    return_object <- bar_table(data = data_frame_read, variable = variable)
   } else if (type == "boxplot_table"){
-    return_object <- boxplot_table(data = data_frame, variable = variable)
+    return_object <- boxplot_table(data = data_frame_read, variable = variable)
   }
   all_return[[2]] <- return_object[[1]]
   all_return[[3]] <- return_object[[2]]
@@ -75,3 +82,4 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   
   return(all_return)
 }
+
