@@ -11,12 +11,6 @@
 box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_plot){
   all_return <- NULL
   
-  if (is.null(spreadsheet$data)) { 
-    data_frame_read <- data_frame
-  } else {
-    data_frame_read <- get(spreadsheet$data[[1]]) # todo, work for different data frames in the same tab.
-  }
-  
   # we repeat for each row later in the plh_shiny function
   # for now, just get the data
   #spreadsheet <- testing_shiny
@@ -29,6 +23,13 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   values <- spreadsheet_parameters_values
   names <- spreadsheet_parameters_names
   spreadsheet_df <- data.frame(names, values)
+  
+  # get data frame
+  if (is.null(spreadsheet$data)) { 
+    data_frame_read <- data_frame
+  } else {
+    data_frame_read <- get(spreadsheet$data) # todo, work for different data frames in the same tab.
+  }
   
   #repeat for all variables like text, etc. so make into a function?
   text <- spreadsheet_finder(data = spreadsheet_df, "text ")
