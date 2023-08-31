@@ -1,3 +1,14 @@
+#' Title
+#'
+#' @param data_list todo
+#' @param spreadsheet_name todo
+#' @param d_box todo
+#' @param j todo
+#'
+#' @return todo
+#' @export
+#'
+#' @examples #todo
 tabbed_sheet <- function(data_list = data_list,
                          spreadsheet_name = data_list$contents$ID[[i]],
                          d_box,

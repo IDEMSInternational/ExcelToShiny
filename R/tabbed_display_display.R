@@ -1,3 +1,14 @@
+#' Title
+#'
+#' @param spreadsheet_ID_names todo
+#' @param data_list todo
+#' @param d_box todo
+#' @param q todo
+#'
+#' @return todo
+#' @export
+#'
+#' @examples #todo
 tabbed_display_display <- function(spreadsheet_ID_names, data_list, d_box, q = 1){
   ## --- Contents for 1st display tab --- ##
   spreadsheet_ID_name <- spreadsheet_ID_names[[q]] # for now

@@ -5,10 +5,10 @@
 #' @param loop 
 #' @param k 
 #'
-#' @return
+#' @return todo
 #' @export
 #'
-#' @examples
+#' @examples #todo
 display_contents <- function(contents1 = contents, data_frame, loop = NULL, k = 1){
   # Contents to display
   names_display <- contents1[["ID"]]

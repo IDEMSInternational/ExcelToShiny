@@ -8,9 +8,11 @@ source("functions_todo.R")
 #excel_template_shiny <- read_excel("~/GitHub/plhR/excel_template_shiny.xlsx",
 #                                   sheet = "demographics")
 
-data_l <- import_list("~/GitHub/plhR/excel_template_shiny.xlsx")
-our_data <- readRDS("srh_df.RDS")
+## Testing with WASH data
+data_l <- import_list("~/GitHub/plhR/WASH_shiny.xlsx")
+source("~/GitHub/WASH_serifat/WASH_setup.R")
 
+# Then actually running it!
 status = "primary"
 colour = "blue"
 data_list = data_l

@@ -15,6 +15,12 @@ display_contents(contents1 = contents, data_frame, loop = NULL, k = 1)
 
 \item{k}{}
 }
+\value{
+todo
+}
 \description{
 Title
+}
+\examples{
+#todo
 }
