@@ -27,7 +27,7 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   
   # Contents to display
   # TODO: hopefully works for multiple tab displays! :) 
-  display_box <- display_contents(contents1 = contents, data_frame = data_frame, k = which(data_list$contents$type == "Tabbed_display"))
+  display_box <- display_contents(data_frame = data_frame, contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
   # Populate items for the tabs ---
   # investigate my_tab_items[[4]]
   my_tab_items <- create_tab_items(data_list = data_list,

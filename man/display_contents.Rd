@@ -4,7 +4,13 @@
 \alias{display_contents}
 \title{Title}
 \usage{
-display_contents(contents1 = contents, data_frame, loop = NULL, k = 1)
+display_contents(
+  contents1 = contents,
+  data_frame,
+  data_list,
+  loop = NULL,
+  k = 1
+)
 }
 \arguments{
 \item{contents1}{}

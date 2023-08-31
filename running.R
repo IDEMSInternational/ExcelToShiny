@@ -15,8 +15,8 @@ source("~/GitHub/WASH_serifat/WASH_setup.R")
 # Then actually running it!
 status = "primary"
 colour = "blue"
-data_list = data_l
-data_frame = our_data
+#data_list = data_l
+#data_frame = our_data
 PLH_shiny(title = "Testing Shiny Dashboard",
           data_list = data_l,
           data_frame = our_data)

@@ -2,6 +2,7 @@
 #'
 #' @param contents1 
 #' @param data_frame 
+#' @param data_list
 #' @param loop 
 #' @param k 
 #'
@@ -9,7 +10,7 @@
 #' @export
 #'
 #' @examples #todo
-display_contents <- function(contents1 = contents, data_frame, loop = NULL, k = 1){
+display_contents <- function(contents1 = contents, data_frame, data_list, loop = NULL, k = 1){
   # Contents to display
   names_display <- contents1[["ID"]]
   
@@ -35,7 +36,7 @@ display_contents <- function(contents1 = contents, data_frame, loop = NULL, k = 
       k_orig <- dplyr::first(k)
       spreadsheet <- data_list[[names_display[[i]]]]
       # todo: can we have a tabbed display in a tabbed display - if so, looping it.
-      display_box[[i]] <- display_contents(contents1 = spreadsheet, data_frame = data_frame, loop = k_orig)
+      display_box[[i]] <- display_contents(contents1 = spreadsheet, data_frame = data_frame, data_list = data_list, loop = k_orig)
       k <- k[-1]
     }
   }
