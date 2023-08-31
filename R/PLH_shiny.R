@@ -43,17 +43,17 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
     } 
   }
-  sidebar_menu <- do.call(sidebarMenu, menu_items(data_list$contents))
+  sidebar_menu <- do.call(shinydashboard::sidebarMenu, menu_items(data_list$contents))
   # Set up UI -------------------------------------------------------
   ui <- shiny::fluidPage(
     shinyjs::useShinyjs(),
-    dashboardPage(
+    shinydashboard::dashboardPage(
       # 
       header = shinydashboard::dashboardHeader(title = paste(title, "Dashboard")),
       skin = colour,
       
       # todo: fix up this function to allow N items (rather than having to tell it how many)
-      sidebar = dashboardSidebar(sidebar_menu),
+      sidebar = shinydashboard::dashboardSidebar(sidebar_menu),
       
       shinydashboard::dashboardBody(
         #value input boxes
@@ -99,13 +99,13 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
     }
     for (j in which(data_list$contents$type == "Display")){
-      map(1:length(display_box[[j]]), .f = ~ display_sheet_table(j = j, i = .x))
-      map(1:length(display_box[[j]]), .f = ~ display_sheet_plot(j = j, i = .x))
+      purrr::map(1:length(display_box[[j]]), .f = ~ display_sheet_table(j = j, i = .x))
+      purrr::map(1:length(display_box[[j]]), .f = ~ display_sheet_plot(j = j, i = .x))
     }
     
     # The tab-display sheets ---------------------------------------------
-    if (nrow(data_list$contents %>% filter(type == "Tabbed_display")) > 0){
-      for (k in which(data_l$contents$type == "Tabbed_display")){
+    if (nrow(data_list$contents %>% dplyr::filter(type == "Tabbed_display")) > 0){
+      for (k in which(data_list$contents$type == "Tabbed_display")){
         tab_display_sheet_plot <- function(k = 4, j = 1, i){ # TODO fix for all tab 1_
           # instead of 1_ we want to say k_ really.
           return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[k]][[j]][[i]]$plot_obj}))
@@ -130,12 +130,12 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       return(output[[paste0("table", j)]] <- shiny::renderDataTable({datasetInput()}))
     }
     download_table <- function(j){
-      download_item <- downloadHandler(
+      download_item <- shiny::downloadHandler(
         filename = function() {
           paste(input[[paste0("dataset", j)]], ".csv", sep = "")
         },
         content = function(file) {
-          write.csv(datasetInput(), file, row.names = FALSE)
+          utils::write.csv(datasetInput(), file, row.names = FALSE)
         }
       )
       return(output[[paste0("downloadData", j)]] <- download_item)
@@ -154,12 +154,12 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
       # wrote a function to separate by comma that we don't use (see functions_todo?)
       # paste0 stuff to do demographics before, etc
       
-        datasetInput <- reactive({
+        datasetInput <- shiny::reactive({
           # TODO: look at switch for doing this for this situation
           # https://stackoverflow.com/questions/31538340/using-a-list-of-possible-values-in-a-switch-command
           switch(input[[paste0("dataset", j)]],
                  #hi)
-                 "Demographics Data" = get_data_download(data_to_download = data_list[[spreadsheet]] %>% filter(type == "Data"), i = 1))
+                 "Demographics Data" = get_data_download(data_to_download = data_list[[spreadsheet]] %>% dplyr::filter(type == "Data"), i = 1))
        })
 
       render_table(j = j)

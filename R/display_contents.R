@@ -15,10 +15,10 @@ display_contents <- function(contents1 = contents, data_frame, data_list, loop =
   names_display <- contents1[["ID"]]
   
   # Display type sheets ---
-  sheets_to_display <- contents1 %>% filter(type == "Display")
+  sheets_to_display <- contents1 %>% dplyr::filter(type == "Display")
   
   # Tabbed-display type sheets
-  sheets_to_td <- contents1 %>% filter(type == "Tabbed_display")
+  sheets_to_td <- contents1 %>% dplyr::filter(type == "Tabbed_display")
   
   # Display and tabbed display contents:
   display_box <- NULL

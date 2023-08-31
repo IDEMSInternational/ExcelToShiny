@@ -12,16 +12,16 @@ download_sheet <- function(data_list, spreadsheet_name, j = 1){
   # this is jth sheet on downloading data - does this work for multiple sheets?
   # what about multiple downloads on one page?
   spreadsheet <- data_list[[spreadsheet_name]]
-  data_label <- (spreadsheet %>% filter(type == "Data label"))$name
-  download_label <- (spreadsheet %>% filter(type == "Download label"))$name
-  data_names <- (spreadsheet %>% filter(type == "Data"))$name
+  data_label <- (spreadsheet %>% dplyr::filter(type == "Data label"))$name
+  download_label <- (spreadsheet %>% dplyr::filter(type == "Download label"))$name
+  data_names <- (spreadsheet %>% dplyr::filter(type == "Data"))$name
   
   # be able to edit choices, format (csv, etc), table name.
-  tab_item_objects <- fluidRow(
-    box(width = 6, selectInput(paste0("dataset", j), data_label, choices = data_names),
+  tab_item_objects <- shiny::fluidRow(
+    shinydashboard::box(width = 6, shiny::selectInput(paste0("dataset", j), data_label, choices = data_names),
         # Button
-        downloadButton(paste0("downloadData", j), download_label)),
-    fluidRow(box(width = 12, dataTableOutput(paste0("table", j))))
+        shiny::downloadButton(paste0("downloadData", j), download_label)),
+    shiny::fluidRow(box(width = 12, shiny::dataTableOutput(paste0("table", j))))
   )
   
   tab_item <- shinydashboard::tabItem(tabName = data_list$contents$ID[[j]],

@@ -16,7 +16,7 @@ tabbed_sheet <- function(data_list = data_list,
   
   # TODO: tabbed_sheet only works for display types at the moment!
   spreadsheet <- data_list[[spreadsheet_name]]
-  spreadsheet_display <- spreadsheet %>% filter(type == "Display")
+  spreadsheet_display <- spreadsheet %>% dplyr::filter(type == "Display")
   
   tab_panel_i <- NULL
   for (i in 1:nrow(spreadsheet_display)){

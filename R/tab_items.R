@@ -8,5 +8,5 @@
 #' @examples  #todo
 tab_items <- function(...) {
   lapply(..., shinydashboard:::tagAssert, class = "tab-pane")
-  div(class = "tab-content", ...)
+  shiny::div(class = "tab-content", ...)
 }

@@ -25,7 +25,7 @@ tabbed_display_display <- function(spreadsheet_ID_names, data_list, d_box, q = 1
   tab_item_objects <- NULL
   for (l in 1:max(spreadsheet_ID[["row"]])){
     row_l_set <- list()
-    row_l <- (spreadsheet_ID %>% filter(row == l))$name
+    row_l <- (spreadsheet_ID %>% dplyr::filter(row == l))$name
     k <- 1
     for (i in 1:length(d_box)){
       if (d_box[[i]]$ID %in% row_l){

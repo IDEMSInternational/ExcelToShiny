@@ -18,8 +18,8 @@ split_layout <- function(..., cellWidths = NULL, cellArgs = list()){
     cellWidths <- sprintf("%.3f%%", 100/count)
   }
   cellWidths <- rep(cellWidths, length.out = count)
-  cellWidths <- sapply(cellWidths, validateCssUnit)
-  do.call(tags$div, c(list(class = "shiny-split-layout"), 
+  cellWidths <- sapply(cellWidths, shiny::validateCssUnit)
+  do.call(shiny::tags$div, c(list(class = "shiny-split-layout"), 
                       attribs, mapply(children, cellWidths, FUN = function(x, 
                                                                            w) {
                         do.call(tags$div, c(list(style = sprintf("width: %s;", 
