@@ -116,8 +116,8 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
         #for (k in which(data_list$contents$type == "Tabbed_display")){
         # TODO: works for multiple tab displays?
         for (j in 1:length(display_box[[k]])){
-          map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_table(k = k, j = j, i = .x))
-          map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_plot(k = k, j = j, i = .x))
+          purrr::map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_table(k = k, j = j, i = .x))
+          purrr::map(1:length(display_box[[k]][[j]]), .f = ~ tab_display_sheet_plot(k = k, j = j, i = .x))
         }
       }
     }

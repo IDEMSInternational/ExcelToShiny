@@ -21,7 +21,7 @@ download_sheet <- function(data_list, spreadsheet_name, j = 1){
     shinydashboard::box(width = 6, shiny::selectInput(paste0("dataset", j), data_label, choices = data_names),
         # Button
         shiny::downloadButton(paste0("downloadData", j), download_label)),
-    shiny::fluidRow(box(width = 12, shiny::dataTableOutput(paste0("table", j))))
+    shiny::fluidRow(shinydashboard::box(width = 12, shiny::dataTableOutput(paste0("table", j))))
   )
   
   tab_item <- shinydashboard::tabItem(tabName = data_list$contents$ID[[j]],

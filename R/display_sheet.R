@@ -26,7 +26,7 @@ display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j 
   tab_item_objects <- NULL
   for (l in 1:max(spreadsheet[["row"]])){
     row_l_set <- list()
-    row_l <- (spreadsheet %>% filter(row == l))$name
+    row_l <- (spreadsheet %>% dplyr::filter(row == l))$name
     k <- 1
     for (i in 1:length(d_box)){
       if (d_box[[i]]$ID %in% row_l){
