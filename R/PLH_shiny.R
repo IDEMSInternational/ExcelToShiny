@@ -40,7 +40,11 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   if (!is.null(data_list$main_page)){
     spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type == "value_box")
     for (i in 1:nrow(spreadsheet_shiny_value_box)){
-      shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
+      if (nrow(spreadsheet_shiny_value_box) <= 4){
+        shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
+      } else {
+          shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name)
+      }
     } 
   }
   sidebar_menu <- do.call(shinydashboard::sidebarMenu, menu_items(data_list$contents))
