@@ -68,15 +68,14 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   
   type <- spreadsheet$type
   variable <- spreadsheet$variable
-  print("HH")
   if (type == "bar_table"){
-    return_object <- bar_table1(data = data_frame_read, variable = variable)
+    return_object <- bar_table(data = data_frame_read, variable = variable)
   } else if (type == "boxplot_table"){
     return_object <- boxplot_table(data = data_frame_read, variable = variable)
   } else if (type == "bar_freq"){
-    return_object <- bar_table1(data = data_frame_read, variable = variable)
+    return_object <- bar_table(data = data_frame_read, variable = variable)
   } else if (type == "bar_summary"){
-    return_object <- bar_table1(data = data_frame_read, variable = variable, type = "summary")
+    return_object <- bar_table(data = data_frame_read, variable = variable, type = "summary")
   } else if (type == "boxplot_freq"){
     return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "freq")
   } else if (type == "boxplot_summary"){

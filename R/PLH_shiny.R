@@ -81,7 +81,6 @@ PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from 
   server <- function(input, output) {
     # value boxes at the top of the thing --------------------------------
     if (!is.null(data_list$main_page)){
-      print("A")
       display_value_boxes <- function(i = 1){
         ID <- spreadsheet_shiny_value_box[i,]$name
         top_box <- top_value_boxes(data_frame = data_frame,

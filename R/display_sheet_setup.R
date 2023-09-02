@@ -31,6 +31,5 @@ display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop){
                                  label_plot = paste0(loop, "_plot_", j, "_", i))
     }
   }
-  #print(names(d_box[[1]]))
   return(d_box)
 }
