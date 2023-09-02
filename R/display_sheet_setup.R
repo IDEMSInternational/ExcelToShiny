@@ -10,7 +10,7 @@
 #' @examples #todo
 display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop){
   # read in 
-  spreadsheet_shiny_box <- spreadsheet_data %>% dplyr::filter(type %in% c("bar_table", "boxplot_table"))
+  spreadsheet_shiny_box <- spreadsheet_data %>% dplyr::filter(type %in% c("bar_table", "boxplot_table", "bar_freq", "bar_summary", "boxplot_freq", "boxplot_summary"))
   d_box <- NULL
   if (is.null(loop)){
     for (i in 1:nrow(spreadsheet_shiny_box)) {
@@ -31,6 +31,6 @@ display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop){
                                  label_plot = paste0(loop, "_plot_", j, "_", i))
     }
   }
-  print(names(d_box[[1]]))
+  #print(names(d_box[[1]]))
   return(d_box)
 }
