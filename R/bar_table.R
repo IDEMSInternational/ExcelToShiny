@@ -16,7 +16,7 @@ bar_table <- function(data, variable, type = c("freq", "summary")){
       table_to_return <- summary_table(data = data,
                                        factors = .data[[variable]],
                                        include_margins = TRUE,
-                                       replace = NULL) 
+                                       replace = NULL)
     } else {
       table_to_return <- data %>%
         dplyr::filter(!is.na(data[[variable]]))
@@ -25,6 +25,7 @@ bar_table <- function(data, variable, type = c("freq", "summary")){
                          SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
                          N = length(table_to_return[[variable]]))
     }
+
     plot_to_return <- plot_to_return +
       ggplot2::geom_histogram(data = data, ggplot2::aes(x = .data[[variable]]), stat = "count")  +
       viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
