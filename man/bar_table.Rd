@@ -4,9 +4,11 @@
 \alias{bar_table}
 \title{Creating box to be used in \code{PLH_shiny} function}
 \usage{
-bar_table(data, variable)
+bar_table(data, variable, type = c("freq", "summary"))
 }
 \value{
+Box for use in \code{Shiny}
+
 Box for use in \code{Shiny}
 }
 \description{
