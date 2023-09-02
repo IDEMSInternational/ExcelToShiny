@@ -1,11 +1,5 @@
 #' Creating box to be used in `PLH_shiny` function
 #'
-#'
-#' @return Box for use in `Shiny`
-#' @export
-#' Creating box to be used in `PLH_shiny` function
-#'
-#'
 #' @return Box for use in `Shiny`
 #' @export
 bar_table <- function(data, variable, type = c("freq", "summary")){
