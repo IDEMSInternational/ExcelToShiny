@@ -44,13 +44,16 @@ display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j 
                                              width = 10)
   }
   
+  main_page_info <- which(data_list[["contents"]][["ID"]] == spreadsheet_name)
+  main_page_info <- data_list[["contents"]][main_page_info,]
+  
   tab_item <- shinydashboard::tabItem(tabName = data_list$contents$ID[[j]],
                                       
                                       # Stuff for the top of the tab
                                       shiny::fluidRow(shiny::column(12,
                                                                     align = "center",
-                                                                    shinydashboard::box(shiny::splitLayout(shiny::h2(data_list$contents$name[[1]]), 
-                                                                                                           shiny::icon(data_list$contents$icon[[1]], "fa-6x"),
+                                                                    shinydashboard::box(shiny::splitLayout(shiny::h2(main_page_info$name), 
+                                                                                                           shiny::icon(main_page_info$icon, "fa-6x"),
                                                                                                            cellArgs = list(style = "vertical-align: top"), 
                                                                                                            cellWidths = c("80%", "20%")),
                                                                                         status = status,

@@ -17,7 +17,7 @@ status = "primary"
 colour = "blue"
 #data_list = data_l
 #data_frame = our_data
-PLH_shiny(title = "Testing Shiny Dashboard",
+PLH_shiny1(title = "Testing Shiny Dashboard",
           data_list = data_l,
           data_frame = our_data)
 
