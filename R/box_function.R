@@ -68,9 +68,17 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   
   type <- spreadsheet$type
   variable <- spreadsheet$variable
-  spreadsheet_filter <- spreadsheet$variable_value
-  if (!is.na(spreadsheet_filter)){
-    data_frame_read <- data_frame_read %>% filter(get(variable) %in% spreadsheet_filter)
+  filter_value <- spreadsheet$filter_value
+  filter_variable <- spreadsheet$filter_variable
+  if (!is.null(spreadsheet$filter_variable)){
+    if (!is.na(spreadsheet$filter_variable)){
+      if (!is.na(spreadsheet$filter_value)){
+        data_frame_read <- data_frame_read %>% filter(get(filter_variable) %in% filter_value)
+      } else {
+        warning("NA given for filter_value. Filtering to NA values.")
+        data_frame_read <- data_frame_read %>% filter(is.na(get(filter_variable)))
+      }
+    }
   }
   if (type == "bar_table"){
     return_object <- bar_table(data = data_frame_read, variable = variable)
