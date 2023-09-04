@@ -68,6 +68,10 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   
   type <- spreadsheet$type
   variable <- spreadsheet$variable
+  spreadsheet_filter <- spreadsheet$variable_value
+  if (!is.na(spreadsheet_filter)){
+    data_frame_read <- data_frame_read %>% filter(get(variable) %in% spreadsheet_filter)
+  }
   if (type == "bar_table"){
     return_object <- bar_table(data = data_frame_read, variable = variable)
   } else if (type == "boxplot_table"){

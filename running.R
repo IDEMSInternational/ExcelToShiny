@@ -11,6 +11,7 @@ source("functions_todo.R")
 ## Testing with WASH data
 data_l <- import_list("~/GitHub/plhR/WASH_shiny.xlsx")
 source("~/GitHub/WASH_serifat/WASH_setup.R")
+flow_checkin_data <- readRDS("C:/Users/lclem/OneDrive/Documents/GitHub/ParentText-data-analysis/R Code/flow_checkin_data.RDS")
 
 # Then actually running it!
 status = "primary"
