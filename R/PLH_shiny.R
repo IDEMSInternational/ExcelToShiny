@@ -9,7 +9,7 @@
 #' @return Shiny App
 #' @export
 #'
-PLH_shiny <- function (title, data_list, data_frame, colour = "blue", date_from = "2021-10-14"){
+PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14"){
   colour <- tolower(colour)
   if (colour == "blue") {
     status = "primary"

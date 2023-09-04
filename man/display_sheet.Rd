@@ -4,7 +4,14 @@
 \alias{display_sheet}
 \title{Title}
 \usage{
-display_sheet(data_list, spreadsheet_name, d_box, status, colour, j = 1)
+display_sheet(
+  data_list,
+  spreadsheet_name,
+  d_box,
+  status = "primary",
+  colour = "blue",
+  j = 1
+)
 }
 \arguments{
 \item{data_list}{todo}

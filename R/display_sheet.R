@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples #todo
-display_sheet <- function(data_list, spreadsheet_name, d_box, status, colour, j = 1){
+display_sheet <- function(data_list, spreadsheet_name, d_box, status = "primary", colour = "blue", j = 1){
   # Create the "div" for each row.
   # each row is stored in a list, split_row[[j]] (j = row)
   spreadsheet <- data_list[[spreadsheet_name]]

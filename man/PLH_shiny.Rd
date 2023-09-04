@@ -8,6 +8,7 @@ PLH_shiny(
   title,
   data_list,
   data_frame,
+  status = "primary",
   colour = "blue",
   date_from = "2021-10-14"
 )

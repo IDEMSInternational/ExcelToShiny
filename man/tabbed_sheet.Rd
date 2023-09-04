@@ -8,6 +8,8 @@ tabbed_sheet(
   data_list = data_list,
   spreadsheet_name = data_list$contents$ID[[i]],
   d_box,
+  status = "primary",
+  colour = "blue",
   j = 1
 )
 }

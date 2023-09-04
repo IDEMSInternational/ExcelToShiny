@@ -4,7 +4,13 @@
 \alias{download_sheet}
 \title{Title}
 \usage{
-download_sheet(data_list, spreadsheet_name, j = 1)
+download_sheet(
+  data_list,
+  spreadsheet_name,
+  status = "primary",
+  colour = "blue",
+  j = 1
+)
 }
 \arguments{
 \item{data_list}{todo}

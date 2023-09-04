@@ -12,6 +12,8 @@
 tabbed_sheet <- function(data_list = data_list,
                          spreadsheet_name = data_list$contents$ID[[i]],
                          d_box,
+                         status = "primary",
+                         colour = "blue",
                          j = 1){
   
   # TODO: tabbed_sheet only works for display types at the moment!

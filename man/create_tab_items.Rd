@@ -4,7 +4,7 @@
 \alias{create_tab_items}
 \title{Title}
 \usage{
-create_tab_items(data_list, d_box, status, colour)
+create_tab_items(data_list, d_box, status = "primary", colour = "blue")
 }
 \arguments{
 \item{data_list}{todo}

@@ -8,7 +8,7 @@
 #' @export
 #'
 #' @examples  #todo
-download_sheet <- function(data_list, spreadsheet_name, j = 1){
+download_sheet <- function(data_list, spreadsheet_name, status = "primary", colour = "blue", j = 1){
   # this is jth sheet on downloading data - does this work for multiple sheets?
   # what about multiple downloads on one page?
   spreadsheet <- data_list[[spreadsheet_name]]

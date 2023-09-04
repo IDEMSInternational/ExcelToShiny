@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples  #todo
-create_tab_items <- function(data_list, d_box, status, colour){
+create_tab_items <- function(data_list, d_box, status = "primary", colour = "blue"){
   my_tab_items <- NULL
   i_disp <- 1
   i_tb_disp <- 1
@@ -27,11 +27,15 @@ create_tab_items <- function(data_list, d_box, status, colour){
     } else if (data_list$contents$type[[i]] == "Download"){
       my_tab_items[[i]] <- download_sheet(data_list = data_list,
                                           spreadsheet_name = data_list$contents$ID[[i]],
+                                          status = status,
+                                          colour = colour,
                                           j = i)
     } else if (data_list$contents$type[[i]] == "Tabbed_display"){
       my_tab_items[[i]] <- tabbed_sheet(data_list = data_list,
                                         spreadsheet_name = data_list$contents$ID[[i]],
                                         d_box = d_box[[i]],
+                                        status = status,
+                                        colour = colour,
                                         j = i)
       
     }
