@@ -38,7 +38,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
   # value box for main page ---
   shiny_top_box_i <- NULL
   if (!is.null(data_list$main_page)){
-    spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type == "value_box")
+    spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type %in% c("value_box", "mean_box"))
     for (i in 1:nrow(spreadsheet_shiny_value_box)){
       if (nrow(spreadsheet_shiny_value_box) <= 4){
         shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))

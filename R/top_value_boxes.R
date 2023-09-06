@@ -35,7 +35,7 @@ top_value_boxes <- function(data_frame, spreadsheet, unique_ID){
       value <- nrow(data_frame)
     }
   } else {
-    value <- round((data %>% dplyr::summarise(mean = mean(.data[[variable]])))$mean, 2)
+    value <- round((data_frame %>% dplyr::summarise(mean = mean(.data[[variable]])))$mean, 2)
   }
     return(shinydashboard::valueBox(value, subtitle = text, icon = shiny::icon(icon_pic), color = colour))
 }
