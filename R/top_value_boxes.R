@@ -34,8 +34,16 @@ top_value_boxes <- function(data_frame, spreadsheet, unique_ID){
     } else {
       value <- nrow(data_frame)
     }
-  } else {
+  } else if (value_box_type == "mean_box"){
     value <- round((data_frame %>% dplyr::summarise(mean = mean(.data[[variable]], na.rm = TRUE)))$mean, 2)
+  } else {
+    mean_value <- round((data_frame %>% dplyr::summarise(mean = mean(.data[[variable]], na.rm = TRUE)))$mean, 2)
+    sd_value <- round((data_frame %>% dplyr::summarise(sd = sd(.data[[variable]], na.rm = TRUE)))$sd, 2)
+    value <- paste0(mean_value, " (", sd_value, ")")
   }
     return(shinydashboard::valueBox(value, subtitle = text, icon = shiny::icon(icon_pic), color = colour))
 }
+
+
+
+
