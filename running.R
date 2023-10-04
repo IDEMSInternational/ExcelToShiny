@@ -1,3 +1,6 @@
+
+# Template file to run PLHR changes.
+
 library(rio)
 library(plhR)
 library(readxl)
@@ -9,17 +12,21 @@ source("functions_todo.R")
 #                                   sheet = "demographics")
 
 ## Testing with WASH data
-data_l <- import_list("~/GitHub/plhR/WASH_shiny1.xlsx")
-source("~/GitHub/WASH_serifat/WASH_setup.R")
+data_l <- import_list("~/GitHub/plhR/WASH_shiny.xlsx")
+source("~/GitHub/WASH_serifat/WASH/WASH_setup.R")
 flow_checkin_data <- readRDS("C:/Users/lclem/OneDrive/Documents/GitHub/ParentText-data-analysis/R Code/flow_checkin_data.RDS")
+df <- readRDS("C:/Users/lclem/OneDrive/Documents/GitHub/ParentText-data-analysis/R Code/df.RDS")
 # Then actually running it!
-status = "primary"
-colour = "blue"
 #data_list = data_l
 #data_frame = our_data
-PLH_shiny(title = "Testing Shiny Dashboard",
+our_data <- our_data[1:489,]
+our_data <- bind_cols(df, our_data)
+
+PLH_shiny1(title = "Testing Shiny Dashboard",
           data_list = data_l,
-          data_frame = our_data)
+          data_frame = our_data,
+          status = "primary",
+          colour = "blue")
 
 # bar_table, box_function
 

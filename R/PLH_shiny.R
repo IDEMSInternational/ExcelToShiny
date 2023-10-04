@@ -125,13 +125,18 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       }
     }
 
-    
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv
     # `write`?
+    if (length(which(data_l$contents$type == "Download")) > 1){
+      warning("Use only one download tab. It will be implemented later to have multiple download tabs, but currently this is not available.")
+    }
+    
     render_table <- function(j = 1){
       return(output[[paste0("table", j)]] <- shiny::renderDataTable({datasetInput()}))
     }
+    
+    # only csv is accepted at the moment
     download_table <- function(j){
       download_item <- shiny::downloadHandler(
         filename = function() {
@@ -144,27 +149,21 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       return(output[[paste0("downloadData", j)]] <- download_item)
     }
     
+    datasets <- NULL
     for (j in which(data_list$contents$type == "Download")){
-      
       spreadsheet <- data_list$contents$ID[j]
-      # hi <- NULL
-      # for (i in 1:2){
-      #   hi[[i]] <- get_data_download(data_to_download = data_list[[spreadsheet]] %>% filter(type == "Data"), i = i)
-      # }
-      # names(hi) <- (data_list[[spreadsheet]] %>% filter(type == "Data"))$name
+      data_to_download <- data_list[[spreadsheet]] %>% dplyr::filter(type == "Data")
       
-      # hi[[1]], hi[[2]]
-      # wrote a function to separate by comma that we don't use (see functions_todo?)
-      # paste0 stuff to do demographics before, etc
-      
-        datasetInput <- shiny::reactive({
-          # TODO: look at switch for doing this for this situation
-          # https://stackoverflow.com/questions/31538340/using-a-list-of-possible-values-in-a-switch-command
-          switch(input[[paste0("dataset", j)]],
-                 #hi)
-                 "Demographics Data" = get_data_download(data_to_download = data_list[[spreadsheet]] %>% dplyr::filter(type == "Data"), i = 1))
-       })
+      # currently this overwrites by having two sheets to download - todo: fix up so we can have multiple downloaded pages. 
+      datasets[[j]] <- get_data_to_download(data_to_download)
 
+      # Define a reactive to select the dataset
+      datasetInput <- reactive({
+        selected_dataset <- datasets[[j]][[input[[paste0("dataset", j)]]]]
+        return(selected_dataset)
+      })
+      
+      # render table and downloadability
       render_table(j = j)
       download_table(j = j)
     }

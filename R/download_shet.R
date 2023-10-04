@@ -18,7 +18,10 @@ download_sheet <- function(data_list, spreadsheet_name, status = "primary", colo
   
   # be able to edit choices, format (csv, etc), table name.
   tab_item_objects <- shiny::fluidRow(
-    shinydashboard::box(width = 6, shiny::selectInput(paste0("dataset", j), data_label, choices = data_names),
+    shinydashboard::box(width = 6,
+                        shiny::selectInput(paste0("dataset", j),
+                                           data_label,
+                                           choices = data_names),
         # Button
         shiny::downloadButton(paste0("downloadData", j), download_label)),
     shiny::fluidRow(shinydashboard::box(width = 12, shiny::dataTableOutput(paste0("table", j))))
