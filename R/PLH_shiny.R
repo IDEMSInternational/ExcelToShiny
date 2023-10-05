@@ -38,6 +38,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
   # value box for main page ---
   shiny_top_box_i <- NULL
   if (!is.null(data_list$main_page)){
+    # value boxes
     spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type %in% c("value_box", "mean_box", "mean_sd_box"))
     for (i in 1:nrow(spreadsheet_shiny_value_box)){
       if (nrow(spreadsheet_shiny_value_box) <= 4){
@@ -46,6 +47,16 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name)
       }
     } 
+    
+    # checkbox filters
+    checkbox_data <- data_list$main_page %>% dplyr::filter(type %in% c("checkbox_group"))
+    if (nrow(checkbox_data) > 0) {
+      filter_on_main_page <- main_page_filter(spreadsheet = checkbox_data)
+    } else {
+      filter_on_main_page <- NULL
+    }
+  } else {
+    filter_on_main_page <- NULL
   }
   sidebar_menu <- do.call(shinydashboard::sidebarMenu, menu_items(data_list$contents))
   # Set up UI -------------------------------------------------------
@@ -65,13 +76,12 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         
         # tabs info
         shiny::column(6, align = "center",
-                      shinydashboard::box(width = NULL,
-                                          collapsible = FALSE,
-                                          solidHeader = TRUE,
-                                          shiny::splitLayout(shiny::textInput(inputId = "datefrom_text", 
-                                                                              label = "Date from:", value = date_from), 
-                                                             cellArgs = list(style = "vertical-align: top"),
-                                                             cellWidths = c("80%", "20%")))),
+                      filter_on_main_page
+                                          # shiny::splitLayout(shiny::textInput(inputId = "datefrom_text", 
+                                          #                                     label = "Date from:", value = date_from), 
+                                          #                    cellArgs = list(style = "vertical-align: top"),
+                                          #                    cellWidths = c("80%", "20%")))
+                      ),
         tab_items(my_tab_items)
         
       )
@@ -79,6 +89,9 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
   )
 
   server <- function(input, output) {
+    contents <- data_list$contents
+    display_content <- server_display_contents(data_frame = data_frame, contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
+    
     # value boxes at the top of the thing --------------------------------
     if (!is.null(data_list$main_page)){
       display_value_boxes <- function(i = 1){
@@ -96,10 +109,15 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     
     # The "display" sheets -----------------------------------------
     display_sheet_plot <- function(j = 1, i){
-      return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[j]][[i]]$plot_obj}))
+      return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({
+        display_content[[j]][[i]]$plot_obj
+        # TODO: create the plot object here
+        }))
     }
     display_sheet_table <- function(j = 1, i){
-      return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[j]][[i]]$table_obj)}, striped = TRUE))
+      return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(
+        display_content[[j]][[i]]$table_obj)}, striped = TRUE))
+      # TODO: create the table object here
     }
     for (j in which(data_list$contents$type == "Display")){
       purrr::map(1:length(display_box[[j]]), .f = ~ display_sheet_table(j = j, i = .x))
