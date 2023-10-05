@@ -129,10 +129,11 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       for (k in which(data_list$contents$type == "Tabbed_display")){
         tab_display_sheet_plot <- function(k = 4, j = 1, i){ # TODO fix for all tab 1_
           # instead of 1_ we want to say k_ really.
-          return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({display_box[[k]][[j]][[i]]$plot_obj}))
+          return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({
+            display_content[[k]][[j]][[i]]$plot_obj}))
         }
         tab_display_sheet_table <- function(k = 4, j = 1, i){
-          return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_box[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
+          return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_content[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
         }
         #for (k in which(data_list$contents$type == "Tabbed_display")){
         # TODO: works for multiple tab displays?
