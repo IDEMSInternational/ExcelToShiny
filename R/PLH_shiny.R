@@ -44,7 +44,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       if (nrow(spreadsheet_shiny_value_box) <= 4){
         shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
       } else {
-          shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name)
+        shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name)
       }
     } 
     
@@ -77,20 +77,45 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         # tabs info
         shiny::column(6, align = "center",
                       filter_on_main_page
-                                          # shiny::splitLayout(shiny::textInput(inputId = "datefrom_text", 
-                                          #                                     label = "Date from:", value = date_from), 
-                                          #                    cellArgs = list(style = "vertical-align: top"),
-                                          #                    cellWidths = c("80%", "20%")))
-                      ),
+                      # shiny::splitLayout(shiny::textInput(inputId = "datefrom_text", 
+                      #                                     label = "Date from:", value = date_from), 
+                      #                    cellArgs = list(style = "vertical-align: top"),
+                      #                    cellWidths = c("80%", "20%")))
+        ),
         tab_items(my_tab_items)
         
       )
     )
   )
-
+  
   server <- function(input, output) {
     contents <- data_list$contents
-    display_content <- server_display_contents(data_frame = data_frame, contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
+    
+    # main page - adding filters
+    
+    # todo: what about filtering other dfs, not the data_frame df.
+    # we create them before. What if they are summary data frames?
+    if (is.null(data_list$main_page)){
+      checkbox_group_filtered <- reactive({ data_frame })
+    } else {
+      checkbox_group_data <- (data_list$main_page %>% dplyr::filter(type == "checkbox_group"))
+      if (nrow(checkbox_group_data) > 0){
+        checkbox_group_filtered <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
+          variable <- checkbox_group_data$variable
+          name <- checkbox_group_data$name
+          filtered_data <- data_frame %>%
+            dplyr::filter(get(variable) %in% c((input[[name]])))  # Org = variable in the row,
+          return(filtered_data)
+        })
+      } else {
+        checkbox_group_filtered <- reactive({ data_frame })
+      }
+    }
+    
+    # what about filtering the other data frames though? 
+    display_content <- reactive({
+      server_display_contents(data_frame = checkbox_group_filtered(), contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
+    })
     
     # value boxes at the top of the thing --------------------------------
     if (!is.null(data_list$main_page)){
@@ -110,13 +135,12 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # The "display" sheets -----------------------------------------
     display_sheet_plot <- function(j = 1, i){
       return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({
-        display_content[[j]][[i]]$plot_obj
-        # TODO: create the plot object here
-        }))
+        display_content()[[j]][[i]]$plot_obj
+      }))
     }
     display_sheet_table <- function(j = 1, i){
       return(output[[paste0("table_", j, "_", i)]] <-  shiny::renderTable({(
-        display_content[[j]][[i]]$table_obj)}, striped = TRUE))
+        display_content()[[j]][[i]]$table_obj)}, striped = TRUE))
       # TODO: create the table object here
     }
     for (j in which(data_list$contents$type == "Display")){
@@ -130,10 +154,10 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         tab_display_sheet_plot <- function(k = 4, j = 1, i){ # TODO fix for all tab 1_
           # instead of 1_ we want to say k_ really.
           return(output[[paste0(k, "_plot_", j, "_", i)]] <- plotly::renderPlotly({
-            display_content[[k]][[j]][[i]]$plot_obj}))
+            display_content()[[k]][[j]][[i]]$plot_obj}))
         }
         tab_display_sheet_table <- function(k = 4, j = 1, i){
-          return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_content[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
+          return(output[[paste0(k, "_table_", j, "_", i)]] <-  shiny::renderTable({(display_content()[[k]][[j]][[i]]$table_obj)}, striped = TRUE))
         }
         #for (k in which(data_list$contents$type == "Tabbed_display")){
         # TODO: works for multiple tab displays?
@@ -143,7 +167,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         }
       }
     }
-
+    
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv
     # `write`?
@@ -175,7 +199,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       
       # currently this overwrites by having two sheets to download - todo: fix up so we can have multiple downloaded pages. 
       datasets[[j]] <- get_data_to_download(data_to_download)
-
+      
       # Define a reactive to select the dataset
       datasetInput <- reactive({
         selected_dataset <- datasets[[j]][[input[[paste0("dataset", j)]]]]
@@ -187,6 +211,6 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       download_table(j = j)
     }
     
-    }
+  }
   shiny::shinyApp(ui = ui, server = server)
 }

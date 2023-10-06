@@ -1,6 +1,8 @@
 # 
 # # Testing it out
 # 
+# 
+# 
 # spreadsheet <- data.frame(
 #   type = c("checkbox_group", "checkbox_group"),
 #   name = c("A", "B"), # ID
@@ -15,6 +17,7 @@
 # if (nrow(checkbox_group_data) > 1){
 #   checkbox_group_input(checkbox_group_data)
 # }
+# 
 # bb <- checkbox_group_input(checkbox_group_data)
 # identical(bb, aa)
 # 
@@ -37,7 +40,7 @@
 #   variable <- checkbox_group_data$variable
 #   name <- checkbox_group_data$name
 #   filtered_data <- data %>%
-#     dplyr::filter(variable %in% c((input[[paste0("checkbox", name)]])))  # Org = variable in the row, 
+#     dplyr::filter(variable %in% c((input[[paste0("checkbox", name)]])))  # Org = variable in the row,
 #   return(filtered_data)
 # })
 # # then we use checkbox_group_filtered instead of data in the rest of the places where we
@@ -49,7 +52,7 @@
 # 
 # 
 # 
-# # 
+# #
 # # checkbox_text_input <- function(inputId, spreadsheet){
 # #   return(box(width = 12,
 # #              checkboxInput(inputId = "select_cluster",
@@ -63,13 +66,13 @@
 # 
 # 
 # 
-# # If Checkbox  
+# # If Checkbox
 # observe({
 #   if(input$select_cluster){
 #     shinyjs::disable("opt_cluster")
 #   } else {
 #     shinyjs::enable("opt_cluster")
-#     
+# 
 #   }
 # })
 # 

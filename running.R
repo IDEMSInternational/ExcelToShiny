@@ -21,13 +21,37 @@ df <- readRDS("C:/Users/lclem/OneDrive/Documents/GitHub/ParentText-data-analysis
 #data_frame = our_data
 our_data <- our_data[1:489,]
 our_data <- bind_cols(df, our_data)
-#data_l$contents <- data_l$contents[1:3,]
+#data_l$main_page <- NULL #data_l$contents[1:3,]
 
 PLH_shiny1(title = "Testing Shiny Dashboard",
           data_list = data_l,
           data_frame = our_data,
           status = "primary",
           colour = "blue")
+
+
+
+
+
+# TODO: for when we put it into PLH_shiny
+checkbox_group_data <- (spreadsheet %>% filter(type == "checkbox_group"))
+if (nrow(checkbox_group_data) > 1){
+  checkbox_group_filtered <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
+    variable <- checkbox_group_data$variable
+    name <- checkbox_group_data$name
+    filtered_data <- data %>%
+      dplyr::filter(variable %in% c((input[[paste0("checkbox", name)]])))  # Org = variable in the row,
+    return(filtered_data)
+  })
+}
+
+
+# then we use checkbox_group_filtered instead of data in the rest of the places where we
+# curretnly use data_frame in the PLH_shiny server
+# and update the data in display_box?
+
+
+
 
 # bar_table, box_function
 
