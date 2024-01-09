@@ -171,7 +171,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv
     # `write`?
-    if (length(which(data_l$contents$type == "Download")) > 1){
+    if (length(which(data_list$contents$type == "Download")) > 1){
       warning("Use only one download tab. It will be implemented later to have multiple download tabs, but currently this is not available.")
     }
     
