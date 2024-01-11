@@ -9,7 +9,7 @@
 #' @return Shiny App
 #' @export
 #'
-PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14"){
+PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14", key_var = NULL){
   colour <- tolower(colour)
   if (colour == "blue") {
     status = "primary"
@@ -101,12 +101,31 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       checkbox_group_data <- (data_list$main_page %>% dplyr::filter(type == "checkbox_group"))
       if (nrow(checkbox_group_data) > 0){
         checkbox_group_filtered <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
+          filtered_data <- data_frame
           variable <- checkbox_group_data$variable
           name <- checkbox_group_data$name
-          filtered_data <- data_frame %>%
-            dplyr::filter(get(variable) %in% c((input[[name]])))  # Org = variable in the row,
+          for (i in 1:nrow(checkbox_group_data)){
+              current_var <- variable[[i]]
+              current_name <- input[[name[[i]]]]
+              
+              if (is.character(current_name)) {
+                # For character variables, use %in% for exact matching
+                filtered_data <- filtered_data %>% 
+                  filter(.data[[current_var]] %in% current_name)
+              } else if (is.numeric(current_name)) {
+                # For numeric variables, we'll assume they are exact values to match
+                filtered_data <- filtered_data %>%
+                  filter(.data[[current_var]] %in% current_name)
+              }
+          }
           return(filtered_data)
         })
+        # if (!is.null(key_var)){
+        #   valid_ids <- reactive({ 
+        #     checkbox_group_filtered() %>% dplyr::select({{ key_var }})
+        #   })
+        #   # for all other data frames, we need to filter to those poeple - ID %in% valid_ids
+        # }
       } else {
         checkbox_group_filtered <- reactive({ data_frame })
       }
@@ -119,18 +138,22 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     
     # value boxes at the top of the thing --------------------------------
     if (!is.null(data_list$main_page)){
-      display_value_boxes <- function(i = 1){
+      display_value_boxes_values <- function(i = 1){
         ID <- spreadsheet_shiny_value_box[i,]$name
-        top_box <- top_value_boxes(data_frame = data_frame,
+        top_box <- top_value_boxes(data_frame = checkbox_group_filtered(),
                                    spreadsheet = spreadsheet_shiny_value_box,
                                    unique_ID = ID)
-        
-        output[[ID]] <- shinydashboard::renderValueBox({ top_box })
+        return(top_box)
+      }
+      display_value_boxes <- function(i = i){
+        ID <- spreadsheet_shiny_value_box[i,]$name
+        output[[ID]] <- shinydashboard::renderValueBox({ display_value_boxes_values(i = i) })
       }
       for (i in 1:nrow(spreadsheet_shiny_value_box)) {
         display_value_boxes(i = i)
       }
     }
+    
     
     # The "display" sheets -----------------------------------------
     display_sheet_plot <- function(j = 1, i){

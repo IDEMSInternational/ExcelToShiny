@@ -22,13 +22,19 @@ df <- readRDS("C:/Users/lclem/OneDrive/Documents/GitHub/ParentText-data-analysis
 our_data <- our_data[1:489,]
 our_data <- bind_cols(df, our_data)
 #data_l$main_page <- NULL #data_l$contents[1:3,]
+our_data$ID <- our_data$id...1
 
+#data_l$main_page <- data_l$main_page %>% filter(type != "checkbox_group")
 PLH_shiny1(title = "Testing Shiny Dashboard",
           data_list = data_l,
           data_frame = our_data,
           status = "primary",
-          colour = "blue")
+          colour = "blue",
+          key_var = "ID") # currently only one key variable ok.
 
+# todo: build in that key_var determines updating other data frames. 
+# so we need to run through the other sheets, check names of other data frames, get those data frame names
+# and filter in them to ID == ... if it exists.
 
 
 
