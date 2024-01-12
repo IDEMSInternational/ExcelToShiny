@@ -20,7 +20,7 @@
 #' # Access table and plot objects from the result
 #' table_obj <- result$table_obj
 #' plot_obj <- result$plot_obj
-server_box_function <- function(data_frame, spreadsheet, unique_ID){
+server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reactives){
   all_return <- NULL
   spreadsheet <- spreadsheet %>% dplyr::filter(name == unique_ID)
   
@@ -28,7 +28,7 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID){
   if (is.null(spreadsheet$data)) { 
     data_frame_read <- data_frame
   } else {
-    data_frame_read <- get(spreadsheet$data) # todo, work for different data frames in the same tab.
+    data_frame_read <- list_of_reactives[[spreadsheet$data]]()
   }
   
   # we repeat for each row later in the plh_shiny function

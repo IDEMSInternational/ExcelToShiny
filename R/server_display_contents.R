@@ -25,7 +25,7 @@
 #'
 #' # Render the display boxes in your Shiny app UI
 #' shiny::uiOutput("display_boxes")
-server_display_contents <- function(contents1 = contents, data_frame, data_list, loop = NULL, k = 1){
+server_display_contents <- function(contents1 = contents, data_frame, data_list, loop = NULL, list_of_reactives, k = 1){
   # Contents to display
   names_display <- contents1[["ID"]]
   
@@ -45,13 +45,14 @@ server_display_contents <- function(contents1 = contents, data_frame, data_list,
       display_box[[i]] <- server_display_sheet_setup(spreadsheet_data = spreadsheet,
                                                      data_frame = data_frame,
                                                      j = i,
-                                                     loop = loop)
+                                                     loop = loop,
+                                                     list_of_reactives = list_of_reactives)
     }
     if (contents_type[[i]] == "Tabbed_display"){
       k_orig <- dplyr::first(k)
       spreadsheet <- data_list[[names_display[[i]]]]
       # todo: can we have a tabbed display in a tabbed display - if so, looping it.
-      display_box[[i]] <- server_display_contents(contents1 = spreadsheet, data_frame = data_frame, data_list = data_list, loop = k_orig)
+      display_box[[i]] <- server_display_contents(contents1 = spreadsheet, data_frame = data_frame, data_list = data_list, loop = k_orig, list_of_reactives = list_of_reactives)
       k <- k[-1]
     }
   }

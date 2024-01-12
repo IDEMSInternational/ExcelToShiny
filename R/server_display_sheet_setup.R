@@ -19,7 +19,7 @@
 #'
 #' # Render the display boxes in your Shiny app UI
 #' shiny::uiOutput("display_boxes")
-server_display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop){
+server_display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop, list_of_reactives){
   # read in 
   spreadsheet_shiny_server <- spreadsheet_data %>% dplyr::filter(type %in% c("bar_table", "boxplot_table", "bar_freq", "bar_summary", "boxplot_freq", "boxplot_summary"))
   s_box <- NULL
@@ -28,14 +28,16 @@ server_display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop){
       ID <- spreadsheet_shiny_server[i,]$name
       s_box[[i]] <- server_box_function(data_frame = data_frame, 
                                         spreadsheet = spreadsheet_data,
-                                        unique_ID = ID)
+                                        unique_ID = ID,
+                                        list_of_reactives = list_of_reactives)
     }
   } else {
     for (i in 1:nrow(spreadsheet_shiny_server)) {
       ID <- spreadsheet_shiny_server[i,]$name
       s_box[[i]] <- server_box_function(data_frame = data_frame, 
                                         spreadsheet = spreadsheet_data,
-                                        unique_ID = ID)
+                                        unique_ID = ID,
+                                        list_of_reactives = list_of_reactives)
     }
   }
   return(s_box)

@@ -90,6 +90,26 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
   
   server <- function(input, output) {
     contents <- data_list$contents
+    list_of_reactives <- NULL
+    
+    # run through the other sheets and get all data frame names
+    # then save them all as "name_1" to call later.
+    # this is for filtering purposes
+    complete_dfs <- NULL
+    list_of_df_names <- NULL
+    for (i in 1:length(data_list)){
+      data_l_dfs <- data_list[[i]]$data
+      if (!is.null(data_l_dfs)){
+        list_of_df_names[[i]] <- unique(data_l_dfs)
+      }
+    }
+    list_of_df_names <- unlist(list_of_df_names)
+    for (df_name in list_of_df_names){
+      new_name <- paste0(df_name, "_1")
+      stored_data <- get(df_name)
+      assign(new_name, stored_data, envir = environment())
+      complete_dfs[[paste0(df_name, "_1")]] <- get(paste0(df_name, "_1"))
+    }
     
     # main page - adding filters
     
@@ -120,20 +140,44 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           }
           return(filtered_data)
         })
-        # if (!is.null(key_var)){
-        #   valid_ids <- reactive({ 
-        #     checkbox_group_filtered() %>% dplyr::select({{ key_var }})
-        #   })
-        #   # for all other data frames, we need to filter to those poeple - ID %in% valid_ids
-        # }
+        if (!is.null(key_var)){
+          valid_ids <- reactive({
+            checkbox_group_filtered() %>% dplyr::pull({{ key_var }})
+          })
+          # for all other data frames, we need to filter to those poeple - ID %in% valid_ids
+          list_of_reactives<- NULL
+          last_df_name <- tail(list_of_df_names, 1)
+          for (df_name in list_of_df_names){
+            list_of_reactives[[df_name]] <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
+              # get(df_name)
+              # or complete_dfs[[df_name]]
+              complete_dfs[[paste0(df_name, "_1")]] %>% #complete_dfs[[df_name]] %>%
+                dplyr::filter(.data[[key_var]] %in% valid_ids())
+              #function_B(df_name, first_load = first_load())
+            })
+            
+            # put this in an event?
+            first_load <- reactive({
+              if (df_name == last_df_name) {
+                first_load <- FALSE
+              }
+            })
+            # count which number we're in of list_of_df_names
+            # if on the last one, set first_load <- FALSE
+          }
+        }
       } else {
         checkbox_group_filtered <- reactive({ data_frame })
       }
     }
     
-    # what about filtering the other data frames though? 
+    # display content is for displaying the content for where?
+    # event reactive?
     display_content <- reactive({
-      server_display_contents(data_frame = checkbox_group_filtered(), contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
+        server_display_contents(data_frame = checkbox_group_filtered(),
+                                 contents1 = contents, data_list = data_list,
+                                 k = which(data_list$contents$type == "Tabbed_display"),
+                                 list_of_reactives = list_of_reactives)
     })
     
     # value boxes at the top of the thing --------------------------------
