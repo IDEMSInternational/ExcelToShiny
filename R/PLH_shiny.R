@@ -145,25 +145,19 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
             checkbox_group_filtered() %>% dplyr::pull({{ key_var }})
           })
           # for all other data frames, we need to filter to those poeple - ID %in% valid_ids
-          list_of_reactives<- NULL
           last_df_name <- tail(list_of_df_names, 1)
           for (df_name in list_of_df_names){
             list_of_reactives[[df_name]] <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
               # get(df_name)
               # or complete_dfs[[df_name]]
-              complete_dfs[[paste0(df_name, "_1")]] %>% #complete_dfs[[df_name]] %>%
-                dplyr::filter(.data[[key_var]] %in% valid_ids())
-              #function_B(df_name, first_load = first_load())
-            })
-            
-            # put this in an event?
-            first_load <- reactive({
-              if (df_name == last_df_name) {
-                first_load <- FALSE
+              filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
+              if (key_var %in% names(filtered_data_frame)){
+                filtered_data_frame %>% #complete_dfs[[df_name]] %>%
+                  dplyr::filter(.data[[key_var]] %in% valid_ids())
+              } else {
+                filtered_data_frame
               }
             })
-            # count which number we're in of list_of_df_names
-            # if on the last one, set first_load <- FALSE
           }
         }
       } else {
