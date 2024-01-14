@@ -46,3 +46,7 @@ This is a basic example which shows you how to solve a common problem:
 library(plhR)
 ## basic example code
 ```
+
+## Set Up
+
+<img src='plh_shiny_setup.png' align="right" height="139"/>

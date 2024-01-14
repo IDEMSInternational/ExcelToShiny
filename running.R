@@ -23,6 +23,7 @@ our_data <- our_data[1:489,]
 our_data <- bind_cols(df, our_data)
 # data_l$main_page <- data_l$main_page %>% filter(type != "checkbox_group") #data_l$contents[1:3,]
 our_data$uuid <- our_data$id...1
+#flow_checkin_data$uuid <- NULL
 #our_data <- head(our_data)
 # data_l[[10]] <- NULL
 # data_l[[9]] <- NULL
@@ -33,6 +34,10 @@ PLH_shiny1(title = "Testing Shiny Dashboard",
           status = "primary",
           colour = "blue",
           key_var = "uuid") # currently only one key variable.
+
+# TODO have a "linked" column to accompany the data column in the spreadsheet data 
+# that column then means you link it with the key_var column (we can essentially just rename the linked col to be the key_var (e.g., "uuid") col in that df.)
+
 
 # need to fix up the filtering code.
 
