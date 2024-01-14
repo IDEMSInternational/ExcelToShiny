@@ -39,4 +39,4 @@ library(plhR)
 
 ## Set Up
 
-<img src='plh_shiny_setup.png' align="right" height="139"/>
+<img src='plh_shiny_setup.png' height="400"/>
