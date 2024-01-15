@@ -37,7 +37,7 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   variable <- spreadsheet$variable
   if (!variable %in% names(data_frame_read)) stop(paste0(variable, " not in data."))
   
-  type <- spreadsheet$type
+  value <- spreadsheet$value
   variable <- spreadsheet$variable
   filter_value <- spreadsheet$filter_value
   filter_variable <- spreadsheet$filter_variable
@@ -51,17 +51,17 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
       }
     }
   }
-  if (type == "bar_table"){
+  if (value == "bar_table"){
     return_object <- bar_table(data = data_frame_read, variable = variable)
-  } else if (type == "boxplot_table"){
+  } else if (value == "boxplot_table"){
     return_object <- boxplot_table(data = data_frame_read, variable = variable)
-  } else if (type == "bar_freq"){
+  } else if (value == "bar_freq"){
     return_object <- bar_table(data = data_frame_read, variable = variable)
-  } else if (type == "bar_summary"){
+  } else if (value == "bar_summary"){
     return_object <- bar_table(data = data_frame_read, variable = variable, type = "summary")
-  } else if (type == "boxplot_freq"){
+  } else if (value == "boxplot_freq"){
     return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "freq")
-  } else if (type == "boxplot_summary"){
+  } else if (value == "boxplot_summary"){
     return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "summary")
   }
   all_return[[1]] <- return_object[[1]]

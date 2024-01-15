@@ -21,7 +21,7 @@
 #' shiny::uiOutput("display_boxes")
 server_display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop, list_of_reactives){
   # read in 
-  spreadsheet_shiny_server <- spreadsheet_data %>% dplyr::filter(type %in% c("bar_table", "boxplot_table", "bar_freq", "bar_summary", "boxplot_freq", "boxplot_summary"))
+  spreadsheet_shiny_server <- spreadsheet_data %>% dplyr::filter(type %in% c("box"))
   s_box <- NULL
   if (is.null(loop)){
     for (i in 1:nrow(spreadsheet_shiny_server)) {
