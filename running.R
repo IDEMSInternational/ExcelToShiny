@@ -1,6 +1,4 @@
-
 # Template file to run PLHR changes.
-
 library(rio)
 library(plhR)
 library(readxl)
@@ -12,7 +10,7 @@ source("functions_todo.R")
 #                                   sheet = "demographics")
 
 ## Testing with WASH data
-data_l <- import_list("~/GitHub/plhR/WASH_shiny.xlsx")
+data_l <- import_list("~/GitHub/plhR/WASH_shiny1.xlsx")
 source("~/GitHub/WASH_serifat/WASH/WASH_setup.R")
 flow_checkin_data <- readRDS("C:/Users/lclem/OneDrive/Documents/GitHub/ParentText-data-analysis/R Code/flow_checkin_data.RDS")
 df <- readRDS("C:/Users/lclem/OneDrive/Documents/GitHub/ParentText-data-analysis/R Code/df.RDS")

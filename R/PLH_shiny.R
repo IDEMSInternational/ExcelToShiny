@@ -39,7 +39,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
   shiny_top_box_i <- NULL
   if (!is.null(data_list$main_page)){
     # value boxes
-    spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type %in% c("value_box", "mean_box", "mean_sd_box"))
+    spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type %in% c("value_box"))
     for (i in 1:nrow(spreadsheet_shiny_value_box)){
       if (nrow(spreadsheet_shiny_value_box) <= 4){
         shiny_top_box_i[[i]] <- shinydashboard::valueBoxOutput(spreadsheet_shiny_value_box[i,]$name, width = 12/nrow(spreadsheet_shiny_value_box))
@@ -49,7 +49,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     } 
     
     # checkbox filters
-    checkbox_data <- data_list$main_page %>% dplyr::filter(type %in% c("checkbox_group"))
+    checkbox_data <- data_list$main_page %>% dplyr::filter(type %in% c("filter_box"))
     if (nrow(checkbox_data) > 0) {
       filter_on_main_page <- main_page_filter(spreadsheet = checkbox_data)
     } else {
@@ -116,15 +116,15 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # todo: what about filtering other dfs, not the data_frame df.
     # we create them before. What if they are summary data frames?
     if (is.null(data_list$main_page)){
-      checkbox_group_filtered <- reactive({ data_frame })
+      filtered_data  <- reactive({ data_frame })
     } else {
-      checkbox_group_data <- (data_list$main_page %>% dplyr::filter(type == "checkbox_group"))
-      if (nrow(checkbox_group_data) > 0){
-        checkbox_group_filtered <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
+      filter_box_data <- (data_list$main_page %>% dplyr::filter(type == "filter_box"))
+      if (nrow(filter_box_data) > 0){
+        filtered_data  <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
           filtered_data <- data_frame
-          variable <- checkbox_group_data$variable
-          name <- checkbox_group_data$name
-          for (i in 1:nrow(checkbox_group_data)){
+          variable <- filter_box_data$variable
+          name <- filter_box_data$name
+          for (i in 1:nrow(filter_box_data)){
               current_var <- variable[[i]]
               current_name <- input[[name[[i]]]]
               
@@ -142,7 +142,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         })
         if (!is.null(key_var)){
           valid_ids <- reactive({
-            checkbox_group_filtered() %>% dplyr::pull({{ key_var }})
+            filtered_data () %>% dplyr::pull({{ key_var }})
           })
           # for all other data frames, we need to filter to those poeple - ID %in% valid_ids
           last_df_name <- tail(list_of_df_names, 1)
@@ -161,14 +161,14 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           }
         }
       } else {
-        checkbox_group_filtered <- reactive({ data_frame })
+        filtered_data  <- reactive({ data_frame })
       }
     }
     
     # display content is for displaying the content for where?
     # event reactive?
     display_content <- reactive({
-        server_display_contents(data_frame = checkbox_group_filtered(),
+        server_display_contents(data_frame = filtered_data (),
                                  contents1 = contents, data_list = data_list,
                                  k = which(data_list$contents$type == "Tabbed_display"),
                                  list_of_reactives = list_of_reactives)
@@ -178,7 +178,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     if (!is.null(data_list$main_page)){
       display_value_boxes_values <- function(i = 1){
         ID <- spreadsheet_shiny_value_box[i,]$name
-        top_box <- top_value_boxes(data_frame = checkbox_group_filtered(),
+        top_box <- top_value_boxes(data_frame = filtered_data (),
                                    spreadsheet = spreadsheet_shiny_value_box,
                                    unique_ID = ID)
         return(top_box)

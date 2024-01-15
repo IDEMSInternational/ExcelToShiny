@@ -33,7 +33,9 @@
 main_page_filter <- function(spreadsheet){
   # For the group input
   checkbox_group_input <- NULL
-  checkbox_group_data <- spreadsheet %>% dplyr::filter(type == "checkbox_group")
+  checkbox_group_data <- spreadsheet %>% dplyr::filter(type == "filter_box")
+  
+  # for value == "checkbox_group"
   if (nrow(checkbox_group_data) > 0){
     for (i in 1:nrow(checkbox_group_data)){
       checkbox_group_data_i <- checkbox_group_data[i,]
