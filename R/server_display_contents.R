@@ -42,6 +42,7 @@ server_display_contents <- function(contents1 = contents, data_frame, data_list,
   for (i in 1:nrow(contents1)){
     if (contents_type[[i]] == "Display"){
       spreadsheet <- data_list[[names_display[[i]]]]
+      # read our display tab/sheet into server_display_sheet_setup
       display_box[[i]] <- server_display_sheet_setup(spreadsheet_data = spreadsheet,
                                                      data_frame = data_frame,
                                                      j = i,

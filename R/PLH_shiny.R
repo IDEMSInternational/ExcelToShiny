@@ -119,11 +119,14 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       filtered_data  <- reactive({ data_frame })
     } else {
       filter_box_data <- (data_list$main_page %>% dplyr::filter(type == "filter_box"))
+      
+      # if we have filtering involved
       if (nrow(filter_box_data) > 0){
         filtered_data  <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
           filtered_data <- data_frame
           variable <- filter_box_data$variable
           name <- filter_box_data$name
+          # filter for each variable specified.
           for (i in 1:nrow(filter_box_data)){
               current_var <- variable[[i]]
               current_name <- input[[name[[i]]]]
@@ -142,23 +145,27 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         })
         if (!is.null(key_var)){
           valid_ids <- reactive({
-            filtered_data () %>% dplyr::pull({{ key_var }})
+            filtered_data() %>% dplyr::pull({{ key_var }})
           })
-          # for all other data frames, we need to filter to those poeple - ID %in% valid_ids
-          last_df_name <- tail(list_of_df_names, 1)
-          for (df_name in list_of_df_names){
-            list_of_reactives[[df_name]] <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
-              # get(df_name)
-              # or complete_dfs[[df_name]]
+          create_reactive_expression <- function(df_name, complete_dfs, key_var, valid_ids) {
+            force(df_name) # Force the evaluation of df_name
+            reactive({
               filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
               if (key_var %in% names(filtered_data_frame)){
-                filtered_data_frame %>% #complete_dfs[[df_name]] %>%
+                filtered_data_frame %>% 
                   dplyr::filter(.data[[key_var]] %in% valid_ids())
               } else {
                 filtered_data_frame
               }
+              return(filtered_data_frame)
             })
           }
+          
+          for (df_name in list_of_df_names) {
+            list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, key_var, valid_ids)
+          }
+        } else {
+          # TODO : what if there is no key?
         }
       } else {
         filtered_data  <- reactive({ data_frame })
@@ -167,8 +174,12 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     
     # display content is for displaying the content for where?
     # event reactive?
+    # Display content is a list containing all the content to display later
+    # We currently only run it for df and for our final item in list_of_reactives
     display_content <- reactive({
-        server_display_contents(data_frame = filtered_data (),
+      # TODO: we want this to display for ALL reactives
+      # so we want to repeat this for all reactives. 
+      server_display_contents(data_frame = filtered_data (),
                                  contents1 = contents, data_list = data_list,
                                  k = which(data_list$contents$type == "Tabbed_display"),
                                  list_of_reactives = list_of_reactives)

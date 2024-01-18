@@ -25,6 +25,7 @@ server_display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop, li
   s_box <- NULL
   if (is.null(loop)){
     for (i in 1:nrow(spreadsheet_shiny_server)) {
+      # for each row in my sheet, create a box containing information.
       ID <- spreadsheet_shiny_server[i,]$name
       s_box[[i]] <- server_box_function(data_frame = data_frame, 
                                         spreadsheet = spreadsheet_data,

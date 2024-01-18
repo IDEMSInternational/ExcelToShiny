@@ -24,7 +24,6 @@ top_value_boxes <- function(data_frame, spreadsheet, unique_ID){
   #if (!variable %in% names(data_frame)) stop(paste0(variable, " not in data."))
   variable_value <- spreadsheet$variable_value
   value_box_type <- spreadsheet$value
-  print("A")
   if (value_box_type == "value_box"){
     if (!is.na(spreadsheet$variable_value)){
       df_box <- summary_table(data_frame, factors = .data[[variable]], wider_table = TRUE, together = FALSE, naming_convention = FALSE)
