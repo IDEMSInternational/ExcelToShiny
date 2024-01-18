@@ -35,6 +35,8 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), summary_l
         dplyr::summarise(Median = round(median(table_to_return[[variable]], na.rm = TRUE), 2),
                          SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
                          N = length(table_to_return[[variable]]))
+      # something in summary_table not working for our numerical varirables
+      # need to fix this.
       # table_to_return <- summary_table(data = data,
       #                                  factors = .data[[variable]],
       #                                  summaries = summary_list,

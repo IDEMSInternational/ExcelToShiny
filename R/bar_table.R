@@ -2,7 +2,7 @@
 #'
 #' @return Box for use in `Shiny`
 #' @export
-bar_table <- function(data, variable, type = c("freq", "summary")){
+bar_table <- function(data, variable, type = c("freq", "summary"), summary_list){
   type <- match.arg(type)
   all_return <- NULL
   plot_to_return <- ggplot2::ggplot()
