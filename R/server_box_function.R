@@ -44,10 +44,10 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   if (!is.null(spreadsheet$filter_variable)){
     if (!is.na(spreadsheet$filter_variable)){
       if (!is.na(spreadsheet$filter_value)){
-        data_frame_read <- data_frame_read %>% filter(get(filter_variable) %in% filter_value)
+        data_frame_read <- data_frame_read %>% dplyr::filter(get(filter_variable) %in% filter_value)
       } else {
         warning("NA given for filter_value. Filtering to NA values.")
-        data_frame_read <- data_frame_read %>% filter(is.na(get(filter_variable)))
+        data_frame_read <- data_frame_read %>% dplyr::filter(is.na(get(filter_variable)))
       }
     }
   }
