@@ -8,7 +8,7 @@
 #'
 #' @return Box for use in `Shiny`
 #' @export
-boxplot_table <- function(data, variable, type = c("summary", "freq"), summary_list){
+boxplot_table <- function(data, variable, type = c("summary", "freq")){
   type <- match.arg(type)
   all_return <- NULL
   plot_to_return <- ggplot2::ggplot()
@@ -16,32 +16,19 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), summary_l
       ggplot2::geom_boxplot(data = data, ggplot2::aes(y = .data[[variable]])) +
       ggplot2::labs(x = "Count")
     
+    
     if (type == "freq"){
       table_to_return <- summary_table(data = data,
                                        factors = .data[[variable]],
-                                       summaries = "frequencies",
                                        include_margins = TRUE,
                                        replace = NULL) 
     } else {
-      if (is.null(summary_list)) {
-        summary_list <- "mean"
-      } else {
-        summary_list <- strsplit(summary_list, ", ")[[1]]
-      } 
-      
       table_to_return <- data %>%
         dplyr::filter(!is.na(data[[variable]]))
       table_to_return <- table_to_return %>%
-        dplyr::summarise(Median = round(median(table_to_return[[variable]], na.rm = TRUE), 2),
+        dplyr::summarise(Mean = round(mean(table_to_return[[variable]], na.rm = TRUE), 2),
                          SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
                          N = length(table_to_return[[variable]]))
-      # something in summary_table not working for our numerical varirables
-      # need to fix this.
-      # table_to_return <- summary_table(data = data,
-      #                                  factors = .data[[variable]],
-      #                                  summaries = summary_list,
-      #                                  include_margins = FALSE,
-      #                                  replace = NULL)
     }
     all_return[[1]] <- table_to_return
     all_return[[2]] <- plot_to_return
