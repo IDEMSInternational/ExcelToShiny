@@ -5,7 +5,7 @@
 #' @param data Data frame to calculate summaries from.
 #' @param factors List of factors to group by.
 #' @param columns_to_summarise Variables to summarise.
-#' @param summaries Types of summaries: "frequencies", "mean", "median", "sd", "min", "max".
+#' @param summaries Whether `frequencies` or `mean` summaries are calculated.
 #' @param replace String of values in the `columns_to_summarise` variable to remove in the table (before the value to keep).
 #' @param include_margins logical. Default `FALSE`. Whether to include margins.
 #' @param wider_table logical. Default `TRUE`. Whether to have a wider table if `summaries = "frequencies"`.
@@ -20,11 +20,12 @@
 #' @importFrom rlang .data
 #'
 #' @examples # TODO
-summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise = NULL,  summaries = c("frequencies", "mean", "median", "sd", "min", "max"),
+summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise = NULL, summaries = c("frequencies", "mean"),
                           replace = "rp.contact.field.", include_margins = FALSE, wider_table = TRUE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
                           together = TRUE, drop = FALSE){
-
+  summaries <- match.arg(summaries)
+  
   return_table <- summary_calculation(data = data,
                                       factors = c({{ factors }}),
                                       columns_to_summarise = c({{ columns_to_summarise }}),
@@ -48,17 +49,17 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
         title = paste(return_table_names[1], "by", return_table_names[2])  # fix up. 
       ) %>%
       gt::tab_style(locations = list(gt::cells_body(columns = 1)),
-                style = list(gt::cell_borders(
-                  sides = "right",
-                  color = "black",
-                  weight = gt::px(2)),
-                  gt::cell_text(weight = "bold"))) %>%
+                    style = list(gt::cell_borders(
+                      sides = "right",
+                      color = "black",
+                      weight = gt::px(2)),
+                      gt::cell_text(weight = "bold"))) %>%
       gt::tab_style(locations = list(gt::cells_column_labels(columns = gt::everything())),
-                style = list(gt::cell_borders( 
-                  sides = "bottom",
-                  color = "black",
-                  weight = gt::px(2)),
-                  gt::cell_text(weight = "bold")))
+                    style = list(gt::cell_borders( 
+                      sides = "bottom",
+                      color = "black",
+                      weight = gt::px(2)),
+                      gt::cell_text(weight = "bold")))
     #if (summaries == "mean"){
     #  names(return_table$`_data`) <- naming_conventions(names(return_table$`_data`), replace = replace)
     #}
