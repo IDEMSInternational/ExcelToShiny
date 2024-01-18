@@ -51,23 +51,21 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
       }
     }
   }
-  summary_list <- spreadsheet$summary_list
   if (value == "bar_table"){
-    return_object <- bar_table(data = data_frame_read, variable = variable, summary_list = summary_list)
+    return_object <- bar_table(data = data_frame_read, variable = variable)
   } else if (value == "boxplot_table"){
-    return_object <- boxplot_table(data = data_frame_read, variable = variable, summary_list = summary_list)
+    return_object <- boxplot_table(data = data_frame_read, variable = variable)
   } else if (value == "bar_freq"){
-    return_object <- bar_table(data = data_frame_read, variable = variable, summary_list = summary_list)
+    return_object <- bar_table(data = data_frame_read, variable = variable)
   } else if (value == "bar_summary"){
-    return_object <- bar_table(data = data_frame_read, variable = variable, type = "summary", summary_list = summary_list)
+    return_object <- bar_table(data = data_frame_read, variable = variable, type = "summary")
   } else if (value == "boxplot_freq"){
-    return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "freq", summary_list = summary_list)
+    return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "freq")
   } else if (value == "boxplot_summary"){
-    return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "summary", summary_list = summary_list)
+    return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "summary")
   }
   all_return[[1]] <- return_object[[1]]
   all_return[[2]] <- return_object[[2]]
   names(all_return) <- c("table_obj", "plot_obj")
   return(all_return)
 }
-
