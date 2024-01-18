@@ -26,7 +26,7 @@ boxplot_table <- function(data, variable, type = c("summary", "freq")){
       table_to_return <- data %>%
         dplyr::filter(!is.na(data[[variable]]))
       table_to_return <- table_to_return %>%
-        dplyr::summarise(Mean = round(mean(table_to_return[[variable]], na.rm = TRUE), 2),
+        dplyr::summarise(Median = round(median(table_to_return[[variable]], na.rm = TRUE), 2),
                          SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
                          N = length(table_to_return[[variable]]))
     }
