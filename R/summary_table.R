@@ -5,7 +5,7 @@
 #' @param data Data frame to calculate summaries from.
 #' @param factors List of factors to group by.
 #' @param columns_to_summarise Variables to summarise.
-#' @param summaries Whether `frequencies` or `mean` summaries are calculated.
+#' @param summaries Types of summaries: "frequencies", "mean", "median", "sd", "min", "max".
 #' @param replace String of values in the `columns_to_summarise` variable to remove in the table (before the value to keep).
 #' @param include_margins logical. Default `FALSE`. Whether to include margins.
 #' @param wider_table logical. Default `TRUE`. Whether to have a wider table if `summaries = "frequencies"`.
@@ -20,12 +20,11 @@
 #' @importFrom rlang .data
 #'
 #' @examples # TODO
-summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise = NULL, summaries = c("frequencies", "mean"),
+summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise = NULL,  summaries = c("frequencies", "mean", "median", "sd", "min", "max"),
                           replace = "rp.contact.field.", include_margins = FALSE, wider_table = TRUE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,
                           together = TRUE, drop = FALSE){
-  summaries <- match.arg(summaries)
-  
+
   return_table <- summary_calculation(data = data,
                                       factors = c({{ factors }}),
                                       columns_to_summarise = c({{ columns_to_summarise }}),

@@ -2,7 +2,7 @@
 #'
 #' @return Box for use in `Shiny`
 #' @export
-bar_table <- function(data, variable, type = c("freq", "summary")){
+bar_table <- function(data, variable, type = c("freq", "summary"), summary_list){
   type <- match.arg(type)
   all_return <- NULL
   plot_to_return <- ggplot2::ggplot()
@@ -15,15 +15,23 @@ bar_table <- function(data, variable, type = c("freq", "summary")){
     if (type == "freq"){
       table_to_return <- summary_table(data = data,
                                        factors = .data[[variable]],
+                                       summaries = "frequencies",
                                        include_margins = TRUE,
                                        replace = NULL)
     } else {
+      if (is.null(summary_list)) {
+        summary_list <- "mean"
+      } else {
+        summary_list <- strsplit(summary_list, ", ")[[1]]
+      } 
+      
       table_to_return <- data %>%
         dplyr::filter(!is.na(data[[variable]]))
-      table_to_return <- table_to_return %>%
-        dplyr::summarise(Mean = round(mean(table_to_return[[variable]], na.rm = TRUE), 2),
-                         SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
-                         N = length(table_to_return[[variable]]))
+      table_to_return <- summary_table(data = data,
+                                       factors = .data[[variable]],
+                                       summaries = summary_list,
+                                       include_margins = FALSE,
+                                       replace = NULL)
     }
 
     plot_to_return <- plot_to_return +
