@@ -26,7 +26,7 @@ top_value_boxes <- function(data_frame, spreadsheet, unique_ID){
   value_box_type <- spreadsheet$value
   if (value_box_type == "value_box"){
     if (!is.na(spreadsheet$variable_value)){
-      df_box <- summary_table(data_frame, factors = .data[[variable]], summaries = "frequencies", wider_table = TRUE, together = FALSE, naming_convention = FALSE)
+      df_box <- summary_table(data_frame, factors = .data[[variable]], wider_table = TRUE, together = FALSE, naming_convention = FALSE)
       df_box <- df_box %>% dplyr::mutate(group = .data[[variable]], count = n, .drop = FALSE) %>%
         dplyr::select(c(group, count))
       value <- (df_box %>% dplyr::filter(group == variable_value))$count
@@ -42,7 +42,3 @@ top_value_boxes <- function(data_frame, spreadsheet, unique_ID){
   }
     return(shinydashboard::valueBox(value, subtitle = text, icon = shiny::icon(icon_pic), color = colour))
 }
-
-
-
-
