@@ -49,17 +49,17 @@ summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_su
         title = paste(return_table_names[1], "by", return_table_names[2])  # fix up. 
       ) %>%
       gt::tab_style(locations = list(gt::cells_body(columns = 1)),
-                    style = list(gt::cell_borders(
-                      sides = "right",
-                      color = "black",
-                      weight = gt::px(2)),
-                      gt::cell_text(weight = "bold"))) %>%
+                style = list(gt::cell_borders(
+                  sides = "right",
+                  color = "black",
+                  weight = gt::px(2)),
+                  gt::cell_text(weight = "bold"))) %>%
       gt::tab_style(locations = list(gt::cells_column_labels(columns = gt::everything())),
-                    style = list(gt::cell_borders( 
-                      sides = "bottom",
-                      color = "black",
-                      weight = gt::px(2)),
-                      gt::cell_text(weight = "bold")))
+                style = list(gt::cell_borders( 
+                  sides = "bottom",
+                  color = "black",
+                  weight = gt::px(2)),
+                  gt::cell_text(weight = "bold")))
     #if (summaries == "mean"){
     #  names(return_table$`_data`) <- naming_conventions(names(return_table$`_data`), replace = replace)
     #}
