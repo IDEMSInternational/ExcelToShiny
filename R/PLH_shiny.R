@@ -185,11 +185,28 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
                                  list_of_reactives = list_of_reactives)
     })
     
+    # Function to process spreadsheet data
+    process_spreadsheet_function <- function(spreadsheet) {
+      spreadsheet_df <- spreadsheet %>%
+        dplyr::filter(type == "value_box") %>%
+        dplyr::select(name, parameter_list) %>%
+        # Separate the parameter_list into multiple rows
+        tidyr::separate_rows(parameter_list, sep = ",\\s*") %>%
+        # Extract parameter name and value
+        tidyr::separate(parameter_list, into = c("names", "values"), sep = "\\s*=\\s*") %>%
+        dplyr::mutate(values = stringr::str_remove_all(values, stringr::fixed("\"")))
+      return(spreadsheet_df)
+    }
+    
+    # Process spreadsheet data outside of the top_value_boxes function
+    processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
+    
     # value boxes at the top of the thing --------------------------------
     if (!is.null(data_list$main_page)){
       display_value_boxes_values <- function(i = 1){
         ID <- spreadsheet_shiny_value_box[i,]$name
-        top_box <- top_value_boxes(data_frame = filtered_data (),
+        top_box <- top_value_boxes(data_frame = filtered_data(),
+                                   processed_spreadsheet = processed_spreadsheet_data,
                                    spreadsheet = spreadsheet_shiny_value_box,
                                    unique_ID = ID)
         return(top_box)
@@ -202,6 +219,13 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         display_value_boxes(i = i)
       }
     }
+    
+    # output <- purrr::map(.x = spreadsheet_shiny_value_box$name,
+    #                      .f = ~ shinydashboard::renderValueBox(
+    #                        top_value_boxes1(data_frame = prefiltered_data,
+    #                                         spreadsheet = spreadsheet_shiny_value_box,
+    #                                         unique_ID = .x)))
+    # names(output) <- spreadsheet_shiny_value_box$name
     
     
     # The "display" sheets -----------------------------------------

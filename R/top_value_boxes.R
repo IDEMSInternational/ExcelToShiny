@@ -6,26 +6,21 @@
 #'
 #' @return Top value box for use in `Shiny`
 #' @export
-top_value_boxes <- function(data_frame, spreadsheet, unique_ID){
-  spreadsheet <- spreadsheet %>% dplyr::filter(name == unique_ID)
-  spreadsheet_parameters <- spreadsheet$parameter_list
-  spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, ", ", simplify = TRUE))
-  spreadsheet_parameters_names <- sub("\\= .*", "", spreadsheet_parameters)
-  spreadsheet_parameters_values <- gsub(".*= ", "", spreadsheet_parameters)
-  spreadsheet_parameters_values <- stringr::str_remove_all(spreadsheet_parameters_values, stringr::fixed("\""))
-  values <- spreadsheet_parameters_values
-  names <- spreadsheet_parameters_names
-  spreadsheet_df <- data.frame(names, values)
+top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, unique_ID){
   
-  text <- spreadsheet_finder(data = spreadsheet_df, "text ")
-  icon_pic <- spreadsheet_finder(data = spreadsheet_df, "icon ")
-  colour <- spreadsheet_finder(data = spreadsheet_df, "colour ")
-  variable <- spreadsheet$variable
-  #if (!variable %in% names(data_frame)) stop(paste0(variable, " not in data."))
-  variable_value <- spreadsheet$variable_value
-  value_box_type <- spreadsheet$value
+  # Extract the relevant row from the processed spreadsheet
+  spreadsheet_row <- spreadsheet %>% dplyr::filter(name == unique_ID)
+  processed_spreadsheet <- processed_spreadsheet %>% dplyr::filter(name == unique_ID)
+  
+  # Extract specific parameters
+  text <- spreadsheet_finder(data = processed_spreadsheet, "text")
+  icon_pic <- spreadsheet_finder(data = processed_spreadsheet, "icon")
+  colour <- spreadsheet_finder(data = processed_spreadsheet, "colour")
+  variable <- spreadsheet_row$variable
+  variable_value <- spreadsheet_row$variable_value
+  value_box_type <- spreadsheet_row$value
   if (value_box_type == "value_box"){
-    if (!is.na(spreadsheet$variable_value)){
+    if (!is.na(spreadsheet_row$variable_value)){
       df_box <- summary_table(data_frame, factors = .data[[variable]], wider_table = TRUE, together = FALSE, naming_convention = FALSE)
       df_box <- df_box %>% dplyr::mutate(group = .data[[variable]], count = n, .drop = FALSE) %>%
         dplyr::select(c(group, count))
@@ -40,5 +35,10 @@ top_value_boxes <- function(data_frame, spreadsheet, unique_ID){
     sd_value <- round((data_frame %>% dplyr::summarise(sd = sd(.data[[variable]], na.rm = TRUE)))$sd, 2)
     value <- paste0(mean_value, " (", sd_value, ")")
   }
-    return(shinydashboard::valueBox(value, subtitle = text, icon = shiny::icon(icon_pic), color = colour))
+  print("HELLLO")
+  print(value)
+  print(text)
+  print(icon_pic)
+  print(colour)
+  return(shinydashboard::valueBox(value, subtitle = text, icon = shiny::icon(icon_pic), color = colour))
 }
