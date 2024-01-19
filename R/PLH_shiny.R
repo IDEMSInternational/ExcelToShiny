@@ -197,37 +197,25 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         dplyr::mutate(values = stringr::str_remove_all(values, stringr::fixed("\"")))
       return(spreadsheet_df)
     }
-    
-    # Process spreadsheet data outside of the top_value_boxes function
-    processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
-    
+
     # value boxes at the top of the thing --------------------------------
-    if (!is.null(data_list$main_page)){
-      display_value_boxes_values <- function(i = 1){
-        ID <- spreadsheet_shiny_value_box[i,]$name
-        top_box <- top_value_boxes(data_frame = filtered_data(),
-                                   processed_spreadsheet = processed_spreadsheet_data,
-                                   spreadsheet = spreadsheet_shiny_value_box,
-                                   unique_ID = ID)
-        return(top_box)
-      }
-      display_value_boxes <- function(i = i){
-        ID <- spreadsheet_shiny_value_box[i,]$name
-        output[[ID]] <- shinydashboard::renderValueBox({ display_value_boxes_values(i = i) })
-      }
-      for (i in 1:nrow(spreadsheet_shiny_value_box)) {
-        display_value_boxes(i = i)
-      }
+    if (!is.null(spreadsheet_shiny_value_box)){
+      # Process spreadsheet data outside of the top_value_boxes function
+      processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
+      
+      observe({
+        # running for changed elements.
+        lapply(seq_len(length(unique(spreadsheet_shiny_value_box$name))), function(i) {
+          ID <- spreadsheet_shiny_value_box[i,]$name
+          top_box <- top_value_boxes(data_frame = filtered_data(),
+                                     spreadsheet = spreadsheet_shiny_value_box,
+                                     processed_spreadsheet = processed_spreadsheet_data,
+                                     unique_ID = ID)
+          output[[ID]] <- shinydashboard::renderValueBox(top_box)
+        })
+      })
     }
-    
-    # output <- purrr::map(.x = spreadsheet_shiny_value_box$name,
-    #                      .f = ~ shinydashboard::renderValueBox(
-    #                        top_value_boxes1(data_frame = prefiltered_data,
-    #                                         spreadsheet = spreadsheet_shiny_value_box,
-    #                                         unique_ID = .x)))
-    # names(output) <- spreadsheet_shiny_value_box$name
-    
-    
+
     # The "display" sheets -----------------------------------------
     display_sheet_plot <- function(j = 1, i){
       return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({

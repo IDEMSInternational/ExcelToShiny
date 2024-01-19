@@ -19,6 +19,7 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
   variable <- spreadsheet_row$variable
   variable_value <- spreadsheet_row$variable_value
   value_box_type <- spreadsheet_row$value
+  
   if (value_box_type == "value_box"){
     if (!is.na(spreadsheet_row$variable_value)){
       df_box <- summary_table(data_frame, factors = .data[[variable]], wider_table = TRUE, together = FALSE, naming_convention = FALSE)
@@ -35,10 +36,5 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
     sd_value <- round((data_frame %>% dplyr::summarise(sd = sd(.data[[variable]], na.rm = TRUE)))$sd, 2)
     value <- paste0(mean_value, " (", sd_value, ")")
   }
-  print("HELLLO")
-  print(value)
-  print(text)
-  print(icon_pic)
-  print(colour)
   return(shinydashboard::valueBox(value, subtitle = text, icon = shiny::icon(icon_pic), color = colour))
 }
