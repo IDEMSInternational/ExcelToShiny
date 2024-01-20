@@ -191,7 +191,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # We currently only run it for df and for our final item in list_of_reactives
     tab_names <- data_list$contents$ID
     display_content <- reactiveVal()
-    observeEvent(input$tab, {
+    observeEvent(c(input$tab, ifelse(input$goButton_group == 0, 1, input$goButton_group)), {
       display_content_by_tab(input$tab)
     })
     
