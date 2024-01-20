@@ -4,7 +4,7 @@
 \alias{top_value_boxes}
 \title{Creating top value box to be used in \code{PLH_shiny} function}
 \usage{
-top_value_boxes(data_frame, spreadsheet, unique_ID)
+top_value_boxes(data_frame, spreadsheet, processed_spreadsheet, unique_ID)
 }
 \arguments{
 \item{data_frame}{Data frame that contains the data to analyse.}

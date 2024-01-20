@@ -2,7 +2,7 @@
 % Please edit documentation in R/PLH_shiny.R
 \name{PLH_shiny}
 \alias{PLH_shiny}
-\title{Function to create Shiny}
+\title{PLH SHINY FUNCTION - exploring using observe() and lazy load.}
 \usage{
 PLH_shiny(
   title,
@@ -10,7 +10,8 @@ PLH_shiny(
   data_frame,
   status = "primary",
   colour = "blue",
-  date_from = "2021-10-14"
+  date_from = "2021-10-14",
+  key_var = NULL
 )
 }
 \arguments{

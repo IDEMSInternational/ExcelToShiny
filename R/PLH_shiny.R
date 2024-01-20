@@ -1,3 +1,6 @@
+#' PLH SHINY FUNCTION - exploring using observe() and lazy load.
+#'
+#'
 #' Function to create Shiny
 #'
 #' @param title Title of the dashboard.
@@ -58,7 +61,18 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
   } else {
     filter_on_main_page <- NULL
   }
-  sidebar_menu <- do.call(shinydashboard::sidebarMenu, menu_items(data_list$contents))
+  
+  
+  # Assuming menu_items(data_list$contents) returns a list of menuItem objects
+  menu_items_list <- menu_items(data_list$contents)
+  
+  # Add the 'id' to the list of arguments
+  args <- c(list(id = "tab"), menu_items_list)
+  
+  # Create the sidebar menu with do.call
+  sidebar_menu <- do.call(shinydashboard::sidebarMenu, args)
+  
+  #sidebar_menu <- do.call(shinydashboard::sidebarMenu, menu_items(data_list$contents))
   # Set up UI -------------------------------------------------------
   ui <- shiny::fluidPage(
     shinyjs::useShinyjs(),
@@ -112,34 +126,33 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     }
     
     # main page - adding filters
+    filtered_data  <- reactive({ data_frame })
     
     # todo: what about filtering other dfs, not the data_frame df.
     # we create them before. What if they are summary data frames?
-    if (is.null(data_list$main_page)){
-      filtered_data  <- reactive({ data_frame })
-    } else {
+    if (!is.null(data_list$main_page)){
       filter_box_data <- (data_list$main_page %>% dplyr::filter(type == "filter_box"))
       
       # if we have filtering involved
       if (nrow(filter_box_data) > 0){
-        filtered_data  <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
+        filtered_data <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
           filtered_data <- data_frame
           variable <- filter_box_data$variable
           name <- filter_box_data$name
           # filter for each variable specified.
           for (i in 1:nrow(filter_box_data)){
-              current_var <- variable[[i]]
-              current_name <- input[[name[[i]]]]
-              
-              if (is.character(current_name)) {
-                # For character variables, use %in% for exact matching
-                filtered_data <- filtered_data %>% 
-                  filter(.data[[current_var]] %in% current_name)
-              } else if (is.numeric(current_name)) {
-                # For numeric variables, we'll assume they are exact values to match
-                filtered_data <- filtered_data %>%
-                  filter(.data[[current_var]] %in% current_name)
-              }
+            current_var <- variable[[i]]
+            current_name <- input[[name[[i]]]]
+            
+            if (is.character(current_name)) {
+              # For character variables, use %in% for exact matching
+              filtered_data <- filtered_data %>% 
+                filter(.data[[current_var]] %in% current_name)
+            } else if (is.numeric(current_name)) {
+              # For numeric variables, we'll assume they are exact values to match
+              filtered_data <- filtered_data %>%
+                filter(.data[[current_var]] %in% current_name)
+            }
           }
           return(filtered_data)
         })
@@ -176,14 +189,23 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # event reactive?
     # Display content is a list containing all the content to display later
     # We currently only run it for df and for our final item in list_of_reactives
-    display_content <- reactive({
-      # TODO: we want this to display for ALL reactives
-      # so we want to repeat this for all reactives. 
-      server_display_contents(data_frame = filtered_data (),
-                                 contents1 = contents, data_list = data_list,
-                                 k = which(data_list$contents$type == "Tabbed_display"),
-                                 list_of_reactives = list_of_reactives)
+    tab_names <- data_list$contents$ID
+    display_content <- reactiveVal()
+    observeEvent(input$tab, {
+      display_content_by_tab(input$tab)
     })
+    
+    display_content_by_tab <- function(tab_name){
+      # Check if the current tab matches the given tab name
+      if (input$tab == tab_name) {
+        # Code to generate content for the current tab
+        display_content(server_display_contents(data_frame = filtered_data(),
+                                                 contents1 = contents, data_list = data_list,
+                                                 k = which(data_list$contents$type == "Tabbed_display"),
+                                                 id_name = tab_name,
+                                                 list_of_reactives = list_of_reactives))
+      }
+    }
     
     # Function to process spreadsheet data
     process_spreadsheet_function <- function(spreadsheet) {
@@ -197,13 +219,13 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         dplyr::mutate(values = stringr::str_remove_all(values, stringr::fixed("\"")))
       return(spreadsheet_df)
     }
-
+    
     # value boxes at the top of the thing --------------------------------
     if (!is.null(spreadsheet_shiny_value_box)){
       # Process spreadsheet data outside of the top_value_boxes function
       processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
       
-      observe({
+      observe({ # observeEvent - this should occur when filtered_data() is updated
         # running for changed elements.
         lapply(seq_len(length(unique(spreadsheet_shiny_value_box$name))), function(i) {
           ID <- spreadsheet_shiny_value_box[i,]$name
@@ -215,7 +237,12 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         })
       })
     }
-
+    
+    
+    # blanking these out: Then it runs right away (because we're not running the tables stuff?)
+    # Keeping these in: it runs right away (because we're not running the tables stuff?)
+    # if it takes X minutes per person, then ...
+    
     # The "display" sheets -----------------------------------------
     display_sheet_plot <- function(j = 1, i){
       return(output[[paste0("plot_", j, "_", i)]] <- plotly::renderPlotly({

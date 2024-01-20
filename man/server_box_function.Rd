@@ -4,7 +4,7 @@
 \alias{server_box_function}
 \title{Server Box Function}
 \usage{
-server_box_function(data_frame, spreadsheet, unique_ID)
+server_box_function(data_frame, spreadsheet, unique_ID, list_of_reactives)
 }
 \arguments{
 \item{data_frame}{The data frame used for generating box plots and frequency tables.}

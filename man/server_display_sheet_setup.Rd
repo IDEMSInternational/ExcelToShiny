@@ -4,7 +4,13 @@
 \alias{server_display_sheet_setup}
 \title{Server Display Sheet Setup}
 \usage{
-server_display_sheet_setup(spreadsheet_data, data_frame, j, loop)
+server_display_sheet_setup(
+  spreadsheet_data,
+  data_frame,
+  j,
+  loop,
+  list_of_reactives
+)
 }
 \arguments{
 \item{spreadsheet_data}{A data frame containing spreadsheet data.}
