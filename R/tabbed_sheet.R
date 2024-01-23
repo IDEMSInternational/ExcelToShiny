@@ -16,8 +16,9 @@ tabbed_sheet <- function(data_list = data_list,
                          colour = "blue",
                          j = 1){
   
-  # TODO: tabbed_sheet only works for display types at the moment!
   spreadsheet <- data_list[[spreadsheet_name]]
+
+  # TODO: tabbed_sheet only works for display types at the moment!
   spreadsheet_display <- spreadsheet %>% dplyr::filter(type == "Display")
   
   tab_panel_i <- NULL
@@ -25,12 +26,13 @@ tabbed_sheet <- function(data_list = data_list,
     tab_item_objects <- tabbed_display_display(spreadsheet_ID_names = spreadsheet_display[["ID"]],
                                                data_list = data_list,
                                                d_box = d_box,
-                                               q = i) # q = 1 then 2. 
+                                               q = i) # q = 1 then 2.
     tab_panel_i[[i]] <- shiny::tabPanel(spreadsheet_display[["name"]][[i]],
-                                        tab_item_objects
+                                        tab_item_objects,
+                                        value = spreadsheet_display[["ID"]][[i]]
     ) 
   }
-  
+    
   for (i in 1:length(tab_panel_i)){
     tab_panel_i[[i]]
   }
@@ -38,9 +40,11 @@ tabbed_sheet <- function(data_list = data_list,
   main_page_info <- which(data_list[["contents"]][["ID"]] == spreadsheet_name)
   main_page_info <- data_list[["contents"]][main_page_info,]
   
-  # assuming only two tab items
-  tab_panel_items <- do.call(shiny::tabsetPanel, tab_panel_i)
+  # Create the tabset panel with do.call
+  args <- c(list(id = paste0("tab_panel_", j)), tab_panel_i)
+  tab_panel_items <- do.call(shiny::tabsetPanel, args)
   
+  # tab item
   tab_item <- shinydashboard::tabItem(tabName = data_list$contents$ID[[j]],
                                       shiny::fluidRow(shiny::column(12,
                                                                     align = "center",
