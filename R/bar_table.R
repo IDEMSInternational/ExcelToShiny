@@ -14,14 +14,14 @@ bar_table <- function(data, variable, type = c("freq", "summary")) {
   
   # Refactor the histogram plotting into a separate function
   create_histogram_plot <- function(data, variable) {
-    ggplot2::ggplot(data, ggplot2::aes(x = all_of(variable))) +
+    ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]])) +
       ggplot2::geom_histogram(stat = "count") +
       viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
       ggplot2::labs(y = "Count", x = naming_conventions(variable))
   }
   
   if (type == "freq") {
-    all_return$table <- summary_table(data = data, factors = all_of(variable), include_margins = FALSE)
+    all_return$table <- summary_table(data = data, factors = .data[[variable]], include_margins = FALSE)
     all_return$plot <- create_histogram_plot(data, variable)
   } else {
     table_data <- dplyr::filter(data, !is.na(data[[variable]]))
