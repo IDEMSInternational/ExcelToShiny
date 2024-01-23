@@ -20,52 +20,51 @@
 #' # Access table and plot objects from the result
 #' table_obj <- result$table_obj
 #' plot_obj <- result$plot_obj
-server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reactives){
-  all_return <- NULL
-  spreadsheet <- spreadsheet %>% dplyr::filter(name == unique_ID)
+server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reactives) {
+  # Initial Checks for validity of input parameters
+  if (!exists("data_frame") || !exists("spreadsheet") || is.null(unique_ID) || !exists("list_of_reactives")) {
+    stop("Invalid input parameters")
+  }
+  
+  # Filter spreadsheet data once at the start
+  filtered_spreadsheet <- dplyr::filter(spreadsheet, name == unique_ID)
+  
+  # Check if the spreadsheet data is empty after filtering
+  if (nrow(filtered_spreadsheet) == 0) {
+    warning("No data found for the provided unique_ID")
+    return(NULL)
+  }
   
   # get data frame
-  if (is.null(spreadsheet$data)) { 
-    data_frame_read <- data_frame
-  } else {
-    data_frame_read <- list_of_reactives[[spreadsheet$data]]()
+  data_frame_read <- if (is.null(filtered_spreadsheet$data)) data_frame else list_of_reactives[[filtered_spreadsheet$data]]()
+  
+  # Check if variable exists in data_frame_read
+  variable <- filtered_spreadsheet$variable
+  if (!variable %in% names(data_frame_read)) {
+    stop(paste0(variable, " not in data."))
   }
   
-  # we repeat for each row later in the plh_shiny function
-  # for now, just get the data
-  #spreadsheet <- testing_shiny
-  variable <- spreadsheet$variable
-  if (!variable %in% names(data_frame_read)) stop(paste0(variable, " not in data."))
+  # Refactor repeated code using a mapping strategy
+  value_function_map <- list(
+    bar_table = function() bar_table1(data = data_frame_read, variable = variable),
+    boxplot_table = function() boxplot_table(data = data_frame_read, variable = variable),
+    bar_freq = function() bar_table1(data = data_frame_read, variable = variable),
+    bar_summary = function() bar_table1(data = data_frame_read, variable = variable, type = "summary"),
+    boxplot_freq = function() boxplot_table(data = data_frame_read, variable = variable, type = "freq"),
+    boxplot_summary = function() boxplot_table(data = data_frame_read, variable = variable, type = "summary")
+  )
   
-  value <- spreadsheet$value
-  variable <- spreadsheet$variable
-  filter_value <- spreadsheet$filter_value
-  filter_variable <- spreadsheet$filter_variable
-  if (!is.null(spreadsheet$filter_variable)){
-    if (!is.na(spreadsheet$filter_variable)){
-      if (!is.na(spreadsheet$filter_value)){
-        data_frame_read <- data_frame_read %>% dplyr::filter(get(filter_variable) %in% filter_value)
-      } else {
-        warning("NA given for filter_value. Filtering to NA values.")
-        data_frame_read <- data_frame_read %>% dplyr::filter(is.na(get(filter_variable)))
-      }
-    }
+  # Execute the appropriate function based on the 'value'
+  value <- filtered_spreadsheet$value
+  if (!value %in% names(value_function_map)) {
+    stop("Invalid value type.")
   }
-  if (value == "bar_table"){
-    return_object <- bar_table(data = data_frame_read, variable = variable)
-  } else if (value == "boxplot_table"){
-    return_object <- boxplot_table(data = data_frame_read, variable = variable)
-  } else if (value == "bar_freq"){
-    return_object <- bar_table(data = data_frame_read, variable = variable)
-  } else if (value == "bar_summary"){
-    return_object <- bar_table(data = data_frame_read, variable = variable, type = "summary")
-  } else if (value == "boxplot_freq"){
-    return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "freq")
-  } else if (value == "boxplot_summary"){
-    return_object <- boxplot_table(data = data_frame_read, variable = variable, type = "summary")
-  }
-  all_return[[1]] <- return_object[[1]]
-  all_return[[2]] <- return_object[[2]]
-  names(all_return) <- c("table_obj", "plot_obj")
+  return_object <- value_function_map[[value]]()
+  
+  # Initialize all_return with named elements
+  all_return <- list(table_obj = NULL, plot_obj = NULL)
+  all_return$table_obj <- return_object[[1]]
+  all_return$plot_obj <- return_object[[2]]
+  
   return(all_return)
 }

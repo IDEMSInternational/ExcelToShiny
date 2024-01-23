@@ -2,36 +2,35 @@
 #'
 #' @return Box for use in `Shiny`
 #' @export
-bar_table <- function(data, variable, type = c("freq", "summary")){
+bar_table <- function(data, variable, type = c("freq", "summary")) {
   type <- match.arg(type)
-  all_return <- NULL
-  plot_to_return <- ggplot2::ggplot()
-  if (class(data) == "list"){
-    all_return[[1]] <- data[[variable]]
-    all_return[[2]] <- plot_to_return
-  } else {
-    all_return <- NULL
-    
-    if (type == "freq"){
-      table_to_return <- summary_table(data = data,
-                                       factors = .data[[variable]],
-                                       include_margins = TRUE,
-                                       replace = NULL)
-    } else {
-      table_to_return <- data %>%
-        dplyr::filter(!is.na(data[[variable]]))
-      table_to_return <- table_to_return %>%
-        dplyr::summarise(Median = round(median(table_to_return[[variable]], na.rm = TRUE), 2),
-                         SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
-                         N = length(table_to_return[[variable]]))
-    }
-
-    plot_to_return <- plot_to_return +
-      ggplot2::geom_histogram(data = data, ggplot2::aes(x = .data[[variable]]), stat = "count")  +
+  all_return <- list(table = NULL, plot = NULL)
+  
+  if (class(data) == "list") {
+    all_return$table <- data[[variable]]
+    all_return$plot <- ggplot2::ggplot()
+    return(all_return)
+  }
+  
+  # Refactor the histogram plotting into a separate function
+  create_histogram_plot <- function(data, variable) {
+    ggplot2::ggplot(data, ggplot2::aes(x = all_of(variable))) +
+      ggplot2::geom_histogram(stat = "count") +
       viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
       ggplot2::labs(y = "Count", x = naming_conventions(variable))
-    all_return[[1]] <- table_to_return
-    all_return[[2]] <- plot_to_return
   }
+  
+  if (type == "freq") {
+    all_return$table <- summary_table(data = data, factors = all_of(variable), include_margins = FALSE)
+    all_return$plot <- create_histogram_plot(data, variable)
+  } else {
+    table_data <- dplyr::filter(data, !is.na(data[[variable]]))
+    all_return$table <- table_data %>%
+      dplyr::summarise(Median = round(median(table_data[[variable]], na.rm = TRUE), 2),
+                       SD = round(stats::sd(table_data[[variable]], na.rm = TRUE), 2),
+                       N = length(table_data[[variable]]))
+    all_return$plot <- create_histogram_plot(data, variable)
+  }
+  
   return(all_return)
 }

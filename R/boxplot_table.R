@@ -20,7 +20,7 @@ boxplot_table <- function(data, variable, type = c("summary", "freq")){
     if (type == "freq"){
       table_to_return <- summary_table(data = data,
                                        factors = .data[[variable]],
-                                       include_margins = TRUE,
+                                       include_margins = FALSE,
                                        replace = NULL) 
     } else {
       table_to_return <- data %>%
