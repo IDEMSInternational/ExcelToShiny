@@ -40,7 +40,6 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   
   # Check if variable exists in data_frame_read
   variable <- filtered_spreadsheet$variable
-  print(variable)
   # if (!variable %in% names(data_frame_read)) {
   #   stop(paste0(variable, " not in data."))
   # }
@@ -62,7 +61,6 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   if (!value %in% names(value_function_map)) {
     stop("Invalid value type.")
   }
-  print(filtered_spreadsheet$value)
   return_object <- value_function_map[[value]]()
 
   # Initialize all_return with named elements
