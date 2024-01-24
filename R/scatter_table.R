@@ -1,5 +1,10 @@
 #' Creating box to be used in `PLH_shiny` function
 #'
+#' @param data 
+#' @param variable 
+#' @param type 
+#' @param spreadsheet 
+#'
 #' @return table for use in `Shiny`
 #' @export
 scatter_table <- function(data, variable, type = c("freq", "summary"), spreadsheet) {

@@ -6,6 +6,15 @@
 \usage{
 scatter_table(data, variable, type = c("freq", "summary"), spreadsheet)
 }
+\arguments{
+\item{data}{}
+
+\item{variable}{}
+
+\item{type}{}
+
+\item{spreadsheet}{}
+}
 \value{
 table for use in \code{Shiny}
 }
