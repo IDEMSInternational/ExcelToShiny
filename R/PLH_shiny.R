@@ -128,7 +128,6 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # main page - adding filters
     filtered_data  <- reactive({ data_frame })
     
-    # todo: what about filtering other dfs, not the data_frame df.
     # we create them before. What if they are summary data frames?
     if (!is.null(data_list$main_page)){
       filter_box_data <- (data_list$main_page %>% dplyr::filter(type == "filter_box"))
@@ -200,10 +199,10 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       if (input$tab == tab_name) {
         # Code to generate content for the current tab
         display_content(server_display_contents(data_frame = filtered_data(),
-                                                 contents1 = contents, data_list = data_list,
-                                                 k = which(data_list$contents$type == "Tabbed_display"),
-                                                 id_name = tab_name,
-                                                 list_of_reactives = list_of_reactives))
+                                                contents1 = contents, data_list = data_list,
+                                                k = which(data_list$contents$type == "Tabbed_display"),
+                                                id_name = tab_name,
+                                                list_of_reactives = list_of_reactives))
       }
     }
     

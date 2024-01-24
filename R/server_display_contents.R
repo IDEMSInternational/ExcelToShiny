@@ -61,6 +61,8 @@ server_display_contents <- function(contents1 = contents, data_frame, data_list,
                                                        loop = k_orig,
                                                        list_of_reactives = list_of_reactives)
     k <- k[-1]
+  } else if (contents_type == "Download"){
+    display_box <- NULL
   } else {
     stop("contents_type unrecognised")
   }
