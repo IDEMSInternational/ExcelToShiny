@@ -8,13 +8,23 @@
 #'
 #' @return Box for use in `Shiny`
 #' @export
-boxplot_table <- function(data, variable, type = c("summary", "freq")){
+boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadsheet){
   type <- match.arg(type)
   all_return <- NULL
   plot_to_return <- ggplot2::ggplot()
     plot_to_return <- plot_to_return +
       ggplot2::geom_boxplot(data = data, ggplot2::aes(y = .data[[variable]])) +
       ggplot2::labs(x = "Count")
+    
+    if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
+      plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)
+      plot_to_return <- tryCatch({
+        eval(parse(text = plot_command))
+      }, error = function(e) {
+        message("Error in evaluating graph manipulation code: ", e$message)
+        plot_to_return  # Return the original plot object in case of an error
+      })
+    }
     
     
     if (type == "freq"){
