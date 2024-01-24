@@ -1,12 +1,14 @@
 #' Creating box to be used in `PLH_shiny` function
 #'
-#' @param data 
-#' @param variable 
-#' @param type 
-#' @param spreadsheet 
+#' @param data  todo
+#' @param variable todo 
+#' @param type todo
+#' @param spreadsheet todo
 #'
 #' @return table for use in `Shiny`
 #' @export
+#' 
+#' @examples #todo
 scatter_table <- function(data, variable, type = c("freq", "summary"), spreadsheet) {
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)

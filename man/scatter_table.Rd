@@ -7,17 +7,20 @@
 scatter_table(data, variable, type = c("freq", "summary"), spreadsheet)
 }
 \arguments{
-\item{data}{}
+\item{data}{todo}
 
-\item{variable}{}
+\item{variable}{todo}
 
-\item{type}{}
+\item{type}{todo}
 
-\item{spreadsheet}{}
+\item{spreadsheet}{todo}
 }
 \value{
 table for use in \code{Shiny}
 }
 \description{
 Creating box to be used in \code{PLH_shiny} function
+}
+\examples{
+#todo
 }
