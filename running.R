@@ -6,8 +6,6 @@ library(tidyverse)
 library(shiny)
 library(shinydashboard)
 source("functions_todo.R")
-#excel_template_shiny <- read_excel("~/GitHub/plhR/excel_template_shiny.xlsx",
-#                                   sheet = "demographics")
 
 ## Testing with WASH data
 data_l <- import_list("~/GitHub/plhR/WASH_shiny1.xlsx")
@@ -21,6 +19,12 @@ our_data <- our_data[1:489,]
 our_data <- bind_cols(df, our_data)
 # data_l$main_page <- data_l$main_page %>% filter(type != "checkbox_group") #data_l$contents[1:3,]
 our_data$uuid <- our_data$id...1
+
+#save(our_data, flow_checkin_data, file = "data_for_shiny_example.rds")
+
+getwd()
+#load("data_for_shiny_example.rds")
+head(our_data)
 #flow_checkin_data$uuid <- NULL
 #our_data <- head(our_data)
 # data_l[[10]] <- NULL
