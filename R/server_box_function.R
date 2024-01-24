@@ -46,10 +46,10 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   
   # Refactor repeated code using a mapping strategy
   value_function_map <- list(
-    bar_table = function() bar_table(data = data_frame_read, variable = variable),
+    bar_table = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
     boxplot_table = function() boxplot_table(data = data_frame_read, variable = variable),
-    bar_freq = function() bar_table(data = data_frame_read, variable = variable),
-    bar_summary = function() bar_table(data = data_frame_read, variable = variable, type = "summary"),
+    bar_freq = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
+    bar_summary = function() bar_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet),
     boxplot_freq = function() boxplot_table(data = data_frame_read, variable = variable, type = "freq"),
     boxplot_summary = function() boxplot_table(data = data_frame_read, variable = variable, type = "summary")
   )

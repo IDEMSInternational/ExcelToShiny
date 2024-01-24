@@ -2,7 +2,7 @@
 #'
 #' @return Box for use in `Shiny`
 #' @export
-bar_table <- function(data, variable, type = c("freq", "summary")) {
+bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet) {
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)
   
@@ -22,7 +22,16 @@ bar_table <- function(data, variable, type = c("freq", "summary")) {
   
   if (type == "freq") {
     all_return$table <- summary_table(data = data, factors = .data[[variable]], include_margins = FALSE)
-    all_return$plot <- create_histogram_plot(data, variable)
+    plot_obj <- create_histogram_plot(data, variable)
+    if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
+      plot_obj <- tryCatch({
+        plot_obj + eval(parse(text = spreadsheet$graph_manip))
+      }, error = function(e) {
+        message("Error in evaluating graph manipulation code: ", e$message)
+        plot_obj  # Return the original plot object in case of an error
+      })
+    }
+    all_return$plot <- plot_obj
   } else {
     table_data <- dplyr::filter(data, !is.na(data[[variable]]))
     all_return$table <- table_data %>%
