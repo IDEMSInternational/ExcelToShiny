@@ -2,7 +2,7 @@
 % Please edit documentation in R/display_contents.R
 \name{display_contents}
 \alias{display_contents}
-\title{Title}
+\title{Title TODO}
 \usage{
 display_contents(
   contents1 = contents,
@@ -13,19 +13,21 @@ display_contents(
 )
 }
 \arguments{
-\item{contents1}{}
+\item{contents1}{TODO}
 
-\item{data_frame}{}
+\item{data_frame}{TODO}
 
-\item{loop}{}
+\item{data_list}{TODO}
 
-\item{k}{}
+\item{loop}{TODO}
+
+\item{k}{TODO}
 }
 \value{
-todo
+TODO
 }
 \description{
-Title
+Title TODO
 }
 \examples{
 #todo
