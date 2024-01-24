@@ -30,7 +30,7 @@ head(our_data)
 # data_l[[10]] <- NULL
 # data_l[[9]] <- NULL
 # data_l$contents <- data_l$contents %>% filter(name != "Modules") #data_l$contents[1:3,]
-PLH_shiny1(title = "Testing Shiny Dashboard",
+PLH_shiny(title = "Testing Shiny Dashboard",
           data_list = data_l,
           data_frame = our_data,
           status = "primary",

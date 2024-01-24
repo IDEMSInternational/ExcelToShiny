@@ -1,11 +1,11 @@
 #' Creating box to be used in `PLH_shiny` function
 #'
-#' @return Box for use in `Shiny`
+#' @return table for use in `Shiny`
 #' @export
-bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet) {
+scatter_table <- function(data, variable, type = c("freq", "summary"), spreadsheet) {
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)
-  
+
   if (class(data) == "list") {
     all_return$table <- data[[variable]]
     all_return$plot <- ggplot2::ggplot()
@@ -29,25 +29,20 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet) 
     })
   }
   
+  #spreadsheet <- data_l$engagement %>% filter(name == "box10")
+  variable <- strsplit(spreadsheet$variable, ",")[[1]]
+  variable <- trimws(variable)
   # Refactor the histogram plotting into a separate function
-  create_histogram_plot <- function(data, variable) {
-    ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]])) +
-      ggplot2::geom_histogram(stat = "count") +
-      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-      ggplot2::labs(y = "Count", x = naming_conventions(variable))
+  create_scatter_plot <- function(data, variable) {
+    ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable[1]]], y = .data[[variable[2]]])) +
+      ggplot2::geom_point() +
+      ggplot2::labs(x = naming_conventions(variable[1]), y = naming_conventions(variable[2]))
   }
   
-  if (type == "freq") {
-    all_return$table <- summary_table(data = data, factors = .data[[variable]], include_margins = FALSE)
-  } else {
-    table_data <- dplyr::filter(data, !is.na(data[[variable]]))
-    all_return$table <- table_data %>%
-      dplyr::summarise(Median = round(median(table_data[[variable]], na.rm = TRUE), 2),
-                       SD = round(stats::sd(table_data[[variable]], na.rm = TRUE), 2),
-                       N = length(!is.na(table_data[[variable]])))
-  }
-  
-  plot_obj <- create_histogram_plot(data, variable)
+  # Extract these variables from the data frame
+  all_return$table <- data.frame(Correlation = cor(data[[variable[1]]], data[[variable[2]]], use = "pairwise.complete.obs"))
+
+  plot_obj <- create_scatter_plot(data, variable)
   if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
     plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)
     plot_obj <- tryCatch({
@@ -58,6 +53,5 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet) 
     })
   }
   all_return$plot <- plot_obj
-  
   return(all_return)
 }

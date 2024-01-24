@@ -11,6 +11,24 @@
 boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadsheet){
   type <- match.arg(type)
   all_return <- NULL
+  
+  # Check if data manipulation command is not null or NA
+  if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
+    # Command string from the spreadsheet
+    command_string <- spreadsheet$data_manip
+    
+    # Construct the full command
+    full_command <- paste0("data ", command_string)
+    
+    # Evaluate the command
+    data <- tryCatch({
+      eval(parse(text = full_command))
+    }, error = function(e) {
+      message("Ignoring manipulations. Error in evaluating data manipulation command: ", e$message)
+      data  # Return NULL or handle the error as appropriate
+    })
+  }
+  
   plot_to_return <- ggplot2::ggplot()
     plot_to_return <- plot_to_return +
       ggplot2::geom_boxplot(data = data, ggplot2::aes(y = .data[[variable]])) +
@@ -25,7 +43,6 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
         plot_to_return  # Return the original plot object in case of an error
       })
     }
-    
     
     if (type == "freq"){
       table_to_return <- summary_table(data = data,
