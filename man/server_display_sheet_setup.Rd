@@ -28,11 +28,5 @@ A list of display boxes for the specified content type.
 This function sets up display sheets for a Shiny application server. It processes and filters spreadsheet data, creating display boxes for specific types of content, such as bar charts, box plots, and summaries.
 }
 \examples{
-# Create and set up display sheets using server_display_sheet_setup
-spreadsheet_data <- data.frame(...)  # Define your spreadsheet data
-data_frame <- data.frame(...)  # Define your data frame
-display_boxes <- server_display_sheet_setup(spreadsheet_data, data_frame, j = 1)
-
-# Render the display boxes in your Shiny app UI
-shiny::uiOutput("display_boxes")
+# todo
 }

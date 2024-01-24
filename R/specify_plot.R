@@ -24,7 +24,7 @@ specify_plot <- function(data, spreadsheet) {
   # Set the environment of plot_obj to the current environment
   environment(plot_obj$mapping) <- environment()
   
-  #' TODO: currently doesn't work if you give a variable
+  # TODO: currently doesn't work if you give a variable
   # Parse and evaluate the string
   plot_obj <- tryCatch({
     eval(parse(text = paste0("plot_obj + ", add_string)))

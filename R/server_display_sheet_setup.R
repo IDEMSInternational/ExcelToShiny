@@ -12,13 +12,7 @@
 #' @export
 #'
 #' @examples
-#' # Create and set up display sheets using server_display_sheet_setup
-#' spreadsheet_data <- data.frame(...)  # Define your spreadsheet data
-#' data_frame <- data.frame(...)  # Define your data frame
-#' display_boxes <- server_display_sheet_setup(spreadsheet_data, data_frame, j = 1)
-#'
-#' # Render the display boxes in your Shiny app UI
-#' shiny::uiOutput("display_boxes")
+#' # todo
 server_display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop, list_of_reactives) {
   # Filter the data once and store it in a variable
   filtered_spreadsheet_data <- spreadsheet_data %>% dplyr::filter(type %in% c("box"))
