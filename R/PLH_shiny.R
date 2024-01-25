@@ -24,7 +24,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     warning("Valid colours are blue, green, light blue, orange, red")
     status = "primary"
   }
-  
+
   # Setting up (pre-UI and pre-server items) --------------------------------
   contents <- data_list$contents
   
@@ -254,10 +254,20 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       # TODO: create the table object here
     }
     for (j in which(data_list$contents$type == "Display")){
-      purrr::map(1:length(display_box[[j]]), .f = ~ display_sheet_table(j = j, i = .x))
+      # AIM: Get which of my display_box[[j]][[i]]$label_table are NOT NULL
+      j_element <- display_box[[j]]
+      display_table <- NULL
+      filled_indices <- 1
+      for (i in seq_along(j_element)) {
+        if (!is.null(j_element[[i]]$label_table)) {
+          display_table[filled_indices] <- i
+          filled_indices <- filled_indices + 1
+        }
+      }
+      purrr::map(.x = display_table, .f = ~ display_sheet_table(j = j, i = .x))
       purrr::map(1:length(display_box[[j]]), .f = ~ display_sheet_plot(j = j, i = .x))
     }
-    
+  
     # The tab-display sheets ---------------------------------------------
     if (nrow(data_list$contents %>% dplyr::filter(type == "Tabbed_display")) > 0){
       for (k in which(data_list$contents$type == "Tabbed_display")){

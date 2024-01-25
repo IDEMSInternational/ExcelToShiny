@@ -49,7 +49,7 @@ specify_plot <- function(data, spreadsheet) {
     message("Error in evaluating graph manipulation code: ", e$message)
     plot_obj  # Return the original plot object in case of an error
   })
-  all_return$table <- ""
+  all_return$table <- "A"
   all_return$plot <- plot_obj
   
   return(all_return)

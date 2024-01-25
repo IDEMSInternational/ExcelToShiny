@@ -43,16 +43,28 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
     warning("Valid colours are blue, green, light blue, orange, red")
     status = "primary"
   }
-  all_return[[1]] <- shinydashboard::box(width=NULL,
-                                         collapsible = FALSE,
-                                         title = text,
-                                         status = status, # primary, success, info, warning, danger
-                                         solidHeader = TRUE,
-                                         plotly::plotlyOutput(outputId = label_plot, height = "240"),
-                                         shiny::tableOutput(label_table))
+  
+  if (spreadsheet$value == "specify_plot"){
+    all_return[[1]] <- shinydashboard::box(width=NULL,
+                                           collapsible = FALSE,
+                                           title = text,
+                                           status = status, # primary, success, info, warning, danger
+                                           solidHeader = TRUE,
+                                           plotly::plotlyOutput(outputId = label_plot, height = "240"))
+    all_return[[4]] <- NULL
+  } else {
+    all_return[[1]] <- shinydashboard::box(width=NULL,
+                                           collapsible = FALSE,
+                                           title = text,
+                                           status = status, # primary, success, info, warning, danger
+                                           solidHeader = TRUE,
+                                           plotly::plotlyOutput(outputId = label_plot, height = "240"),
+                                           shiny::tableOutput(label_table))
+    all_return[[4]] <- label_table
+  }
+  
   all_return[[2]] <- "A"
   all_return[[3]] <- "B"
-  all_return[[4]] <- label_table
   all_return[[5]] <- label_plot
   all_return[[6]] <- unique_ID
   names(all_return) <- c("gui_obj", "table_obj", "plot_obj", "label_table", "label_plot", "ID")
