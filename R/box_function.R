@@ -44,7 +44,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
     status = "primary"
   }
   
-  if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip) && spreadsheet$value == "specify_plot"){
+  if (!is.null(spreadsheet$table_manip) && is.na(spreadsheet$table_manip) && spreadsheet$value == "specify_plot"){
     all_return[[1]] <- shinydashboard::box(width=NULL,
                                            collapsible = FALSE,
                                            title = text,
