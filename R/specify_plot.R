@@ -11,6 +11,23 @@ specify_plot <- function(data, spreadsheet) {
     return(all_return)
   }
   
+  # Check if data manipulation command is not null or NA
+  if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
+    # Command string from the spreadsheet
+    command_string <- spreadsheet$data_manip
+    
+    # Construct the full command
+    full_command <- paste0("data ", command_string)
+    
+    # Evaluate the command
+    data <- tryCatch({
+      eval(parse(text = full_command))
+    }, error = function(e) {
+      message("Ignoring manipulations. Error in evaluating data manipulation command: ", e$message)
+      data  # Return NULL or handle the error as appropriate
+    })
+  }
+  
   # Refactor the histogram plotting into a separate function
   create_plot <- function(data) {
     ggplot2::ggplot(data)
