@@ -54,7 +54,7 @@ specify_plot <- function(data, spreadsheet) {
     # Execute the code
     all_return$table <- eval(parse(text = spreadsheet$table_manip))
   } else {
-    all_return$table <- "A"
+    all_return$table <- "B"
   }
   all_return$plot <- plot_obj
   
