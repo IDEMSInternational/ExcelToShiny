@@ -16,7 +16,8 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   #spreadsheet <- testing_shiny
   spreadsheet <- spreadsheet %>% dplyr::filter(name == unique_ID)
   spreadsheet_parameters <- spreadsheet$parameter_list
-  spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, ", ", simplify = TRUE))
+  spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, fixed("\", "), simplify = TRUE))
+  #spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, fixed(", "), simplify = TRUE))
   spreadsheet_parameters_names <- sub("\\= .*", "", spreadsheet_parameters)
   spreadsheet_parameters_values <- gsub(".*= ", "", spreadsheet_parameters)
   spreadsheet_parameters_values <- stringr::str_remove_all(spreadsheet_parameters_values, stringr::fixed("\""))
@@ -25,10 +26,11 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   spreadsheet_df <- data.frame(names, values)
   
   #repeat for all variables like text, etc. so make into a function?
-  text <- spreadsheet_finder(data = spreadsheet_df, "text ")
-  width <- spreadsheet_finder(data = spreadsheet_df, "width ")
-  colour <- spreadsheet_finder(data = spreadsheet_df, "colour ")
-  content_text <- spreadsheet_finder(data = spreadsheet_df, "content_text ")
+  content_text <- trimws(spreadsheet_finder(data = spreadsheet_df, "content_text "))
+  text <- trimws(spreadsheet_finder(data = spreadsheet_df, "text "))
+  width <- trimws(spreadsheet_finder(data = spreadsheet_df, "width "))
+  colour <- trimws(spreadsheet_finder(data = spreadsheet_df, "colour "))
+  footer <- trimws(spreadsheet_finder(data = spreadsheet_df, "footer "))
   colour <- tolower(colour)
   if (colour == "blue") {
     status = "primary"
@@ -51,6 +53,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            title = text,
                                            status = status, # primary, success, info, warning, danger
                                            solidHeader = TRUE,
+                                           footer = footer,
                                            content_text,
                                            plotly::plotlyOutput(outputId = label_plot, height = "240"))
     all_return[[4]] <- NULL
@@ -60,6 +63,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            title = text,
                                            status = status, # primary, success, info, warning, danger
                                            solidHeader = TRUE,
+                                           footer = footer,
                                            content_text,
                                            plotly::plotlyOutput(outputId = label_plot, height = "240"),
                                            shiny::tableOutput(label_table))
