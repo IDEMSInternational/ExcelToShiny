@@ -28,6 +28,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   text <- spreadsheet_finder(data = spreadsheet_df, "text ")
   width <- spreadsheet_finder(data = spreadsheet_df, "width ")
   colour <- spreadsheet_finder(data = spreadsheet_df, "colour ")
+  content_text <- spreadsheet_finder(data = spreadsheet_df, "content_text ")
   colour <- tolower(colour)
   if (colour == "blue") {
     status = "primary"
@@ -50,6 +51,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            title = text,
                                            status = status, # primary, success, info, warning, danger
                                            solidHeader = TRUE,
+                                           content_text,
                                            plotly::plotlyOutput(outputId = label_plot, height = "240"))
     all_return[[4]] <- NULL
   } else {
@@ -58,6 +60,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            title = text,
                                            status = status, # primary, success, info, warning, danger
                                            solidHeader = TRUE,
+                                           content_text,
                                            plotly::plotlyOutput(outputId = label_plot, height = "240"),
                                            shiny::tableOutput(label_table))
     all_return[[4]] <- label_table
