@@ -42,27 +42,21 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     data_frame_read <- list_of_reactives[[filtered_spreadsheet$data]]()
   }
   
-  # Check if variable exists in data_frame_read
+  value <- filtered_spreadsheet$value
   variable <- filtered_spreadsheet$variable
-  # if (!variable %in% names(data_frame_read)) {
-  #   stop(paste0(variable, " not in data."))
-  # }
-  
-  value <- spreadsheet$value
-  variable <- spreadsheet$variable
-  filter_value <- spreadsheet$filter_value
-  filter_variable <- spreadsheet$filter_variable
-  if (!is.null(spreadsheet$filter_variable)){
-    if (!is.na(spreadsheet$filter_variable)){
-      if (!is.na(spreadsheet$filter_value)){
-        data_frame_read <- data_frame_read %>% filter(get(filter_variable) %in% filter_value)
+  filter_value <- filtered_spreadsheet$filter_value
+  filter_variable <- filtered_spreadsheet$filter_variable
+  if (!is.null(filtered_spreadsheet$filter_variable)){
+    if (!is.na(filtered_spreadsheet$filter_variable)){
+      if (!is.na(filtered_spreadsheet$filter_value)){
+        data_frame_read <- data_frame_read %>% dplyr::filter(get(filter_variable) %in% filter_value)
       } else {
         warning("NA given for filter_value. Filtering to NA values.")
-        data_frame_read <- data_frame_read %>% filter(is.na(get(filter_variable)))
+        data_frame_read <- data_frame_read %>% dplyr::filter(is.na(get(filter_variable)))
       }
     }
   }
-  
+
   # Refactor repeated code using a mapping strategy
   value_function_map <- list(
     bar_table = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
@@ -74,7 +68,7 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     scatter_summary = function() scatter_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet),
     specify_plot = function() specify_plot(data = data_frame_read, spreadsheet = filtered_spreadsheet)
   )
-  
+
   # Execute the appropriate function based on the 'value'
   value <- filtered_spreadsheet$value
   if (!value %in% names(value_function_map)) {

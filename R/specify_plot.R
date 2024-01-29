@@ -4,7 +4,7 @@
 #' @export
 specify_plot <- function(data, spreadsheet) {
   all_return <- list(table = NULL, plot = NULL)
-  
+
   if (class(data) == "list") {
     all_return$table <- data[[variable]]
     all_return$plot <- ggplot2::ggplot()
@@ -15,7 +15,7 @@ specify_plot <- function(data, spreadsheet) {
   if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
     # Command string from the spreadsheet
     command_string <- spreadsheet$data_manip
-    
+  
     # Construct the full command
     full_command <- paste0("data ", command_string)
     
@@ -29,10 +29,7 @@ specify_plot <- function(data, spreadsheet) {
   }
   
   # Plot it
-  create_plot <- function(data) {
-    ggplot2::ggplot(data)
-  }
-  plot_obj <- create_plot(data)
+  plot_obj <- ggplot2::ggplot(data)
 
   # Manipulations in the graphic
   add_string <- spreadsheet$graph_manip
@@ -44,7 +41,7 @@ specify_plot <- function(data, spreadsheet) {
     plot_obj  # Return the original plot object in case of an error
   })
   
-  # Table manipulation for the specified
+  # Table manipulation
   if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip)) {
     # Execute the code
     all_return$table <- eval(parse(text = spreadsheet$table_manip))
@@ -52,6 +49,5 @@ specify_plot <- function(data, spreadsheet) {
     all_return$table <- "B"
   }
   all_return$plot <- plot_obj
-  
   return(all_return)
 }
