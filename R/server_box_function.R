@@ -36,14 +36,18 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   }
   
   # get data frame
-  data_frame_read <- if (is.null(filtered_spreadsheet$data)) data_frame else list_of_reactives[[filtered_spreadsheet$data]]()
+  if (is.null(filtered_spreadsheet$data)){
+    data_frame_read <- data_frame
+  } else {
+    data_frame_read <- list_of_reactives[[filtered_spreadsheet$data]]()
+  }
   
   # Check if variable exists in data_frame_read
   variable <- filtered_spreadsheet$variable
   # if (!variable %in% names(data_frame_read)) {
   #   stop(paste0(variable, " not in data."))
   # }
-
+  
   # Refactor repeated code using a mapping strategy
   value_function_map <- list(
     bar_table = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
@@ -55,14 +59,14 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     scatter_summary = function() scatter_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet),
     specify_plot = function() specify_plot(data = data_frame_read, spreadsheet = filtered_spreadsheet)
   )
-
+  
   # Execute the appropriate function based on the 'value'
   value <- filtered_spreadsheet$value
   if (!value %in% names(value_function_map)) {
     stop("Invalid value type.")
   }
   return_object <- value_function_map[[value]]()
-
+  
   # Initialize all_return with named elements
   all_return <- list(table_obj = NULL, plot_obj = NULL)
   all_return$table_obj <- return_object[[1]]

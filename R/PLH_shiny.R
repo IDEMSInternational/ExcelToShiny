@@ -117,7 +117,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         list_of_df_names[[i]] <- unique(data_l_dfs)
       }
     }
-    list_of_df_names <- unlist(list_of_df_names)
+    list_of_df_names <- unique(unlist(list_of_df_names))
     for (df_name in list_of_df_names){
       new_name <- paste0(df_name, "_1")
       stored_data <- get(df_name)
@@ -164,7 +164,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
             reactive({
               filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
               if (key_var %in% names(filtered_data_frame)){
-                filtered_data_frame %>% 
+                filtered_data_frame <- filtered_data_frame %>% 
                   dplyr::filter(.data[[key_var]] %in% valid_ids())
               } else {
                 filtered_data_frame
@@ -191,6 +191,9 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     tab_names <- data_list$contents$ID
     display_content <- reactiveVal()
     observeEvent(c(input$tab, ifelse(input$goButton_group == 0, 1, input$goButton_group)), {
+      # for (df_name in list_of_df_names) {
+      #   list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, key_var, valid_ids)
+      # }
       display_content_by_tab(input$tab)
     })
     
