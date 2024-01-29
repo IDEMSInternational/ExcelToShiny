@@ -48,6 +48,21 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   #   stop(paste0(variable, " not in data."))
   # }
   
+  value <- spreadsheet$value
+  variable <- spreadsheet$variable
+  filter_value <- spreadsheet$filter_value
+  filter_variable <- spreadsheet$filter_variable
+  if (!is.null(spreadsheet$filter_variable)){
+    if (!is.na(spreadsheet$filter_variable)){
+      if (!is.na(spreadsheet$filter_value)){
+        data_frame_read <- data_frame_read %>% filter(get(filter_variable) %in% filter_value)
+      } else {
+        warning("NA given for filter_value. Filtering to NA values.")
+        data_frame_read <- data_frame_read %>% filter(is.na(get(filter_variable)))
+      }
+    }
+  }
+  
   # Refactor repeated code using a mapping strategy
   value_function_map <- list(
     bar_table = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),

@@ -11,7 +11,7 @@ specify_plot <- function(data, spreadsheet) {
     return(all_return)
   }
   
-  # Check if data manipulation command is not null or NA
+  # Data manipulation for data in data frame:
   if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
     # Command string from the spreadsheet
     command_string <- spreadsheet$data_manip
@@ -28,21 +28,15 @@ specify_plot <- function(data, spreadsheet) {
     })
   }
   
-  # Refactor the histogram plotting into a separate function
+  # Plot it
   create_plot <- function(data) {
     ggplot2::ggplot(data)
   }
-  
   plot_obj <- create_plot(data)
 
-  # Your string to be added
+  # Manipulations in the graphic
   add_string <- spreadsheet$graph_manip
-  
-  # Set the environment of plot_obj to the current environment
   environment(plot_obj$mapping) <- environment()
-  
-  # TODO: currently doesn't work if you give a variable
-  # Parse and evaluate the string
   plot_obj <- tryCatch({
     eval(parse(text = paste0("plot_obj + ", add_string)))
   }, error = function(e) {
@@ -50,6 +44,7 @@ specify_plot <- function(data, spreadsheet) {
     plot_obj  # Return the original plot object in case of an error
   })
   
+  # Table manipulation for the specified
   if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip)) {
     # Execute the code
     all_return$table <- eval(parse(text = spreadsheet$table_manip))
