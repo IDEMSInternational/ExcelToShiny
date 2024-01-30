@@ -8,6 +8,7 @@
 #' @param data_frame Spreadsheet that contains information to put in the box.
 #' @param colour Skin colour of the Shiny App.
 #' @param date_from Initial date to filter from.
+#' @param key_var Name of the variable to link different data frames together.
 #'
 #' @return Shiny App
 #' @export

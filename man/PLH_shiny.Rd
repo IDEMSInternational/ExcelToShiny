@@ -23,6 +23,8 @@ PLH_shiny(
 
 \item{date_from}{Initial date to filter from.}
 
+\item{key_var}{Name of the variable to link different data frames together.}
+
 \item{spreadsheet}{Spreadsheet that contains meta information to put in the box.}
 }
 \value{
