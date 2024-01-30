@@ -126,7 +126,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     }
     
     # main page - adding filters
-    filtered_data  <- reactive({ data_frame })
+    filtered_data  <- shiny::reactive({ data_frame })
     
     # we create them before. What if they are summary data frames?
     if (!is.null(data_list$main_page)){
@@ -134,7 +134,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       
       # if we have filtering involved
       if (nrow(filter_box_data) > 0){
-        filtered_data <- eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
+        filtered_data <- shiny::eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
           filtered_data <- data_frame
           variable <- filter_box_data$variable
           name <- filter_box_data$name
@@ -146,22 +146,22 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
             if (is.character(current_name)) {
               # For character variables, use %in% for exact matching
               filtered_data <- filtered_data %>% 
-                filter(.data[[current_var]] %in% current_name)
+                dplyr::filter(.data[[current_var]] %in% current_name)
             } else if (is.numeric(current_name)) {
               # For numeric variables, we'll assume they are exact values to match
               filtered_data <- filtered_data %>%
-                filter(.data[[current_var]] %in% current_name)
+                dplyr::filter(.data[[current_var]] %in% current_name)
             }
           }
           return(filtered_data)
         })
         if (!is.null(key_var)){
-          valid_ids <- reactive({
+          valid_ids <- shiny::reactive({
             filtered_data() %>% dplyr::pull({{ key_var }})
           })
           create_reactive_expression <- function(df_name, complete_dfs, key_var, valid_ids) {
             force(df_name) # Force the evaluation of df_name
-            reactive({
+            shiny::reactive({
               filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
               if (key_var %in% names(filtered_data_frame)){
                 filtered_data_frame <- filtered_data_frame %>% 
@@ -180,7 +180,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           # TODO : what if there is no key?
         }
       } else {
-        filtered_data  <- reactive({ data_frame })
+        filtered_data  <- shiny::reactive({ data_frame })
       }
     }
     
@@ -189,8 +189,8 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # Display content is a list containing all the content to display later
     # We currently only run it for df and for our final item in list_of_reactives
     tab_names <- data_list$contents$ID
-    display_content <- reactiveVal()
-    observeEvent(c(input$tab, ifelse(input$goButton_group == 0, 1, input$goButton_group)), {
+    display_content <- shiny::reactiveVal()
+    shiny::observeEvent(c(input$tab, ifelse(input$goButton_group == 0, 1, input$goButton_group)), {
       # for (df_name in list_of_df_names) {
       #   list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, key_var, valid_ids)
       # }
@@ -227,7 +227,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       # Process spreadsheet data outside of the top_value_boxes function
       processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
       
-      observe({ # observeEvent - this should occur when filtered_data() is updated
+      shiny::observe({ # observeEvent - this should occur when filtered_data() is updated
         # running for changed elements.
         lapply(seq_len(length(unique(spreadsheet_shiny_value_box$name))), function(i) {
           ID <- spreadsheet_shiny_value_box[i,]$name
@@ -324,7 +324,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       datasets[[j]] <- get_data_to_download(data_to_download)
       
       # Define a reactive to select the dataset
-      datasetInput <- reactive({
+      datasetInput <- shiny::reactive({
         selected_dataset <- datasets[[j]][[input[[paste0("dataset", j)]]]]
         return(selected_dataset)
       })
