@@ -55,6 +55,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            solidHeader = TRUE,
                                            footer = footer,
                                            content_text,
+                                           style='width:100%;overflow-x: scroll;',
                                            plotly::plotlyOutput(outputId = label_plot, height = "240"))
     all_return[[4]] <- NULL
   } else {
@@ -65,6 +66,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            solidHeader = TRUE,
                                            footer = footer,
                                            content_text,
+                                           style='width:100%;overflow-x: scroll;',
                                            plotly::plotlyOutput(outputId = label_plot, height = "240"),
                                            shiny::tableOutput(label_table))
     all_return[[4]] <- label_table
