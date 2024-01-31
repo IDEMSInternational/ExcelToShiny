@@ -11,7 +11,18 @@ specify_plot <- function(data, spreadsheet) {
     return(all_return)
   }
   
-  # Data manipulation for data in data frame:
+  # Table manipulation
+  if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip)) {
+    if (startsWith(trimws(spreadsheet$table_manip), "%>%")){
+      all_return$table <- eval(parse(text = paste0("data ", spreadsheet$table_manip)))
+    } else{
+      all_return$table <- eval(parse(text = spreadsheet$table_manip))      
+    }
+  } else {
+    all_return$table <- "No Table Given"
+  }
+  
+  # Data manipulation for data in graphs:
   if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
     # Command string from the spreadsheet
     command_string <- spreadsheet$data_manip
@@ -41,13 +52,6 @@ specify_plot <- function(data, spreadsheet) {
     plot_obj  # Return the original plot object in case of an error
   })
   
-  # Table manipulation
-  if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip)) {
-    # Execute the code
-    all_return$table <- eval(parse(text = spreadsheet$table_manip))
-  } else {
-    all_return$table <- "B"
-  }
   all_return$plot <- plot_obj
   return(all_return)
 }
