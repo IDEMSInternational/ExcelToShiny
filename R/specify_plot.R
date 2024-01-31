@@ -28,7 +28,11 @@ specify_plot <- function(data, spreadsheet) {
     command_string <- spreadsheet$data_manip
   
     # Construct the full command
-    full_command <- paste0("data ", command_string)
+    if (startsWith(trimws(spreadsheet$data_manip), "%>%")){
+      full_command <- paste0("data ", command_string)
+    } else{
+      full_command <- command_string
+    }
     
     # Evaluate the command
     data <- tryCatch({
