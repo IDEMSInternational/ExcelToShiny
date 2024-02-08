@@ -224,7 +224,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     }
     
     # value boxes at the top of the thing --------------------------------
-    if (!is.null(spreadsheet_shiny_value_box)){
+    if (!is.null(filter_on_main_page)){
       # Process spreadsheet data outside of the top_value_boxes function
       processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
       
