@@ -29,6 +29,12 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
   # Setting up (pre-UI and pre-server items) --------------------------------
   contents <- data_list$contents
   
+  for (i in 1:length(data_list)){
+    if (is.null(data_list[[i]]$name)){
+      data_list[[i]]$name <- paste0("box", 1:nrow(data_list[[i]]))
+    }
+  }
+
   # Contents to display
   # TODO: hopefully works for multiple tab displays! :) 
   display_box <- display_contents(data_frame = data_frame, contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
