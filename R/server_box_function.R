@@ -34,9 +34,9 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     warning("No data found for the provided unique_ID")
     return(NULL)
   }
-  
+
   # get data frame
-  if (is.null(filtered_spreadsheet$data)){
+  if (is.null(filtered_spreadsheet$data) || is.na(filtered_spreadsheet$data)){
     data_frame_read <- data_frame
   } else {
     data_frame_read <- list_of_reactives[[filtered_spreadsheet$data]]()

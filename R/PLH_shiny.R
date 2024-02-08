@@ -119,13 +119,15 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       }
     }
     list_of_df_names <- unique(unlist(list_of_df_names))
-    for (df_name in list_of_df_names){
-      new_name <- paste0(df_name, "_1")
-      stored_data <- get(df_name)
-      assign(new_name, stored_data, envir = environment())
-      complete_dfs[[paste0(df_name, "_1")]] <- get(paste0(df_name, "_1"))
+    if (!is.na(list_of_df_names)){
+      for (df_name in list_of_df_names){
+        new_name <- paste0(df_name, "_1")
+        stored_data <- get(df_name)
+        assign(new_name, stored_data, envir = environment())
+        complete_dfs[[paste0(df_name, "_1")]] <- get(paste0(df_name, "_1"))
+      }
     }
-    
+
     # main page - adding filters
     filtered_data  <- shiny::reactive({ data_frame })
     
@@ -223,7 +225,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       return(spreadsheet_df)
     }
     
-    # value boxes at the top of the thing --------------------------------
+    # value boxes at the top of the thing
     if (!is.null(filter_on_main_page)){
       # Process spreadsheet data outside of the top_value_boxes function
       processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
@@ -240,8 +242,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         })
       })
     }
-    
-    
+
     # blanking these out: Then it runs right away (because we're not running the tables stuff?)
     # Keeping these in: it runs right away (because we're not running the tables stuff?)
     # if it takes X minutes per person, then ...
