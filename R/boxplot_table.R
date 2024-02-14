@@ -8,9 +8,17 @@
 #'
 #' @return Box for use in `Shiny`
 #' @export
-boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadsheet){
+boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadsheet, grouped_vars = NULL){
   type <- match.arg(type)
-  all_return <- NULL
+  all_return <- list(table = NULL, plot = NULL)
+  
+  if (class(data) == "list") {
+    all_return$table <- data[[variable]]
+    all_return$plot <- ggplot2::ggplot()
+    return(all_return)
+  }
+  
+  if (!is.null(grouped_vars) && (grouped_vars %in% variable)) grouped_vars <- NULL
   
   # Check if data manipulation command is not null or NA
   if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
@@ -18,7 +26,11 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
     command_string <- spreadsheet$data_manip
     
     # Construct the full command
-    full_command <- paste0("data ", command_string)
+    if (!is.null(grouped_vars)){
+      full_command <- paste0("data %>% group_by(", grouped_vars, ")", command_string)
+    } else {
+      full_command <- paste0("data ", command_string)
+    }
     
     # Evaluate the command
     data <- tryCatch({
@@ -30,45 +42,51 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
   }
   
   plot_to_return <- ggplot2::ggplot()
-    plot_to_return <- plot_to_return +
-      ggplot2::geom_boxplot(data = data, ggplot2::aes(y = .data[[variable]])) +
-      ggplot2::labs(x = "Count")
-    
-    if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
-      plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)
-      plot_to_return <- tryCatch({
-        eval(parse(text = plot_command))
-      }, error = function(e) {
-        message("Error in evaluating graph manipulation code: ", e$message)
-        plot_to_return  # Return the original plot object in case of an error
-      })
-    }
-    
-    if (type == "freq"){
-      table_to_return <- summary_table(data = data,
-                                       factors = .data[[variable]],
-                                       include_margins = FALSE,
-                                       replace = NULL) 
+  plot_to_return <- plot_to_return +
+    ggplot2::geom_boxplot(data = data, ggplot2::aes(y = .data[[variable]])) +
+    ggplot2::labs(x = "Count")
+  if (!is.null(grouped_vars)){
+    plot_to_return <- plot_to_return + facet_wrap(grouped_vars)
+  }
+  
+  if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
+    plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)
+    plot_to_return <- tryCatch({
+      eval(parse(text = plot_command))
+    }, error = function(e) {
+      message("Error in evaluating graph manipulation code: ", e$message)
+      plot_to_return  # Return the original plot object in case of an error
+    })
+  }
+  
+  if (type == "freq"){
+    if (!is.null(grouped_vars)){
+      all_return$table <- summary_table(data = data, factors = c(.data[[variable]], .data[[grouped_vars]]), include_margins = FALSE)
     } else {
-      table_to_return <- data %>%
-        dplyr::filter(!is.na(data[[variable]]))
-      table_to_return <- table_to_return %>%
-        dplyr::summarise(Median = round(median(table_to_return[[variable]], na.rm = TRUE), 2),
-                         SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
-                         N = length(table_to_return[[variable]]))
-      
-      # amend the function to work with more summaries / write a function to achieve this
-      # perhaps have another line in the excel called "summaries_list" where you can specify summarys
-      # and an line on "graphs_list" where you can specify the graphic
-      # we also need to have
-      # a functino which binds "bar" _ "table"
-      # it should be you write graph, graph_table, or table
-      # then you can specify paramters fro the graph and/or table
-      # those parameters read in and change the summary (e.g., frequnecy, or you give sum, median, mean, etc)
-      
-      
+      all_return$table <- summary_table(data = data, factors = .data[[variable]], include_margins = FALSE)
     }
-    all_return[[1]] <- table_to_return
-    all_return[[2]] <- plot_to_return
+  } else {
+    table_to_return <- dplyr::filter(data, !is.na(data[[variable]]))
+    
+    if (!is.null(grouped_vars)) table_to_return <- table_to_return %>% group_by(!!sym(grouped_vars))
+    
+    table_to_return <- table_to_return %>%
+      dplyr::summarise(Median = round(median(table_to_return[[variable]], na.rm = TRUE), 2),
+                       SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
+                       N = length(!is.na(table_to_return[[variable]])))
+    
+    # amend the function to work with more summaries / write a function to achieve this
+    # perhaps have another line in the excel called "summaries_list" where you can specify summarys
+    # and an line on "graphs_list" where you can specify the graphic
+    # we also need to have
+    # a functino which binds "bar" _ "table"
+    # it should be you write graph, graph_table, or table
+    # then you can specify paramters fro the graph and/or table
+    # those parameters read in and change the summary (e.g., frequnecy, or you give sum, median, mean, etc)
+    
+    
+  }
+  all_return[[1]] <- table_to_return
+  all_return[[2]] <- plot_to_return
   return(all_return)
 }

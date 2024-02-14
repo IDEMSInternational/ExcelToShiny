@@ -22,7 +22,8 @@
 #' # Parameter not found
 #' param_not_found <- 'other_param = 42'
 #' get_parameter_value(param_not_found)
-get_parameter_value <- function(spreadsheet_parameters, name = "label", list = FALSE){
+get_parameter_value <- function(spreadsheet_parameters, name = "label", list = FALSE, logical = FALSE){
+  #spreadsheet_parameters <- trimws(spreadsheet_parameters)
   if (stringr::str_detect(spreadsheet_parameters, paste0(name, " ="))) {
     if (stringr::str_detect(spreadsheet_parameters, paste0(name, " = "))) {
       label_form = paste0(name, " = ")
@@ -41,9 +42,13 @@ get_parameter_value <- function(spreadsheet_parameters, name = "label", list = F
   
   if (!is.null(label_form)){
     if (list == FALSE){
-      label_pattern <- paste0(label_form, '"(.*?)"')
-      label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]
-      label <- gsub(paste0(label_form, '"|"'), '', label_match)
+      if (logical == FALSE){
+        label_pattern <- paste0(label_form, '"(.*?)"')
+        label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]
+        label <- gsub(paste0(label_form, '"|"'), '', label_match)
+      } else {
+        label <- as.logical(trimws(gsub(paste0(".*", label_form), "", spreadsheet_parameters)))
+      }
     } else {
       label_pattern <- paste0(label_form, 'c\\((.*?)\\)')
       label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]

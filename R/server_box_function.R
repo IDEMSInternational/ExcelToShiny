@@ -34,7 +34,7 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     warning("No data found for the provided unique_ID")
     return(NULL)
   }
-
+  
   # get data frame
   if (is.null(filtered_spreadsheet$data) || is.na(filtered_spreadsheet$data)){
     data_frame_read <- data_frame
@@ -57,9 +57,13 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     }
   }
 
+  # we get an error if data_frame_read is grouped!
+  grouped_vars <- group_vars(data_frame_read)   # these need to be read in as factors in our plots and tables
+  data_frame_read <- data_frame_read %>% ungroup()
+  if (length(grouped_vars) == 0) grouped_vars <- NULL
   # Refactor repeated code using a mapping strategy
   value_function_map <- list(
-    bar_table = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
+    bar_table = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
     boxplot_table = function() boxplot_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
     bar_freq = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
     bar_summary = function() bar_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet),
@@ -75,7 +79,6 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     stop("Invalid value type.")
   }
   return_object <- value_function_map[[value]]()
-  
   # Initialize all_return with named elements
   all_return <- list(table_obj = NULL, plot_obj = NULL)
   all_return$table_obj <- return_object[[1]]

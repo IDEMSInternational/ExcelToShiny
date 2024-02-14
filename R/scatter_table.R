@@ -9,7 +9,7 @@
 #' @export
 #' 
 #' @examples #todo
-scatter_table <- function(data, variable, type = c("freq", "summary"), spreadsheet) {
+scatter_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, grouped_vars = NULL) {
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)
 
@@ -19,13 +19,20 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
     return(all_return)
   }
   
+  if (!is.null(grouped_vars) && (grouped_vars %in% variable)) grouped_vars <- NULL
+  
   # Check if data manipulation command is not null or NA
   if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
     # Command string from the spreadsheet
     command_string <- spreadsheet$data_manip
     
     # Construct the full command
-    full_command <- paste0("data ", command_string)
+    
+    if (!is.null(grouped_vars)){
+      full_command <- paste0("data %>% group_by(", grouped_vars, ")", command_string)
+    } else {
+      full_command <- paste0("data ", command_string)
+    }
     
     # Evaluate the command
     data <- tryCatch({
@@ -40,15 +47,27 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
   variable <- strsplit(spreadsheet$variable, ",")[[1]]
   variable <- trimws(variable)
   # Refactor the histogram plotting into a separate function
-  create_scatter_plot <- function(data, variable) {
-    ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable[1]]], y = .data[[variable[2]]])) +
+  create_scatter_plot <- function(data, variable, grouped_vars) {
+    return_plot <- ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable[1]]], y = .data[[variable[2]]])) +
       ggplot2::geom_point() +
       ggplot2::labs(x = naming_conventions(variable[1]), y = naming_conventions(variable[2]))
+    
+    if (!is.null(grouped_vars)){
+      return_plot <- return_plot  + facet_wrap(grouped_vars)
+    }
+    return(return_plot)
   }
   
   # Extract these variables from the data frame
-  all_return$table <- data.frame(Correlation = cor(data[[variable[1]]], data[[variable[2]]], use = "pairwise.complete.obs"))
-
+  # group by?
+  
+  if (!is.null(grouped_vars)){
+    table_to_return <- data %>% group_by(!!sym(group))
+  } else {
+    table_to_return <- data
+  }
+  all_return$table <- data.frame(table_to_return %>% summarise(Correlation = cor(!!sym(variable[1]), !!sym(variable[2]), use = "pairwise.complete.obs")))
+  
   plot_obj <- create_scatter_plot(data, variable)
   if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
     plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)

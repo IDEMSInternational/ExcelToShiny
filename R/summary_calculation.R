@@ -10,6 +10,10 @@
 #' @importFrom rlang :=
 #' @return Summaries table
 #' @export
+
+
+#summary_calculation1(df %>% group_by(uuid), factors = gender)
+
 summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise = NULL, summaries = c("frequencies", "mean"),
                                 together = FALSE, include_margins = FALSE, drop = FALSE){
   summaries <- match.arg(summaries)
@@ -83,16 +87,25 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
                                   ~ forcats::fct_relevel(.x, cell_values_levels)))
     summary_output <- summary_output %>% dplyr::arrange({{ factors }})
   }
-  if (length(data %>% dplyr::select({{ columns_to_summarise }})) == 1){
-    cell_values_levels <- data %>% dplyr::pull({{ columns_to_summarise }}) %>% levels()
-    if (include_margins){ cell_values_levels <- c(cell_values_levels, "Total") }
-    
-    summary_output <- summary_output %>%
-      dplyr::mutate(dplyr::across({{ columns_to_summarise }},
-                                  ~ factor(.x))) %>%
-      dplyr::mutate(dplyr::across({{ columns_to_summarise }},
-                                  ~ forcats::fct_relevel(.x, cell_values_levels)))
-    summary_output <- summary_output %>% dplyr::arrange({{ columns_to_summarise }})
-  }
+  # if (length(data %>% dplyr::select({{ columns_to_summarise }})) == 1){
+  #   print("Ok in here then?")
+  #   print(columns_to_summarise)
+  #   print(head(data))
+  #   print(head(data %>% dplyr::select( columns_to_summarise )))
+  #   cell_values_levels <- data %>% dplyr::pull({{ columns_to_summarise }}) %>% levels()
+  #   print("then here1")
+  #   if (include_margins){ cell_values_levels <- c(cell_values_levels, "Total") }
+  #   print("then here2")
+  #   summary_output <- summary_output %>%
+  #     dplyr::mutate(dplyr::across({{ columns_to_summarise }},
+  #                                 ~ factor(.x))) %>%
+  #     dplyr::mutate(dplyr::across({{ columns_to_summarise }},
+  #                                 ~ forcats::fct_relevel(.x, cell_values_levels)))
+  #   summary_output <- summary_output %>% dplyr::arrange({{ columns_to_summarise }})
+  #   print("then here3")
+  # }
+  print("ready to return")
+  print(summary_output)
+  print("now to return")
   return(unique(summary_output))
 }
