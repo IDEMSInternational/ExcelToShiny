@@ -156,7 +156,6 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
               print("checky start") 
               grouped_data <- grouped_data %>%
                 dplyr::group_by(!!sym(group_box_data$variable), .add = TRUE)
-              
               print("checky done") 
             } else {
               print("no checky")
@@ -205,20 +204,24 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
             })
             
             if (nrow(group_box_data) > 0){
-              grouped_vars <- shiny::reactive({ grouped_data() %>%
-                  dplyr::select(c(key_var, group_box_data$variable))
+              grouped_vars <- shiny::eventReactive(input$group_by_button, {
+                grouped_data() %>%dplyr::select(c(key_var, group_box_data$variable))
               })
             } else {
-              grouped_vars <- NULL
+              null_function <- function() {
+                return(NULL)
+              }
+              grouped_vars <- shiny::reactive(null_function())
             }
               
             create_reactive_expression <- function(df_name, complete_dfs, key_var, valid_ids, grouped_vars = NULL) {
               force(df_name) # Force the evaluation of df_name
               shiny::reactive({
                 filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
-#                if (!is.null(grouped_vars)){
-#                  filtered_data_frame <- filtered_data_frame %>% dplyr::full_join(grouped_vars, by = key_var)
-#                }
+               if (!is.null(grouped_vars)){
+                 filtered_data_frame <- filtered_data_frame %>%
+                   dplyr::full_join(grouped_vars)
+               }
                 if (key_var %in% names(filtered_data_frame)){
                   filtered_data_frame <- filtered_data_frame %>% 
                     dplyr::filter(.data[[key_var]] %in% valid_ids())
@@ -230,7 +233,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
             }
             
             for (df_name in list_of_df_names) {
-              list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, key_var, valid_ids, grouped_vars)
+              list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, key_var, valid_ids, grouped_vars())
             }
           } else {
             # TODO : what if there is no key?
@@ -247,7 +250,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       # Display content is a list containing all the content to display later
       # We currently only run it for df and for our final item in list_of_reactives
       tab_names <- data_list$contents$ID
-      need_update <- rep(TRUE, length(tab_names))
+      #need_update <- rep(TRUE, length(tab_names))
       # Initialise flags to indicate whether each tab's content needs to be updated
       # TODO: reset all as TRUE whenever we click to update
       # shiny::observe(ifelse(input$goButton_group == 0, 1, input$goButton_group), {

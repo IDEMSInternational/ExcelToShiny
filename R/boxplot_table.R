@@ -61,32 +61,22 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
   
   if (type == "freq"){
     if (!is.null(grouped_vars)){
-      all_return$table <- summary_table(data = data, factors = c(.data[[variable]], .data[[grouped_vars]]), include_margins = FALSE)
+      table_data <- summary_table(data = data, factors = c(.data[[variable]], .data[[grouped_vars]]), include_margins = FALSE)
     } else {
-      all_return$table <- summary_table(data = data, factors = .data[[variable]], include_margins = FALSE)
+      table_data <- summary_table(data = data, factors = .data[[variable]], include_margins = FALSE)
     }
   } else {
-    table_to_return <- dplyr::filter(data, !is.na(data[[variable]]))
+    table_data <- dplyr::filter(data, !is.na(data[[variable]]))
     
-    if (!is.null(grouped_vars)) table_to_return <- table_to_return %>% group_by(!!sym(grouped_vars))
-    
-    table_to_return <- table_to_return %>%
-      dplyr::summarise(Median = round(median(table_to_return[[variable]], na.rm = TRUE), 2),
-                       SD = round(stats::sd(table_to_return[[variable]], na.rm = TRUE), 2),
-                       N = length(!is.na(table_to_return[[variable]])))
-    
-    # amend the function to work with more summaries / write a function to achieve this
-    # perhaps have another line in the excel called "summaries_list" where you can specify summarys
-    # and an line on "graphs_list" where you can specify the graphic
-    # we also need to have
-    # a functino which binds "bar" _ "table"
-    # it should be you write graph, graph_table, or table
-    # then you can specify paramters fro the graph and/or table
-    # those parameters read in and change the summary (e.g., frequnecy, or you give sum, median, mean, etc)
-    
-    
+    if (!is.null(grouped_vars)){
+      table_data <- table_data %>% group_by(!!sym(grouped_vars))
+    }
+    table_data <- table_data %>%
+      dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
+                       SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2),
+                       N = length(!is.na(!!sym(variable))))
   }
-  all_return[[1]] <- table_to_return
+  all_return[[1]] <- table_data
   all_return[[2]] <- plot_to_return
   return(all_return)
 }

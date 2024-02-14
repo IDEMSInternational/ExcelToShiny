@@ -11,7 +11,7 @@ specify_plot <- function(data, spreadsheet, grouped_vars = NULL) {
     return(all_return)
   }
   
-  if (!is.null(grouped_vars) && (grouped_vars %in% variable)) grouped_vars <- NULL
+  if (!is.null(grouped_vars)) grouped_vars <- NULL
 
   if (!is.null(grouped_vars)){
     group_cmd <- paste0("%>% group_by(", grouped_vars, ")")

@@ -35,12 +35,24 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     return(NULL)
   }
   
+  # if we have grouping in our main df, we should use these as grouping variables in our other dfs.
+  grouped_vars <- group_vars(data_frame)   # these need to be read in as factors in our plots and tables
+  
   # get data frame
   if (is.null(filtered_spreadsheet$data) || is.na(filtered_spreadsheet$data)){
     data_frame_read <- data_frame
   } else {
     data_frame_read <- list_of_reactives[[filtered_spreadsheet$data]]()
   }
+  data_frame_read <- data_frame_read %>% ungroup()
+  # 
+  # # group our new df.
+  # if (length(grouped_vars) > 0){
+  #   data_frame_read <- data_frame_read %>% group_by(!!sym(grouped_vars))
+  # } else {
+  #   data_frame_read <- data_frame_read %>% ungroup()
+  # }
+  # #print(head(data_frame_read))
   
   value <- filtered_spreadsheet$value
   variable <- filtered_spreadsheet$variable
@@ -57,20 +69,17 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     }
   }
 
-  # we get an error if data_frame_read is grouped!
-  grouped_vars <- group_vars(data_frame_read)   # these need to be read in as factors in our plots and tables
-  data_frame_read <- data_frame_read %>% ungroup()
   if (length(grouped_vars) == 0) grouped_vars <- NULL
   # Refactor repeated code using a mapping strategy
   value_function_map <- list(
     bar_table = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
-    boxplot_table = function() boxplot_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
-    bar_freq = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet),
-    bar_summary = function() bar_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet),
-    boxplot_freq = function() boxplot_table(data = data_frame_read, variable = variable, type = "freq", spreadsheet = filtered_spreadsheet),
-    boxplot_summary = function() boxplot_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet),
-    scatter_summary = function() scatter_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet),
-    specify_plot = function() specify_plot(data = data_frame_read, spreadsheet = filtered_spreadsheet)
+    boxplot_table = function() boxplot_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
+    bar_freq = function() bar_table(data = data_frame_read, variable = variable, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
+    bar_summary = function() bar_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
+    boxplot_freq = function() boxplot_table(data = data_frame_read, variable = variable, type = "freq", spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
+    boxplot_summary = function() boxplot_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
+    scatter_summary = function() scatter_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
+    specify_plot = function() specify_plot(data = data_frame_read, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars)
   )
 
   # Execute the appropriate function based on the 'value'

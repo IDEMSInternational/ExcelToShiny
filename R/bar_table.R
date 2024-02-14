@@ -61,12 +61,13 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
   } else {
     table_data <- dplyr::filter(data, !is.na(data[[variable]]))
     
-    if (!is.null(grouped_vars)) table_data <- table_data %>% group_by(!!sym(grouped_vars))
-    
+    if (!is.null(grouped_vars)){
+      table_data <- table_data %>% group_by(!!sym(grouped_vars))
+    }
     all_return$table <- table_data %>%
-      dplyr::summarise(Median = round(median(table_data[[variable]], na.rm = TRUE), 2),
-                       SD = round(stats::sd(table_data[[variable]], na.rm = TRUE), 2),
-                       N = length(!is.na(table_data[[variable]])))
+      dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
+                       SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2),
+                       N = length(!is.na(!!sym(variable))))
   }
   
   plot_obj <- create_histogram_plot(data, variable, grouped_vars)
