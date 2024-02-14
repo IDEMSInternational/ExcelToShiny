@@ -27,7 +27,7 @@ main_page_group <- function(spreadsheet){
     spreadsheet_parameters <- checkbox_group_data$parameter_list
       print(spreadsheet_parameters)
       label <- get_parameter_value(spreadsheet_parameters, name = "label")
-      value <- get_parameter_value1(spreadsheet_parameters, name = "value", logical = TRUE)
+      value <- get_parameter_value(spreadsheet_parameters, name = "value", logical = TRUE)
       print(spreadsheet_parameters)
       width <- get_parameter_value(spreadsheet_parameters, name = "width")
       # todo - set up for inline (TRUE/FALSE parameter)
