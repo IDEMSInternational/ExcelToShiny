@@ -104,8 +104,5 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
   #   summary_output <- summary_output %>% dplyr::arrange({{ columns_to_summarise }})
   #   print("then here3")
   # }
-  print("ready to return")
-  print(summary_output)
-  print("now to return")
   return(unique(summary_output))
 }
