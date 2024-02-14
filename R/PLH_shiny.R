@@ -298,7 +298,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           # running for changed elements.
           lapply(seq_len(length(unique(spreadsheet_shiny_value_box$name))), function(i) {
             ID <- spreadsheet_shiny_value_box[i,]$name
-            top_box <- top_value_boxes1(data_frame = filtered_data(),
+            top_box <- top_value_boxes(data_frame = filtered_data(),
                                        spreadsheet = spreadsheet_shiny_value_box,
                                        processed_spreadsheet = processed_spreadsheet_data,
                                        unique_ID = ID)
