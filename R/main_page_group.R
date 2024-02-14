@@ -9,6 +9,7 @@
 #' @details This function is designed to create a group input widget for a shinydashboard main page. 
 #' It currently supports only one group by.
 #' 
+#' @export
 #' @examples
 #' # Sample usage
 #' #main_page_group(my_spreadsheet_data)
@@ -35,6 +36,7 @@ main_page_group <- function(spreadsheet){
                                                              label = label,
                                                         value = value,
                                                         width = width)
+      return(checkbox_group_input)
   }
   # return(shinydashboard::box(width = 6,
   #                            checkbox_group_input,
