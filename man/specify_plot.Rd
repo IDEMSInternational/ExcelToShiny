@@ -4,7 +4,7 @@
 \alias{specify_plot}
 \title{Creating box to be used in \code{PLH_shiny} function}
 \usage{
-specify_plot(data, spreadsheet)
+specify_plot(data, spreadsheet, grouped_vars = NULL)
 }
 \value{
 Box for use in \code{Shiny}

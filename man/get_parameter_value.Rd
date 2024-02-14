@@ -4,7 +4,12 @@
 \alias{get_parameter_value}
 \title{Get Parameter Value}
 \usage{
-get_parameter_value(spreadsheet_parameters, name = "label", list = FALSE)
+get_parameter_value(
+  spreadsheet_parameters,
+  name = "label",
+  list = FALSE,
+  logical = FALSE
+)
 }
 \arguments{
 \item{spreadsheet_parameters}{A character string containing the spreadsheet parameters.}

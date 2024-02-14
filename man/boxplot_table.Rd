@@ -4,7 +4,13 @@
 \alias{boxplot_table}
 \title{Creating boxplot to be used in \code{PLH_shiny} function}
 \usage{
-boxplot_table(data, variable, type = c("summary", "freq"), spreadsheet)
+boxplot_table(
+  data,
+  variable,
+  type = c("summary", "freq"),
+  spreadsheet,
+  grouped_vars = NULL
+)
 }
 \arguments{
 \item{spreadsheet}{Spreadsheet that contains the template.}

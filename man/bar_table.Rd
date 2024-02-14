@@ -4,7 +4,13 @@
 \alias{bar_table}
 \title{Creating box to be used in \code{PLH_shiny} function}
 \usage{
-bar_table(data, variable, type = c("freq", "summary"), spreadsheet)
+bar_table(
+  data,
+  variable,
+  type = c("freq", "summary"),
+  spreadsheet,
+  grouped_vars = NULL
+)
 }
 \value{
 Box for use in \code{Shiny}

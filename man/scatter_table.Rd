@@ -4,7 +4,13 @@
 \alias{scatter_table}
 \title{Creating box to be used in \code{PLH_shiny} function}
 \usage{
-scatter_table(data, variable, type = c("freq", "summary"), spreadsheet)
+scatter_table(
+  data,
+  variable,
+  type = c("freq", "summary"),
+  spreadsheet,
+  grouped_vars = NULL
+)
 }
 \arguments{
 \item{data}{todo}
