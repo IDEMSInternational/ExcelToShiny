@@ -139,6 +139,24 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       }
     }
     
+    create_reactive_expression <- function(df_name, complete_dfs, key_var, valid_ids, grouped_vars = NULL) {
+      force(df_name) # Force the evaluation of df_name
+      shiny::reactive({
+        filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
+        if (!is.null(grouped_vars)){
+          filtered_data_frame <- filtered_data_frame %>%
+            dplyr::full_join(grouped_vars)
+        }
+        if (!is.null(key_var) && key_var %in% names(filtered_data_frame)){
+          filtered_data_frame <- filtered_data_frame %>% 
+            dplyr::filter(.data[[key_var]] %in% valid_ids())
+        } else {
+          filtered_data_frame
+        }
+        return(filtered_data_frame)
+      })
+    }
+    
     # main page - handling filters and grouped data --------------------------
     filtered_data  <- shiny::reactive({ data_frame })
     
@@ -213,35 +231,23 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
             grouped_vars <- shiny::reactive(null_function())
           }
           
-          create_reactive_expression <- function(df_name, complete_dfs, key_var, valid_ids, grouped_vars = NULL) {
-            force(df_name) # Force the evaluation of df_name
-            shiny::reactive({
-              filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
-              if (!is.null(grouped_vars)){
-                filtered_data_frame <- filtered_data_frame %>%
-                  dplyr::full_join(grouped_vars)
-              }
-              if (key_var %in% names(filtered_data_frame)){
-                filtered_data_frame <- filtered_data_frame %>% 
-                  dplyr::filter(.data[[key_var]] %in% valid_ids())
-              } else {
-                filtered_data_frame
-              }
-              return(filtered_data_frame)
-            })
-          }
-          
           for (df_name in list_of_df_names) {
-            list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, key_var, valid_ids, grouped_vars())
+            list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, NULL, valid_ids, grouped_vars())
           }
         } else {
           # TODO : what if there is no key?
         }
       } else {
         filtered_data  <- shiny::reactive({ grouped_data() })#data.frame
+        for (df_name in list_of_df_names) {
+          list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, NULL, valid_ids, NULL)
+        }
       }
     } else {
       filtered_data <- shiny::reactive({ data_frame })
+      for (df_name in list_of_df_names) {
+        list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, NULL, valid_ids, NULL)
+      }
     }
     
     # display content is for displaying the content for where?
