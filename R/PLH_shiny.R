@@ -167,7 +167,6 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       
       # if we have grouping involved - ######################################-
       if (nrow(group_box_data) > 0){
-        
         # this doesn't run on other tabs atm.
         # TODO: need this to work elsewhere, and to have it work on other dfs
         grouped_data <- shiny::eventReactive(input$group_by_button, {
@@ -222,7 +221,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           
           if (nrow(group_box_data) > 0){
             grouped_vars <- shiny::eventReactive(input$group_by_button, {
-              grouped_data() %>%dplyr::select(c(key_var, group_box_data$variable))
+              grouped_data() %>% dplyr::select(c(key_var, group_box_data$variable))
             })
           } else {
             null_function <- function() {
@@ -232,8 +231,8 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           }
           
           for (df_name in list_of_df_names) {
-            list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, NULL, valid_ids, grouped_vars())
-          }
+            list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, key_var, valid_ids, grouped_vars())
+            }
         } else {
           # TODO : what if there is no key?
         }
