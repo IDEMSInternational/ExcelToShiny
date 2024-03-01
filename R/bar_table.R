@@ -35,7 +35,7 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
       data  # Return NULL or handle the error as appropriate
     })
   }
-  
+
   # Refactor the histogram plotting into a separate function
   create_histogram_plot <- function(data, variable, grouped_vars) {
     if (!is.null(grouped_vars)){
@@ -51,12 +51,12 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
         ggplot2::labs(y = "Count", x = naming_conventions(variable)) 
     }
   }
-  
+
   if (type == "freq") {
     if (!is.null(grouped_vars)){
-     all_return$table <- summary_table(data = data, factors = c(.data[[variable]], .data[[grouped_vars]]), include_margins = FALSE)
+     all_return$table <- summary_table(data = data, factors = c(variable, grouped_vars), include_margins = FALSE)
     } else {
-      all_return$table <- summary_table(data = data, factors = .data[[variable]], include_margins = FALSE)
+      all_return$table <- summary_table(data = data, factors = variable, include_margins = FALSE)
     }
   } else {
     table_data <- dplyr::filter(data, !is.na(data[[variable]]))
@@ -70,6 +70,7 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
                        #N = length(!is.na(!!sym(variable)))) '# remove n for now
   }
   
+
   plot_obj <- create_histogram_plot(data, variable, grouped_vars)
   if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
     plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)
@@ -82,6 +83,6 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
     })
   }
   all_return$plot <- plot_obj
-  
+
   return(all_return)
 }

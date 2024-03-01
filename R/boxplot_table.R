@@ -61,9 +61,9 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
   
   if (type == "freq"){
     if (!is.null(grouped_vars)){
-      table_data <- summary_table(data = data, factors = c(.data[[variable]], .data[[grouped_vars]]), include_margins = FALSE)
+      table_data <- summary_table(data = data, factors = c(variable, grouped_vars), include_margins = FALSE)
     } else {
-      table_data <- summary_table(data = data, factors = .data[[variable]], include_margins = FALSE)
+      table_data <- summary_table(data = data, factors = variable, include_margins = FALSE)
     }
   } else {
     table_data <- dplyr::filter(data, !is.na(data[[variable]]))
