@@ -73,8 +73,8 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
     }
     table_data <- table_data %>%
       dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
-                       SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2),
-                       N = length(!is.na(!!sym(variable))))
+                       SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2)) # temp. remove N
+                      # N = length(!is.na(!!sym(variable))))
   }
   all_return[[1]] <- table_data
   all_return[[2]] <- plot_to_return

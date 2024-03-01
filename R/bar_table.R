@@ -66,8 +66,8 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
     }
     all_return$table <- table_data %>%
       dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
-                       SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2),
-                       N = length(!is.na(!!sym(variable))))
+                       SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2))
+                       #N = length(!is.na(!!sym(variable)))) '# remove n for now
   }
   
   plot_obj <- create_histogram_plot(data, variable, grouped_vars)
