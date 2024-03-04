@@ -38,7 +38,7 @@ download_sheet <- function(data_list, spreadsheet_name, status = "primary", colo
                                                                                         height = "95px"))),
                                       
                                       # Tab contents
-                                      useShinyjs(),
+                                      shinyjs::useShinyjs(),
                                       shinyauthr::loginUI(paste0("login", j)),
                                       uiOutput(paste0("build_download", j))
   )
