@@ -176,7 +176,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
             grouped_data <- grouped_data %>%
               dplyr::group_by(!!sym(group_box_data$variable), .add = TRUE)
           } else {
-            grouped_data <- grouped_data %>% ungroup()
+            if (!is.null(grouped_data)) grouped_data <- grouped_data %>% ungroup()
           }
           return(grouped_data)
         })
@@ -368,10 +368,12 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # The "download" sheets -----------------------------------------
     # todo: CSV set up - function that writes multiple formats to use instead of write.csv
     # `write`?
+    
     if (length(which(data_list$contents$type == "Download")) > 1){
       warning("Use only one download tab. It will be implemented later to have multiple download tabs, but currently this is not available.")
     }
     
+    # Render the table that is selected
     render_table <- function(j = 1){
       return(output[[paste0("table", j)]] <- shiny::renderDataTable({datasetInput()}))
     }
@@ -392,10 +394,55 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     datasets <- NULL
     for (j in which(data_list$contents$type == "Download")){
       spreadsheet <- data_list$contents$ID[j]
-      data_to_download <- data_list[[spreadsheet]] %>% dplyr::filter(type == "Data")
+      spreadsheet <- data_list[[spreadsheet]]
+      data_label <- (spreadsheet %>% dplyr::filter(type == "Data label"))$name
+      download_label <- (spreadsheet %>% dplyr::filter(type == "Download label"))$name
+      data_to_download <- spreadsheet %>% dplyr::filter(type == "Data")
+      data_names <- data_to_download$name
       
       # currently this overwrites by having two sheets to download - todo: fix up so we can have multiple downloaded pages. 
       datasets[[j]] <- get_data_to_download(data_to_download)
+      
+      # If we have credentials then do this:
+      if ("Credentials" %in% spreadsheet$type){
+        credentials <- shinyauthr::loginServer(
+          id = paste0("login", j),
+          data = credentials_data,
+          user_col = user,
+          pwd_col = password)
+        # build the download:
+        output[[paste0("build_download", j)]] <- renderUI({
+          req(credentials()$user_auth)
+          if (credentials()$info$user == "admin"){
+            tagList(fluidRow(
+              box(width = 6, 
+                  shiny::selectInput(paste0("dataset", j),
+                                     data_label,
+                                     choices = data_names),
+                  # Button
+                  shiny::downloadButton(paste0("downloadData", j), download_label)),
+              shiny::fluidRow(shinydashboard::box(width = 12,
+                                                  shiny::dataTableOutput(paste0("table", j)),
+                                                  style='width:100%;overflow-x: scroll;'))))
+          }
+        })
+      } else {
+        # build the download:
+        output[[paste0("build_download", j)]] <- renderUI({
+          tagList(fluidRow(
+            box(width = 6, 
+                shiny::selectInput(paste0("dataset", j),
+                                   data_label,
+                                   choices = data_names),
+                # Button
+                shiny::downloadButton(paste0("downloadData", j), download_label)),
+            shiny::fluidRow(shinydashboard::box(width = 12,
+                                                shiny::dataTableOutput(paste0("table", j)),
+                                                style='width:100%;overflow-x: scroll;'))))
+        })
+      }
+     
+
       
       # Define a reactive to select the dataset
       datasetInput <- shiny::reactive({

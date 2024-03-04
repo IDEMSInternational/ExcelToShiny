@@ -28,7 +28,9 @@ display_contents <- function(contents1 = contents, data_frame, data_list, loop =
     spreadsheet <- data_list[[names_display[[i]]]]
     # # check unique names
     if (length(unique(spreadsheet$name)) != nrow(spreadsheet)){
-      stop(paste0("Non-unique names given in `name` column in ", names_display[[i]]))
+      if (contents_type[[i]] != "Download"){
+        stop(paste0("Non-unique names given in `name` column in ", names_display[[i]]))
+      }
     }
     
     if (contents_type[[i]] == "Display"){

@@ -15,17 +15,8 @@ download_sheet <- function(data_list, spreadsheet_name, status = "primary", colo
   data_label <- (spreadsheet %>% dplyr::filter(type == "Data label"))$name
   download_label <- (spreadsheet %>% dplyr::filter(type == "Download label"))$name
   data_names <- (spreadsheet %>% dplyr::filter(type == "Data"))$name
-  
+
   # be able to edit choices, format (csv, etc), table name.
-  tab_item_objects <- shiny::fluidRow(
-    shinydashboard::box(width = 6,
-                        shiny::selectInput(paste0("dataset", j),
-                                           data_label,
-                                           choices = data_names),
-        # Button
-        shiny::downloadButton(paste0("downloadData", j), download_label)),
-    shiny::fluidRow(shinydashboard::box(width = 12, shiny::dataTableOutput(paste0("table", j))))
-  )
   
   main_page_info <- which(data_list[["contents"]][["ID"]] == spreadsheet_name)
   main_page_info <- data_list[["contents"]][main_page_info,]
@@ -47,7 +38,9 @@ download_sheet <- function(data_list, spreadsheet_name, status = "primary", colo
                                                                                         height = "95px"))),
                                       
                                       # Tab contents
-                                      tab_item_objects
+                                      useShinyjs(),
+                                      shinyauthr::loginUI(paste0("login", j)),
+                                      uiOutput(paste0("build_download", j))
   )
   
   return(tab_item)
