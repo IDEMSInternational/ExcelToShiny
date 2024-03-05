@@ -38,14 +38,16 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   # if we have grouping in our main df, we should use these as grouping variables in our other dfs.
   grouped_vars <- group_vars(data_frame)   # these need to be read in as factors in our plots and tables
   
-  # get data frame
-  if (is.null(filtered_spreadsheet$data) || is.na(filtered_spreadsheet$data)){
+  # if it doesn't exist, or it does exist and is NA
+  # doing this way to account for partial matching with "data_manip"
+  if (is.na(match("data", names(filtered_spreadsheet))) || 
+      (!is.na(match("data", names(filtered_spreadsheet))) && is.na(filtered_spreadsheet %>% pull("data"))) ){
     data_frame_read <- data_frame
   } else {
     data_frame_read <- list_of_reactives[[filtered_spreadsheet$data]]()
   }
   data_frame_read <- data_frame_read %>% ungroup()
-  # 
+  
   # # group our new df.
   # if (length(grouped_vars) > 0){
   #   data_frame_read <- data_frame_read %>% group_by(!!sym(grouped_vars))
@@ -68,7 +70,7 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
       }
     }
   }
-
+  
   if (length(grouped_vars) == 0) grouped_vars <- NULL
   # Refactor repeated code using a mapping strategy
   value_function_map <- list(
@@ -81,7 +83,7 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     scatter_summary = function() scatter_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
     specify_plot = function() specify_plot(data = data_frame_read, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars)
   )
-
+  
   # Execute the appropriate function based on the 'value'
   value <- filtered_spreadsheet$value
   if (!value %in% names(value_function_map)) {
