@@ -124,7 +124,11 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     complete_dfs <- NULL
     list_of_df_names <- NULL
     for (i in 1:length(data_list)){
-      data_l_dfs <- data_list[[i]]$data
+      if ("data" %in% names(data_list[[i]])) {
+        data_l_dfs <- data_list[[i]]$data
+      } else {
+        data_l_dfs <- NULL
+      }
       if (!is.null(data_l_dfs)){
         list_of_df_names[[i]] <- unique(data_l_dfs)
       }
@@ -270,8 +274,6 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     })
     
     # update list_of_reactives and filtered_data to contain bits from grouped_data
-    
-    
     display_content_by_tab <- function(tab_name){
       # Check if the current tab matches the given tab name
       if (input$tab == tab_name) {
