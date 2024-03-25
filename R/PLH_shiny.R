@@ -12,7 +12,7 @@
 #'
 #' @return Shiny App
 #' @export
-#'
+#' 
 PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14", key_var = NULL){
   colour <- tolower(colour)
   if (colour == "blue") {
@@ -173,12 +173,25 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       if (nrow(group_box_data) > 0){
         # this doesn't run on other tabs atm.
         # TODO: need this to work elsewhere, and to have it work on other dfs
-        grouped_data <- shiny::eventReactive(input$group_by_button, {
+        grouped_data <- shiny::eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
           grouped_data <- data_frame
           
-          if (input$group_by_button){
-            grouped_data <- grouped_data %>%
-              dplyr::group_by(!!sym(group_box_data$variable), .add = TRUE)
+          if (input$goButton_group){
+            group_names <- NULL
+            for (i in 1:length(group_on_main_page)){
+              id_name <- group_on_main_page[[i]]$children[[1]]$children[[1]]$children[[1]]$attribs$id
+              if (input[[id_name]]) group_names <- id_name
+            }
+            
+            if (!is.null(group_names)){
+              group_box_data_i <- group_box_data %>%
+                dplyr::filter(name == id_name)
+              grouped_data <- grouped_data %>%
+                # from sym, only works with one variable at the moment
+                dplyr::group_by(!!sym(group_box_data_i$variable), .add = TRUE)
+            } else {
+              grouped_data <- grouped_data %>% dplyr::ungroup()
+            }
           } else {
             if (!is.null(grouped_data)) grouped_data <- grouped_data %>% ungroup()
           }
@@ -224,7 +237,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           })
           
           if (nrow(group_box_data) > 0){
-            grouped_vars <- shiny::eventReactive(input$group_by_button, {
+            grouped_vars <- shiny::eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
               grouped_data() %>% dplyr::select(c(key_var, group_box_data$variable))
             })
           } else {
@@ -236,7 +249,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           
           for (df_name in list_of_df_names) {
             list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, key_var, valid_ids, grouped_vars())
-            }
+          }
         } else {
           # TODO : what if there is no key?
         }
@@ -301,20 +314,20 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     # value boxes at the top of the thing
     # This needs to run always
     #if (!is.null(filter_on_main_page) | !is.null(group_on_main_page)){
-      # Process spreadsheet data outside of the top_value_boxes function
-      processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
-      
-      shiny::observe({ # observeEvent - this should occur when filtered_data() is updated
-        # running for changed elements.
-        lapply(seq_len(length(unique(spreadsheet_shiny_value_box$name))), function(i) {
-          ID <- spreadsheet_shiny_value_box[i,]$name
-          top_box <- top_value_boxes(data_frame = filtered_data(),
-                                     spreadsheet = spreadsheet_shiny_value_box,
-                                     processed_spreadsheet = processed_spreadsheet_data,
-                                     unique_ID = ID)
-          output[[ID]] <- shinydashboard::renderValueBox(top_box)
-        })
+    # Process spreadsheet data outside of the top_value_boxes function
+    processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
+    
+    shiny::observe({ # observeEvent - this should occur when filtered_data() is updated
+      # running for changed elements.
+      lapply(seq_len(length(unique(spreadsheet_shiny_value_box$name))), function(i) {
+        ID <- spreadsheet_shiny_value_box[i,]$name
+        top_box <- top_value_boxes(data_frame = filtered_data(),
+                                   spreadsheet = spreadsheet_shiny_value_box,
+                                   processed_spreadsheet = processed_spreadsheet_data,
+                                   unique_ID = ID)
+        output[[ID]] <- shinydashboard::renderValueBox(top_box)
       })
+    })
     #}
     
     # blanking these out: Then it runs right away (because we're not running the tables stuff?)
@@ -443,8 +456,8 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
                                                 style='width:100%;overflow-x: scroll;'))))
         })
       }
-     
-
+      
+      
       
       # Define a reactive to select the dataset
       datasetInput <- shiny::reactive({

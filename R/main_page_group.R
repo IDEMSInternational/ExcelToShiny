@@ -18,26 +18,30 @@ main_page_group <- function(spreadsheet){
   # For the group input
   checkbox_group_input <- NULL
   checkbox_group_data <- spreadsheet
-
+  
   # for value == "checkbox_group"
-  if (nrow(checkbox_group_data) > 1){
-    stop("Currently only support one group by")
-  } else {
-    #name <- checkbox_group_data$name
-    spreadsheet_parameters <- checkbox_group_data$parameter_list
-      print(spreadsheet_parameters)
+  #if (nrow(checkbox_group_data) > 1){
+  #  stop("Currently only support one group by")
+  #} else {
+  #name <- checkbox_group_data$name
+  
+  if (nrow(checkbox_group_data) > 0){
+    for (i in 1:nrow(checkbox_group_data)){
+      checkbox_group_data_i <- checkbox_group_data[i,]
+      spreadsheet_parameters <- checkbox_group_data_i$parameter_list
+      name <- checkbox_group_data_i$name
       label <- get_parameter_value(spreadsheet_parameters, name = "label")
       value <- get_parameter_value(spreadsheet_parameters, name = "value", logical = TRUE)
-      print(spreadsheet_parameters)
       width <- get_parameter_value(spreadsheet_parameters, name = "width")
       # todo - set up for inline (TRUE/FALSE parameter)
-      
-      checkbox_group_input[[1]] <- shiny::checkboxInput(inputId = paste0("group_by_button"),
-                                                             label = label,
+      checkbox_group_input[[i]] <- shiny::checkboxInput(inputId = paste0(name),
+                                                        label = label,
                                                         value = value,
                                                         width = width)
-      return(checkbox_group_input)
+    }
   }
+  return(checkbox_group_input)
+  #}
   # return(shinydashboard::box(width = 6,
   #                            checkbox_group_input,
   #                            # then run the actionButton
