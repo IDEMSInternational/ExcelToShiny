@@ -51,25 +51,30 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
         ggplot2::labs(y = "Count", x = naming_conventions(variable)) 
     }
   }
-
-  if (type == "freq") {
-    if (!is.null(grouped_vars)){
-     all_return$table <- summary_table(data = data, factors = c(variable, grouped_vars), include_margins = FALSE)
-    } else {
-      all_return$table <- summary_table(data = data, factors = variable, include_margins = FALSE)
-    }
-  } else {
-    table_data <- dplyr::filter(data, !is.na(data[[variable]]))
-    
-    if (!is.null(grouped_vars)){
-      table_data <- table_data %>% group_by(!!sym(grouped_vars))
-    }
-    all_return$table <- table_data %>%
-      dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
-                       SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2))
-                       #N = length(!is.na(!!sym(variable)))) '# remove n for now
-  }
   
+  #print(spreadsheet$table_manip)
+  if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip) && spreadsheet$table_manip == "none"){
+    #all_return$table <- NA
+    all_return$table <- "No Table Given"
+  } else {
+    if (type == "freq") {
+      if (!is.null(grouped_vars)){
+        all_return$table <- summary_table(data = data, factors = c(variable, grouped_vars), include_margins = FALSE)
+      } else {
+        all_return$table <- summary_table(data = data, factors = variable, include_margins = FALSE)
+      }
+    } else {
+      table_data <- dplyr::filter(data, !is.na(data[[variable]]))
+      
+      if (!is.null(grouped_vars)){
+        table_data <- table_data %>% group_by(!!sym(grouped_vars))
+      }
+      all_return$table <- table_data %>%
+        dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
+                         SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2))
+      #N = length(!is.na(!!sym(variable)))) '# remove n for now
+    }
+  }
 
   plot_obj <- create_histogram_plot(data, variable, grouped_vars)
   if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
