@@ -52,7 +52,6 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
     }
   }
   
-  #print(spreadsheet$table_manip)
   if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip) && spreadsheet$table_manip == "none"){
     #all_return$table <- NA
     all_return$table <- "No Table Given"

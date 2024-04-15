@@ -59,22 +59,26 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
     })
   }
   
-  if (type == "freq"){
-    if (!is.null(grouped_vars)){
-      table_data <- summary_table(data = data, factors = c(variable, grouped_vars), include_margins = FALSE)
-    } else {
-      table_data <- summary_table(data = data, factors = variable, include_margins = FALSE)
-    }
+  if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip) && spreadsheet$table_manip == "none"){
+    all_return$table <- "No Table Given"
   } else {
-    table_data <- dplyr::filter(data, !is.na(data[[variable]]))
-    
-    if (!is.null(grouped_vars)){
-      table_data <- table_data %>% group_by(!!sym(grouped_vars))
+    if (type == "freq"){
+      if (!is.null(grouped_vars)){
+        table_data <- summary_table(data = data, factors = c(variable, grouped_vars), include_margins = FALSE)
+      } else {
+        table_data <- summary_table(data = data, factors = variable, include_margins = FALSE)
+      }
+    } else {
+      table_data <- dplyr::filter(data, !is.na(data[[variable]]))
+      
+      if (!is.null(grouped_vars)){
+        table_data <- table_data %>% group_by(!!sym(grouped_vars))
+      }
+      table_data <- table_data %>%
+        dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
+                         SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2)) # temp. remove N
+      # N = length(!is.na(!!sym(variable))))
     }
-    table_data <- table_data %>%
-      dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
-                       SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2)) # temp. remove N
-                      # N = length(!is.na(!!sym(variable))))
   }
   all_return[[1]] <- table_data
   all_return[[2]] <- plot_to_return
