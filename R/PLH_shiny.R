@@ -35,6 +35,18 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     }
   }
   
+  
+  # list of sheets
+  
+  # check the variables exist
+  for (df_name in names(data_l)){
+    sheet <- data_list[[df_name]]
+    data_frame_name <- deparse(substitute(data_frame))
+    results <- NULL
+    results <- check_variables_existence(sheet, data_frame = data_frame_name)
+    if (!is.null(results) && nrow(results) > 0) check_unknown_variables(results)
+  }
+
   # Populate items for the tabs ------------------------------------------------
   display_box <- display_contents(data_frame = data_frame, contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
   my_tab_items <- create_tab_items(data_list = data_list,
@@ -120,7 +132,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     
     # run through the other sheets and get all data frame names
     # then save them all as "name_1" to call later.
-    # this is for filtering purposes
+    # this is for filtering and checking purposes
     complete_dfs <- NULL
     list_of_df_names <- NULL
     for (i in 1:length(data_list)){
@@ -136,6 +148,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     list_of_df_names <- unique(unlist(list_of_df_names))
     if (!is.null(list_of_df_names) && !is.na(list_of_df_names)){
       for (df_name in list_of_df_names){
+        # store it for use of filtering et
         new_name <- paste0(df_name, "_1")
         stored_data <- get(df_name)
         assign(new_name, stored_data, envir = environment())
