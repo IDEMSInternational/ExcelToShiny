@@ -1,14 +1,17 @@
-#' Add a variable to the data containing NA values
-#' @description If a variable is missing in the data frame, add in that variable (with a warning) with NA as its values
+#' Add NA Variable
 #'
-#' @param data Data frame to add the variable to.
-#' @param variable Variable name to add in the data frame.
+#' Add NA values to the specified variables in the data frame if they do not exist.
 #'
-#' @return Data frame
+#' @param data A data frame. Default is `contacts_unflat`.
+#' @param variable A character vector specifying the variable(s) to add NA values to.
+#'
+#' @return The modified data frame with NA values added.
+#'
+#' @examples
+#' add_na_variable(data = mtcars, variable = c("cyl", "var2"))
+#'
 #' @export
-#'
-#' @examples # TODO
-add_na_variable <- function(data, variable){
+add_na_variable <- function(data = contacts_unflat, variable){
   for (names in variable) {
     if (!names %in% colnames(data)) {
       data[, names] <- NA

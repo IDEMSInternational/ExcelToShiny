@@ -2,21 +2,22 @@
 % Please edit documentation in R/add_na_variable.R
 \name{add_na_variable}
 \alias{add_na_variable}
-\title{Add a variable to the data containing NA values}
+\title{Add NA Variable}
 \usage{
-add_na_variable(data, variable)
+add_na_variable(data = contacts_unflat, variable)
 }
 \arguments{
-\item{data}{Data frame to add the variable to.}
+\item{data}{A data frame. Default is \code{contacts_unflat}.}
 
-\item{variable}{Variable name to add in the data frame.}
+\item{variable}{A character vector specifying the variable(s) to add NA values to.}
 }
 \value{
-Data frame
+The modified data frame with NA values added.
 }
 \description{
-If a variable is missing in the data frame, add in that variable (with a warning) with NA as its values
+Add NA values to the specified variables in the data frame if they do not exist.
 }
 \examples{
-# TODO
+add_na_variable(data = mtcars, variable = c("cyl", "var2"))
+
 }
