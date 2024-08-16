@@ -1,19 +1,12 @@
-#' Main Page Group
-#' 
-#' This function generates a group input widget for a shinydashboard main page.
-#' 
-#' @param spreadsheet A data frame containing parameters for generating the group input.
-#' 
-#' @return A shiny input widget for grouping data.
-#' 
-#' @details This function is designed to create a group input widget for a shinydashboard main page. 
-#' It currently supports only one group by.
-#' 
-#' @export
-#' @examples
-#' # Sample usage
-#' #main_page_group(my_spreadsheet_data)
-#' 
+#' Generate Main Page Group Input Widget
+#'
+#' This function generates a group input widget for a `shinydashboard` main page. The widget is created based on the parameters provided in the `spreadsheet` data frame and is currently designed to support a single group input.
+#'
+#' @param spreadsheet A data frame containing the parameters for generating the group input widget. The data frame should include columns such as `name` and `parameter_list` that define the input widget's configuration.
+#'
+#' @return A list of shiny input widgets for grouping data, each created according to the specifications in the `spreadsheet`.
+#'
+#' @details This function creates a checkbox input widget (or multiple widgets) for grouping data on a `shinydashboard` main page. Currently, the function supports only one group by input at a time.
 main_page_group <- function(spreadsheet){
   # For the group input
   checkbox_group_input <- NULL

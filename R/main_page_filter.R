@@ -1,35 +1,10 @@
-#' Checkbox Group Input
+#' Generate Checkbox Group Input Elements
 #'
-#' This function generates a set of checkbox group input elements based on the provided checkbox data.
+#' This function generates a set of checkbox group input elements based on the provided checkbox data, and returns them within a Shiny dashboard box along with a submit action button.
 #'
-#' @param checkbox_data A data frame containing information about the checkbox groups to be created.
+#' @param spreadsheet A data frame containing information about the checkbox groups to be created. The data frame should include columns such as `type`, `name`, and `parameter_list` that define the checkbox group inputs.
 #'
-#' @return A list containing checkbox group input elements and an action button.
-#'
-#' @export
-#'
-#' @examples
-#' ## Not Run 
-#' checkbox_group_data2 <- data.frame(type = c("checkbox_group", "checkbox_group"),
-#'                                    name = c("variable", "variable2"),
-#'                                    parameter_list = c('label = "variable", choices = c("Cylinders" = "cyl", "Transmission" = "am", "Gears" = "gear")',
-#'                                                       'label = "variable2", choices = c("Cyls" = "Sepal.Length", "Gers" = "Sepal.Width")'))
-#' ui <- shiny::fluidPage(
-#'  main_page_filter(checkbox_group_data2),
-#'    shiny::tableOutput("data"),
-#'    shiny::tableOutput("data2")
-#'  )
-#'server <- function(input, output, session) {
-#'  output$data <- renderTable({
-#'  mtcars[, c("mpg", input$variable), drop = FALSE]
-#'  }, rownames = TRUE)
-#'  output$data2 <- renderTable({
-#'  iris[, c("Species", input$variable2), drop = FALSE]
-#'  }, rownames = TRUE)
-#'}
-#'
-#'#NOT RUN:
-#'#shiny::shinyApp(ui, server)
+#' @return A `shinydashboard::box` object containing the generated checkbox group input elements and an action button for submission.
 main_page_filter <- function(spreadsheet){
   # For the group input
   checkbox_group_input <- NULL

@@ -2,25 +2,19 @@
 % Please edit documentation in R/main_page_group.R
 \name{main_page_group}
 \alias{main_page_group}
-\title{Main Page Group}
+\title{Generate Main Page Group Input Widget}
 \usage{
 main_page_group(spreadsheet)
 }
 \arguments{
-\item{spreadsheet}{A data frame containing parameters for generating the group input.}
+\item{spreadsheet}{A data frame containing the parameters for generating the group input widget. The data frame should include columns such as \code{name} and \code{parameter_list} that define the input widget's configuration.}
 }
 \value{
-A shiny input widget for grouping data.
+A list of shiny input widgets for grouping data, each created according to the specifications in the \code{spreadsheet}.
 }
 \description{
-This function generates a group input widget for a shinydashboard main page.
+This function generates a group input widget for a \code{shinydashboard} main page. The widget is created based on the parameters provided in the \code{spreadsheet} data frame and is currently designed to support a single group input.
 }
 \details{
-This function is designed to create a group input widget for a shinydashboard main page.
-It currently supports only one group by.
-}
-\examples{
-# Sample usage
-#main_page_group(my_spreadsheet_data)
-
+This function creates a checkbox input widget (or multiple widgets) for grouping data on a \code{shinydashboard} main page. Currently, the function supports only one group by input at a time.
 }

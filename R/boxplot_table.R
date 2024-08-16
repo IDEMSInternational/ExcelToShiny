@@ -9,7 +9,6 @@
 #' @param grouped_vars Optional character string specifying the variable to group by in the table and plot.
 #'
 #' @return A list containing a summary table and a ggplot boxplot object for use in `Shiny`.
-#' @export
 boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadsheet, grouped_vars = NULL){
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)

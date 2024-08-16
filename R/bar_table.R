@@ -17,7 +17,6 @@
 #' print(result$table)
 #' print(result$plot)
 #'
-#' @export
 bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, grouped_vars = NULL) {
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)

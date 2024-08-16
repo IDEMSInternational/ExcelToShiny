@@ -1,12 +1,19 @@
-#' Get Parameter Value
+#' Get Parameter Value from Spreadsheet Parameters
 #'
-#' This function extracts a parameter value from a string that represents a set of spreadsheet parameters.
+#' This function extracts a parameter value from a string that represents a set of spreadsheet parameters. The function supports extracting values as strings, lists, or logical values.
 #'
-#' @param spreadsheet_parameters A character string containing the spreadsheet parameters.
-#' @param name The name of the parameter whose value you want to extract. Default is "label".
-#' @param list Logical value indicating whether the parameter value should be treated as a list.
+#' @param spreadsheet_parameters A character string containing the spreadsheet parameters, formatted as key-value pairs.
+#' @param name The name of the parameter whose value you want to extract. Default is `"label"`.
+#' @param list Logical value indicating whether the parameter value should be treated as a list. Default is `FALSE`.
+#' @param logical Logical value indicating whether the parameter value should be treated as a logical (`TRUE` or `FALSE`). Default is `FALSE`.
 #'
-#' @return The value of the specified parameter. If the parameter is not found, it returns NULL.
+#' @return The value of the specified parameter. The return type depends on the `list` and `logical` arguments:
+#' \itemize{
+#'   \item If `list = FALSE` and `logical = FALSE`, it returns the parameter as a string.
+#'   \item If `list = TRUE`, it returns the parameter as a character vector (list).
+#'   \item If `logical = TRUE`, it returns the parameter as a logical value.
+#' }
+#' If the parameter is not found, the function returns `NULL`.
 #'
 #' @export
 #'
@@ -17,11 +24,15 @@
 #'
 #' # Extract a parameter value as a list
 #' param_list <- 'options = c("Option1", "Option2", "Option3")'
-#' get_parameter_value(param_list, "options", list = TRUE)  # Returns a character vector c("Option1", "Option2", "Option3")
+#' get_parameter_value(param_list, name = "options", list = TRUE)  # Returns c("Option1", "Option2", "Option3")
+#'
+#' # Extract a logical parameter value
+#' param_logical <- 'is_active = TRUE'
+#' get_parameter_value(param_logical, name = "is_active", logical = TRUE)  # Returns TRUE
 #'
 #' # Parameter not found
 #' param_not_found <- 'other_param = 42'
-#' get_parameter_value(param_not_found)
+#' get_parameter_value(param_not_found)  # Returns NULL
 get_parameter_value <- function(spreadsheet_parameters, name = "label", list = FALSE, logical = FALSE){
   #spreadsheet_parameters <- trimws(spreadsheet_parameters)
   if (stringr::str_detect(spreadsheet_parameters, paste0(name, " ="))) {

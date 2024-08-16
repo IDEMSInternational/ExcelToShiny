@@ -9,7 +9,6 @@
 #' @param label_plot Identifier for the plot output within the box.
 #'
 #' @return A list containing the constructed box for use in `Shiny` applications, along with associated labels and identifiers.
-#' @export
 box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_plot){
   all_return <- NULL
   

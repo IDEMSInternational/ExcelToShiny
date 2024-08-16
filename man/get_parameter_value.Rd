@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_parameter_value.R
 \name{get_parameter_value}
 \alias{get_parameter_value}
-\title{Get Parameter Value}
+\title{Get Parameter Value from Spreadsheet Parameters}
 \usage{
 get_parameter_value(
   spreadsheet_parameters,
@@ -12,17 +12,25 @@ get_parameter_value(
 )
 }
 \arguments{
-\item{spreadsheet_parameters}{A character string containing the spreadsheet parameters.}
+\item{spreadsheet_parameters}{A character string containing the spreadsheet parameters, formatted as key-value pairs.}
 
-\item{name}{The name of the parameter whose value you want to extract. Default is "label".}
+\item{name}{The name of the parameter whose value you want to extract. Default is \code{"label"}.}
 
-\item{list}{Logical value indicating whether the parameter value should be treated as a list.}
+\item{list}{Logical value indicating whether the parameter value should be treated as a list. Default is \code{FALSE}.}
+
+\item{logical}{Logical value indicating whether the parameter value should be treated as a logical (\code{TRUE} or \code{FALSE}). Default is \code{FALSE}.}
 }
 \value{
-The value of the specified parameter. If the parameter is not found, it returns NULL.
+The value of the specified parameter. The return type depends on the \code{list} and \code{logical} arguments:
+\itemize{
+\item If \code{list = FALSE} and \code{logical = FALSE}, it returns the parameter as a string.
+\item If \code{list = TRUE}, it returns the parameter as a character vector (list).
+\item If \code{logical = TRUE}, it returns the parameter as a logical value.
+}
+If the parameter is not found, the function returns \code{NULL}.
 }
 \description{
-This function extracts a parameter value from a string that represents a set of spreadsheet parameters.
+This function extracts a parameter value from a string that represents a set of spreadsheet parameters. The function supports extracting values as strings, lists, or logical values.
 }
 \examples{
 # Extract a parameter value as a string
@@ -31,9 +39,13 @@ get_parameter_value(param_string)  # Returns "Value"
 
 # Extract a parameter value as a list
 param_list <- 'options = c("Option1", "Option2", "Option3")'
-get_parameter_value(param_list, "options", list = TRUE)  # Returns a character vector c("Option1", "Option2", "Option3")
+get_parameter_value(param_list, name = "options", list = TRUE)  # Returns c("Option1", "Option2", "Option3")
+
+# Extract a logical parameter value
+param_logical <- 'is_active = TRUE'
+get_parameter_value(param_logical, name = "is_active", logical = TRUE)  # Returns TRUE
 
 # Parameter not found
 param_not_found <- 'other_param = 42'
-get_parameter_value(param_not_found)
+get_parameter_value(param_not_found)  # Returns NULL
 }
