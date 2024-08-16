@@ -2,7 +2,7 @@
 % Please edit documentation in R/bar_table.R
 \name{bar_table}
 \alias{bar_table}
-\title{Creating box to be used in \code{PLH_shiny} function}
+\title{Create a Box for Use in Shiny Dashboards}
 \usage{
 bar_table(
   data,
@@ -12,9 +12,28 @@ bar_table(
   grouped_vars = NULL
 )
 }
+\arguments{
+\item{data}{A data frame or a list. If a list, the table is extracted from the list element specified by \code{variable}.}
+
+\item{variable}{A character string specifying the variable of interest within the data.}
+
+\item{type}{A character vector specifying the type of table to generate. Options are \code{"freq"} for frequency tables and \code{"summary"} for summary statistics (median, SD). Default is \code{"freq"}.}
+
+\item{spreadsheet}{A list containing data manipulation commands and options for customising the generated plot and table. It should include elements like \code{data_manip}, \code{table_manip}, and \code{graph_manip}.}
+
+\item{grouped_vars}{An optional character string specifying the variable to group by in the table and plot.}
+}
 \value{
-Box for use in \code{Shiny}
+A list with two elements: \code{table}, containing the generated summary table, and \code{plot}, containing the corresponding ggplot object.
 }
 \description{
-Creating box to be used in \code{PLH_shiny} function
+This function generates a list containing a summary table and a plot for use in \code{Shiny} applications, specifically designed for integration with the \code{PLH_shiny} function. It can handle grouped data and apply custom data manipulations based on the provided spreadsheet.
+}
+\examples{
+# Grouped summary table
+result <- bar_table(data = mtcars, variable = "mpg", type = "summary", 
+                   spreadsheet = list(), grouped_vars = "cyl")
+print(result$table)
+print(result$plot)
+
 }

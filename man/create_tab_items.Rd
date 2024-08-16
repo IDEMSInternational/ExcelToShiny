@@ -2,25 +2,22 @@
 % Please edit documentation in R/create_tab_items.R
 \name{create_tab_items}
 \alias{create_tab_items}
-\title{Title}
+\title{Create Tab Items for Shiny Application}
 \usage{
 create_tab_items(data_list, d_box, status = "primary", colour = "blue")
 }
 \arguments{
-\item{data_list}{todo}
+\item{data_list}{A list containing the contents to be displayed in the tabs. It should include a \code{contents} data frame with columns such as \code{type} and \code{ID}.}
 
-\item{d_box}{todo}
+\item{d_box}{A list of box objects to be used in the display. These boxes correspond to the items in \code{data_list}.}
 
-\item{status}{todo}
+\item{status}{A character string indicating the status of the tab items, used for styling. Default is \code{"primary"}.}
 
-\item{colour}{todo}
+\item{colour}{A character string specifying the colour theme for the tab items. Default is \code{"blue"}.}
 }
 \value{
-todo
+A list of tab items ready to be integrated into a Shiny application.
 }
 \description{
-Title
-}
-\examples{
- #todo
+This function generates tab items for a Shiny application based on the type of content specified in the \code{data_list}. It supports different types of sheets such as "Display", "Download", and "Tabbed_display".
 }

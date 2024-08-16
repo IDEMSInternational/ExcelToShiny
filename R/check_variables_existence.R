@@ -1,16 +1,11 @@
-#' Check Variables Existence
+#' Check Variables Existence in Specified Data Frames
 #'
-#' Check the existence of variables in the specified data frames.
+#' This function checks the existence of specified variables within designated data frames. It returns a data frame indicating which variables are missing from their respective data frames.
 #'
-#' @param df A data frame containing the variable names and data frame names.
-#' @param data_frame The default data frame to check against if data frame names are not provided in df.
+#' @param df A data frame containing at least two columns: `variable`, which holds the names of the variables to check, and `data`, which contains the names of the data frames where these variables should be found. If the `data` column is not provided or contains `NA`, the function uses `data_frame` as the default data frame.
+#' @param data_frame The default data frame to check against if data frame names are not provided in `df`.
 #'
-#' @return A data frame containing the results of variable existence checks.
-#'
-#' @examples
-#' #check_variables_existence(df = mtcars, data_frame = "my_default_df")
-#'
-#' @export
+#' @return A data frame containing only the rows where the specified variables were not found in the corresponding data frames. The returned data frame includes a `results` column indicating the success of the check.
 check_variables_existence <- function(df, data_frame) {
   results <- vector("logical", nrow(df))
   

@@ -1,15 +1,15 @@
-#' Title TODO
+#' Display Contents for Shiny Application
 #'
-#' @param contents1  TODO
-#' @param data_frame TODO
-#' @param data_list TODO
-#' @param loop TODO
-#' @param k TODO
+#' This function processes and displays contents within a Shiny application based on the specifications provided in the `contents1` data frame. It supports different types of displays, including standard "Display" sheets and "Tabbed_display" sheets.
 #'
-#' @return TODO
-#' @export
+#' @param contents1 A data frame containing details about the contents to display. It should include columns such as `ID` for unique identifiers and `type` for the type of display.
+#' @param data_frame The primary data frame containing the data to be displayed.
+#' @param data_list A list containing the data for each content sheet, referenced by the `ID` from `contents1`.
+#' @param loop An optional parameter used for handling nested "Tabbed_display" types. Default is `NULL`.
+#' @param k An integer or vector that controls the iteration for nested tabbed displays. Default is `1`.
 #'
-#' @examples #todo
+#' @return A list of display boxes ready to be integrated into a Shiny application.
+#' 
 display_contents <- function(contents1 = contents, data_frame, data_list, loop = NULL, k = 1){
   # Contents to display
   names_display <- contents1[["ID"]]

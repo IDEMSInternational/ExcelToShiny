@@ -2,20 +2,16 @@
 % Please edit documentation in R/check_unknown_variables.R
 \name{check_unknown_variables}
 \alias{check_unknown_variables}
-\title{Check Unknown Variables}
+\title{Check for Unknown Variables in a Data Frame}
 \usage{
 check_unknown_variables(df)
 }
 \arguments{
-\item{df}{A data frame containing information about variables and data frames.}
+\item{df}{A data frame containing information about variables and data frames, including a column \code{variable} for variable names and a logical column \code{results} indicating whether each variable is known.}
 }
 \value{
-A message indicating any unknown variables found.
+A message indicating if any unknown variables were found. If unknown variables are detected, the function raises an error listing these variables and their associated data frames.
 }
 \description{
-Check for unknown variables in the provided data frame.
-}
-\examples{
-check_unknown_variables(df = my_df)
-
+This function checks for any unknown variables in the provided data frame and returns a message indicating any issues found.
 }

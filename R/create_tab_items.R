@@ -1,15 +1,13 @@
-# what kind of sheet is it?
-#' Title
+#' Create Tab Items for Shiny Application
 #'
-#' @param data_list   todo
-#' @param d_box   todo
-#' @param status   todo
-#' @param colour   todo
+#' This function generates tab items for a Shiny application based on the type of content specified in the `data_list`. It supports different types of sheets such as "Display", "Download", and "Tabbed_display".
 #'
-#' @return  todo
-#' @export
+#' @param data_list A list containing the contents to be displayed in the tabs. It should include a `contents` data frame with columns such as `type` and `ID`.
+#' @param d_box A list of box objects to be used in the display. These boxes correspond to the items in `data_list`.
+#' @param status A character string indicating the status of the tab items, used for styling. Default is `"primary"`.
+#' @param colour A character string specifying the colour theme for the tab items. Default is `"blue"`.
 #'
-#' @examples  #todo
+#' @return A list of tab items ready to be integrated into a Shiny application.
 create_tab_items <- function(data_list, d_box, status = "primary", colour = "blue"){
   my_tab_items <- NULL
   i_disp <- 1

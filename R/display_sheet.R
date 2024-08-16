@@ -1,16 +1,16 @@
-#' Title
+#' Create a Display Sheet for Shiny Dashboard
 #'
-#' @param data_list todo
-#' @param spreadsheet_name todo
-#' @param d_box todo
-#' @param status todo
-#' @param colour todo
-#' @param j todo
+#' This function generates a tab item for a Shiny dashboard based on the contents of a spreadsheet. It organises display boxes within a tab layout, allowing for flexible row-based arrangement of elements in the dashboard.
 #'
-#' @return todo
+#' @param data_list A list containing data and configurations for the dashboard. It should include the `contents` data frame, which specifies the layout and structure.
+#' @param spreadsheet_name A character string specifying the name of the spreadsheet within `data_list` that defines the content for this tab item.
+#' @param d_box A list of display box objects created by the `display_sheet_setup` function, to be arranged within the tab.
+#' @param status A character string indicating the status of the tab item, used for styling. Default is `"primary"`.
+#' @param colour A character string specifying the background colour of the tab item. Default is `"blue"`.
+#' @param j An integer index used for identifying the current tab item within the dashboard. Default is `1`.
+#'
+#' @return A `tabItem` object for inclusion in a Shiny dashboard, containing the organised display elements.
 #' @export
-#'
-#' @examples #todo
 display_sheet <- function(data_list, spreadsheet_name, d_box, status = "primary", colour = "blue", j = 1){
   # Create the "div" for each row.
   # each row is stored in a list, split_row[[j]] (j = row)

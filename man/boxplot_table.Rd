@@ -2,7 +2,7 @@
 % Please edit documentation in R/boxplot_table.R
 \name{boxplot_table}
 \alias{boxplot_table}
-\title{Creating boxplot to be used in \code{PLH_shiny} function}
+\title{Creating a Boxplot to be Used in the \code{PLH_shiny} Function}
 \usage{
 boxplot_table(
   data,
@@ -13,19 +13,19 @@ boxplot_table(
 )
 }
 \arguments{
-\item{spreadsheet}{Spreadsheet that contains the template.}
+\item{data}{Data frame that contains the data to analyse.}
 
-\item{data_frame}{Data frame that contains the data to analyse.}
+\item{variable}{Character string specifying the variable of interest within the data.}
 
-\item{unique_ID}{Unique identifier.}
+\item{type}{Character vector specifying the type of table to generate. Options are \code{"summary"} for summary statistics (median, SD) or \code{"freq"} for frequency tables. Default is \code{"summary"}.}
 
-\item{label_table}{ID for the table.}
+\item{spreadsheet}{List containing commands and templates for data manipulation and plotting.}
 
-\item{label_plot}{ID for the plot.}
+\item{grouped_vars}{Optional character string specifying the variable to group by in the table and plot.}
 }
 \value{
-Box for use in \code{Shiny}
+A list containing a summary table and a ggplot boxplot object for use in \code{Shiny}.
 }
 \description{
-Creating boxplot to be used in \code{PLH_shiny} function
+This function generates a summary table and a boxplot for use in \code{Shiny} applications, specifically within the \code{PLH_shiny} function. It processes data according to the specifications in the provided spreadsheet.
 }

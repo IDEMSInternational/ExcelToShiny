@@ -1,12 +1,14 @@
-#' Creating boxplot to be used in `PLH_shiny` function
+#' Creating a Boxplot to be Used in the `PLH_shiny` Function
 #'
-#' @param data_frame Data frame that contains the data to analyse.
-#' @param spreadsheet Spreadsheet that contains the template.
-#' @param unique_ID Unique identifier.
-#' @param label_table ID for the table.
-#' @param label_plot ID for the plot.
+#' This function generates a summary table and a boxplot for use in `Shiny` applications, specifically within the `PLH_shiny` function. It processes data according to the specifications in the provided spreadsheet.
 #'
-#' @return Box for use in `Shiny`
+#' @param data Data frame that contains the data to analyse.
+#' @param variable Character string specifying the variable of interest within the data.
+#' @param type Character vector specifying the type of table to generate. Options are `"summary"` for summary statistics (median, SD) or `"freq"` for frequency tables. Default is `"summary"`.
+#' @param spreadsheet List containing commands and templates for data manipulation and plotting.
+#' @param grouped_vars Optional character string specifying the variable to group by in the table and plot.
+#'
+#' @return A list containing a summary table and a ggplot boxplot object for use in `Shiny`.
 #' @export
 boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadsheet, grouped_vars = NULL){
   type <- match.arg(type)

@@ -19,18 +19,18 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
     summary_output <- data %>%
-      dplyr::mutate(dplyr::across(c({{ columns_to_summarise }}), ~ (as.character(.x)))) %>%
-      dplyr::group_by(dplyr::across(c({{ columns_to_summarise }}, {{ factors }})), .drop = drop) %>%
+      dplyr::mutate(dplyr::across(all_of({{ columns_to_summarise }}), ~ (as.character(.x)))) %>%
+      dplyr::group_by(dplyr::across(all_of({{ columns_to_summarise }}, {{ factors }})), .drop = drop) %>%
       dplyr::summarise(n = dplyr::n(),
                        perc = dplyr::n()/nrow(data) * 100) %>%
       dplyr::ungroup()
     if (include_margins){
       cts_margin <- data %>%
-        dplyr::group_by(dplyr::across(c({{ columns_to_summarise }})), .drop = drop) %>%
+        dplyr::group_by(dplyr::across(all_of({{ columns_to_summarise }})), .drop = drop) %>%
         dplyr::summarise(n = dplyr::n(),
                          perc = dplyr::n()/nrow(data) * 100)      
       ftr_margin <- data %>%
-        dplyr::group_by(dplyr::across(c({{ factors }})), .drop = drop) %>%
+        dplyr::group_by(dplyr::across(all_of({{ factors }})), .drop = drop) %>%
         dplyr::summarise(n = dplyr::n(),
                          perc = dplyr::n()/nrow(data) * 100)      
       corner_margin <- data %>%
@@ -62,7 +62,7 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
     
     if (include_margins){
       corner_margin <- data %>%
-        dplyr::summarise(dplyr::across(c({{ columns_to_summarise }}), ~mean(.x, na.rm  = TRUE)))
+        dplyr::summarise(dplyr::across(all_of({{ columns_to_summarise }}), ~mean(.x, na.rm  = TRUE)))
       
       summary_output <- dplyr::bind_rows(summary_output, corner_margin, .id = "id")
       

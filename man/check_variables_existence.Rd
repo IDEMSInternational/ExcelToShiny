@@ -2,22 +2,18 @@
 % Please edit documentation in R/check_variables_existence.R
 \name{check_variables_existence}
 \alias{check_variables_existence}
-\title{Check Variables Existence}
+\title{Check Variables Existence in Specified Data Frames}
 \usage{
 check_variables_existence(df, data_frame)
 }
 \arguments{
-\item{df}{A data frame containing the variable names and data frame names.}
+\item{df}{A data frame containing at least two columns: \code{variable}, which holds the names of the variables to check, and \code{data}, which contains the names of the data frames where these variables should be found. If the \code{data} column is not provided or contains \code{NA}, the function uses \code{data_frame} as the default data frame.}
 
-\item{data_frame}{The default data frame to check against if data frame names are not provided in df.}
+\item{data_frame}{The default data frame to check against if data frame names are not provided in \code{df}.}
 }
 \value{
-A data frame containing the results of variable existence checks.
+A data frame containing only the rows where the specified variables were not found in the corresponding data frames. The returned data frame includes a \code{results} column indicating the success of the check.
 }
 \description{
-Check the existence of variables in the specified data frames.
-}
-\examples{
-#check_variables_existence(df = mtcars, data_frame = "my_default_df")
-
+This function checks the existence of specified variables within designated data frames. It returns a data frame indicating which variables are missing from their respective data frames.
 }

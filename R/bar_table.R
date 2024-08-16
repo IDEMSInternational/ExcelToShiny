@@ -1,6 +1,22 @@
-#' Creating box to be used in `PLH_shiny` function
+#' Create a Box for Use in Shiny Dashboards
 #'
-#' @return Box for use in `Shiny`
+#' This function generates a list containing a summary table and a plot for use in `Shiny` applications, specifically designed for integration with the `PLH_shiny` function. It can handle grouped data and apply custom data manipulations based on the provided spreadsheet.
+#'
+#' @param data A data frame or a list. If a list, the table is extracted from the list element specified by `variable`.
+#' @param variable A character string specifying the variable of interest within the data.
+#' @param type A character vector specifying the type of table to generate. Options are `"freq"` for frequency tables and `"summary"` for summary statistics (median, SD). Default is `"freq"`.
+#' @param spreadsheet A list containing data manipulation commands and options for customising the generated plot and table. It should include elements like `data_manip`, `table_manip`, and `graph_manip`.
+#' @param grouped_vars An optional character string specifying the variable to group by in the table and plot.
+#'
+#' @return A list with two elements: `table`, containing the generated summary table, and `plot`, containing the corresponding ggplot object.
+#'
+#' @examples
+#' # Grouped summary table
+#' result <- bar_table(data = mtcars, variable = "mpg", type = "summary", 
+#'                    spreadsheet = list(), grouped_vars = "cyl")
+#' print(result$table)
+#' print(result$plot)
+#'
 #' @export
 bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, grouped_vars = NULL) {
   type <- match.arg(type)

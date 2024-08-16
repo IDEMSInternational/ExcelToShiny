@@ -1,13 +1,14 @@
-#' Title
+#' Create a Download Sheet for Shiny Dashboard
 #'
-#' @param data_list   todo
-#' @param spreadsheet_name   todo
-#' @param j   todo
+#' This function generates a tab item in a Shiny dashboard specifically for downloading data. It sets up the layout for download labels, data options, and integrates user authentication where needed.
 #'
-#' @return  todo
-#' @export
+#' @param data_list A list containing data and configurations for the dashboard. It includes the `contents` data frame, which specifies the layout and structure of the tabs.
+#' @param spreadsheet_name A character string specifying the name of the spreadsheet within `data_list` that defines the content and download options for this tab item.
+#' @param j An integer index used to uniquely identify the current tab item within the dashboard. Default is `1`.
+#' @param status A character string indicating the status of the tab item, used for styling. Default is `"primary"`.
+#' @param colour A character string specifying the background colour of the tab item. Default is `"blue"`.
 #'
-#' @examples  #todo
+#' @return A `tabItem` object for inclusion in a Shiny dashboard, configured for downloading data.
 download_sheet <- function(data_list, spreadsheet_name, status = "primary", colour = "blue", j = 1){
   # this is jth sheet on downloading data - does this work for multiple sheets?
   # what about multiple downloads on one page?

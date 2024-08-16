@@ -2,24 +2,22 @@
 % Please edit documentation in R/display_sheet_setup.R
 \name{display_sheet_setup}
 \alias{display_sheet_setup}
-\title{Title}
+\title{Setup Display Sheets for Shiny Application}
 \usage{
 display_sheet_setup(spreadsheet_data, data_frame, j, loop)
 }
 \arguments{
-\item{spreadsheet_data}{todo}
+\item{spreadsheet_data}{A data frame containing the data for the spreadsheet, which includes the information required to set up the display boxes.}
 
-\item{data_frame}{todo}
+\item{data_frame}{The main data frame containing the data to be displayed in the boxes.}
 
-\item{j}{todo}
+\item{j}{An integer index used for creating unique labels for tables and plots within the Shiny app.}
+
+\item{loop}{An optional parameter used to handle nested loops for label creation. If not provided, the function will create labels without a loop suffix.}
 }
 \value{
-todo
+A list of display boxes (\code{d_box}) ready to be integrated into a Shiny application.
 }
 \description{
-Title
-}
-\examples{
-#todo
-
+This function sets up display sheets for a Shiny application by creating boxes for each relevant item in the provided spreadsheet data. It handles the creation of labels for tables and plots, and filters the data to include only those entries marked as "box" type.
 }

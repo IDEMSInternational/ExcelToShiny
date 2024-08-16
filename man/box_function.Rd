@@ -2,7 +2,7 @@
 % Please edit documentation in R/box_function.R
 \name{box_function}
 \alias{box_function}
-\title{Creating box to be used in \code{PLH_shiny} function}
+\title{Creating a Box for Use in the \code{PLH_shiny} Function}
 \usage{
 box_function(data_frame, spreadsheet, unique_ID, label_table, label_plot)
 }
@@ -11,15 +11,15 @@ box_function(data_frame, spreadsheet, unique_ID, label_table, label_plot)
 
 \item{spreadsheet}{Spreadsheet that contains the template.}
 
-\item{unique_ID}{Unique identifier.}
+\item{unique_ID}{Unique identifier used to select the appropriate row from the spreadsheet.}
 
-\item{label_table}{ID for the table.}
+\item{label_table}{Identifier for the table output within the box.}
 
-\item{label_plot}{ID for the plot.}
+\item{label_plot}{Identifier for the plot output within the box.}
 }
 \value{
-Box for use in \code{Shiny}
+A list containing the constructed box for use in \code{Shiny} applications, along with associated labels and identifiers.
 }
 \description{
-Creating box to be used in \code{PLH_shiny} function
+This function generates a box element for use in \code{Shiny} applications, tailored for the \code{PLH_shiny} function. It reads parameters from a spreadsheet template and constructs the box accordingly.
 }

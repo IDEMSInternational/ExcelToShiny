@@ -2,7 +2,7 @@
 % Please edit documentation in R/download_shet.R
 \name{download_sheet}
 \alias{download_sheet}
-\title{Title}
+\title{Create a Download Sheet for Shiny Dashboard}
 \usage{
 download_sheet(
   data_list,
@@ -13,18 +13,19 @@ download_sheet(
 )
 }
 \arguments{
-\item{data_list}{todo}
+\item{data_list}{A list containing data and configurations for the dashboard. It includes the \code{contents} data frame, which specifies the layout and structure of the tabs.}
 
-\item{spreadsheet_name}{todo}
+\item{spreadsheet_name}{A character string specifying the name of the spreadsheet within \code{data_list} that defines the content and download options for this tab item.}
 
-\item{j}{todo}
+\item{status}{A character string indicating the status of the tab item, used for styling. Default is \code{"primary"}.}
+
+\item{colour}{A character string specifying the background colour of the tab item. Default is \code{"blue"}.}
+
+\item{j}{An integer index used to uniquely identify the current tab item within the dashboard. Default is \code{1}.}
 }
 \value{
-todo
+A \code{tabItem} object for inclusion in a Shiny dashboard, configured for downloading data.
 }
 \description{
-Title
-}
-\examples{
- #todo
+This function generates a tab item in a Shiny dashboard specifically for downloading data. It sets up the layout for download labels, data options, and integrates user authentication where needed.
 }

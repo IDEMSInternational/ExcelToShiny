@@ -1,4 +1,4 @@
-Package: plhR
+Package: ExcelToShiny
 Title: Functions useful in PLH analysis
 Version: 0.0.0.9000
 Authors@R: 

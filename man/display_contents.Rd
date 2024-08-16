@@ -2,7 +2,7 @@
 % Please edit documentation in R/display_contents.R
 \name{display_contents}
 \alias{display_contents}
-\title{Title TODO}
+\title{Display Contents for Shiny Application}
 \usage{
 display_contents(
   contents1 = contents,
@@ -13,22 +13,19 @@ display_contents(
 )
 }
 \arguments{
-\item{contents1}{TODO}
+\item{contents1}{A data frame containing details about the contents to display. It should include columns such as \code{ID} for unique identifiers and \code{type} for the type of display.}
 
-\item{data_frame}{TODO}
+\item{data_frame}{The primary data frame containing the data to be displayed.}
 
-\item{data_list}{TODO}
+\item{data_list}{A list containing the data for each content sheet, referenced by the \code{ID} from \code{contents1}.}
 
-\item{loop}{TODO}
+\item{loop}{An optional parameter used for handling nested "Tabbed_display" types. Default is \code{NULL}.}
 
-\item{k}{TODO}
+\item{k}{An integer or vector that controls the iteration for nested tabbed displays. Default is \code{1}.}
 }
 \value{
-TODO
+A list of display boxes ready to be integrated into a Shiny application.
 }
 \description{
-Title TODO
-}
-\examples{
-#todo
+This function processes and displays contents within a Shiny application based on the specifications provided in the \code{contents1} data frame. It supports different types of displays, including standard "Display" sheets and "Tabbed_display" sheets.
 }
