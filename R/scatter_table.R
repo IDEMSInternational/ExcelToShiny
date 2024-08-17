@@ -29,7 +29,7 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
     # Construct the full command
     
     if (!is.null(grouped_vars)){
-      full_command <- paste0("data %>% group_by(", grouped_vars, ")", command_string)
+      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ")", command_string)
     } else {
       full_command <- paste0("data ", command_string)
     }
@@ -62,11 +62,11 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
   # group by?
   
   if (!is.null(grouped_vars)){
-    table_to_return <- data %>% group_by(!!sym(group))
+    table_to_return <- data %>% dplyr::group_by(!!rlang::sym(group))
   } else {
     table_to_return <- data
   }
-  all_return$table <- data.frame(table_to_return %>% summarise(Correlation = cor(!!sym(variable[1]), !!sym(variable[2]), use = "pairwise.complete.obs")))
+  all_return$table <- data.frame(table_to_return %>% dplyr::summarise(Correlation = stats::cor(!!rlang::sym(variable[1]), !!rlang::sym(variable[2]), use = "pairwise.complete.obs")))
   
   plot_obj <- create_scatter_plot(data, variable)
   if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {

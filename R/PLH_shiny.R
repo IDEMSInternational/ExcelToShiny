@@ -237,12 +237,12 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
                 dplyr::filter(name == id_name)
               grouped_data <- grouped_data %>%
                 # from sym, only works with one variable at the moment
-                dplyr::group_by(!!sym(group_box_data_i$variable), .add = TRUE)
+                dplyr::group_by(!!rlang::sym(group_box_data_i$variable), .add = TRUE)
             } else {
               grouped_data <- grouped_data %>% dplyr::ungroup()
             }
           } else {
-            if (!is.null(grouped_data)) grouped_data <- grouped_data %>% ungroup()
+            if (!is.null(grouped_data)) grouped_data <- grouped_data %>% dplyr::ungroup()
           }
           return(grouped_data)
         })
@@ -475,11 +475,11 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           user_col = user,
           pwd_col = password)
         # build the download:
-        output[[paste0("build_download", j)]] <- renderUI({
-          req(credentials()$user_auth)
+        output[[paste0("build_download", j)]] <- shiny::renderUI({
+          shiny::req(credentials()$user_auth)
           if (credentials()$info$user == "admin"){
-            tagList(fluidRow(
-              box(width = 6, 
+            shiny::tagList(shiny::fluidRow(
+              shinydashboard::box(width = 6, 
                   shiny::selectInput(paste0("dataset", j),
                                      data_label,
                                      choices = data_names),
@@ -493,8 +493,8 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
       } else {
         # build the download:
         output[[paste0("build_download", j)]] <- renderUI({
-          tagList(fluidRow(
-            box(width = 6, 
+          shintagList(shiny::fluidRow(
+            shinydashboard::box(width = 6, 
                 shiny::selectInput(paste0("dataset", j),
                                    data_label,
                                    choices = data_names),

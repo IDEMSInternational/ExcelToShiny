@@ -28,7 +28,7 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
     
     # Construct the full command
     if (!is.null(grouped_vars)){
-      full_command <- paste0("data %>% group_by(", grouped_vars, ")", command_string)
+      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ")", command_string)
     } else {
       full_command <- paste0("data ", command_string)
     }
@@ -73,11 +73,11 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
       table_data <- dplyr::filter(data, !is.na(data[[variable]]))
       
       if (!is.null(grouped_vars)){
-        table_data <- table_data %>% group_by(!!sym(grouped_vars))
+        table_data <- table_data %>% dplyr::group_by(!!rlang::sym(grouped_vars))
       }
       table_data <- table_data %>%
-        dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
-                         SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2)) # temp. remove N
+        dplyr::summarise(Median = round(stats::median(!!rlang::sym(variable), na.rm = TRUE), 2),
+                         SD = round(stats::sd(!!rlang::sym(variable), na.rm = TRUE), 2)) # temp. remove N
       # N = length(!is.na(!!sym(variable))))
     }
   }

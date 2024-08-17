@@ -17,8 +17,8 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   #spreadsheet <- testing_shiny
   spreadsheet <- spreadsheet %>% dplyr::filter(name == unique_ID)
   spreadsheet_parameters <- spreadsheet$parameter_list
-  spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, fixed("\", "), simplify = TRUE))
-  #spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, fixed(", "), simplify = TRUE))
+  spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, stringr::fixed("\", "), simplify = TRUE))
+  #spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, stringr::fixed(", "), simplify = TRUE))
   spreadsheet_parameters_names <- sub("\\= .*", "", spreadsheet_parameters)
   spreadsheet_parameters_values <- gsub(".*= ", "", spreadsheet_parameters)
   spreadsheet_parameters_values <- stringr::str_remove_all(spreadsheet_parameters_values, stringr::fixed("\""))

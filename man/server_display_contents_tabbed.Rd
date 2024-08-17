@@ -22,6 +22,8 @@ server_display_contents_tabbed(
 
 \item{loop}{A vector of loop indices, used for nested tabbed displays. Default is NULL.}
 
+\item{list_of_reactives}{A list of reactive statements.}
+
 \item{k}{An integer specifying the initial value for looping through tabbed displays. Default is 1.}
 }
 \value{

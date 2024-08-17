@@ -24,17 +24,17 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   }
   
   # if we have grouping in our main df, we should use these as grouping variables in our other dfs.
-  grouped_vars <- group_vars(data_frame)   # these need to be read in as factors in our plots and tables
+  grouped_vars <- dplyr::group_vars(data_frame)   # these need to be read in as factors in our plots and tables
   
   # if it doesn't exist, or it does exist and is NA
   # doing this way to account for partial matching with "data_manip"
   if (is.na(match("data", names(filtered_spreadsheet))) || 
-      (!is.na(match("data", names(filtered_spreadsheet))) && is.na(filtered_spreadsheet %>% pull("data"))) ){
+      (!is.na(match("data", names(filtered_spreadsheet))) && is.na(filtered_spreadsheet %>% dplyr::pull("data"))) ){
     data_frame_read <- data_frame
   } else {
     data_frame_read <- list_of_reactives[[filtered_spreadsheet$data]]()
   }
-  data_frame_read <- data_frame_read %>% ungroup()
+  data_frame_read <- data_frame_read %>% dplyr::ungroup()
   
   # # group our new df.
   # if (length(grouped_vars) > 0){

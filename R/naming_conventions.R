@@ -15,7 +15,8 @@
 #'                      "rp.contact.field.w_praise_hp_review_started",
 #'                      "rp.contact.field.w_instruct_hp_review_started",
 #'                      "rp.contact.field.w_stress_hp_review_started")
-#' naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_hp_review_started")
+#' naming_conventions(data_hp_started, replace = "rp.contact.field.w_",
+#'                    replace_after = "_hp_review_started")
 naming_conventions <- function(x, replace, replace_after) {
   if (!missing(replace)){
     x <- gsub(paste("^.*?", replace, ".*", sep = ""), "", x)

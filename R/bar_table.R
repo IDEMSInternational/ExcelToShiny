@@ -37,7 +37,7 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
     # Construct the full command
     
     if (!is.null(grouped_vars)){
-      full_command <- paste0("data %>% group_by(", grouped_vars, ")", command_string)
+      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ")", command_string)
     } else {
       full_command <- paste0("data ", command_string)
     }
@@ -58,7 +58,7 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
         ggplot2::geom_histogram(stat = "count") +
         viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
         ggplot2::labs(y = "Count", x = naming_conventions(variable)) +
-        facet_wrap(grouped_vars)
+        ggplot2::facet_wrap(grouped_vars)
     } else {
       ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]])) +
         ggplot2::geom_histogram(stat = "count") +
@@ -81,11 +81,11 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
       table_data <- dplyr::filter(data, !is.na(data[[variable]]))
       
       if (!is.null(grouped_vars)){
-        table_data <- table_data %>% group_by(!!sym(grouped_vars))
+        table_data <- table_data %>% dplyr::group_by(!!rlang::sym(grouped_vars))
       }
       all_return$table <- table_data %>%
-        dplyr::summarise(Median = round(median(!!sym(variable), na.rm = TRUE), 2),
-                         SD = round(stats::sd(!!sym(variable), na.rm = TRUE), 2))
+        dplyr::summarise(Median = round(stats::median(!!rlang::sym(variable), na.rm = TRUE), 2),
+                         SD = round(stats::sd(!!rlang::sym(variable), na.rm = TRUE), 2))
       #N = length(!is.na(!!sym(variable)))) '# remove n for now
     }
   }

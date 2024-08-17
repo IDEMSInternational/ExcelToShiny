@@ -17,8 +17,8 @@ summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_su
   summaries <- match.arg(summaries)
   if (summaries == "frequencies"){
     summary_output <- data %>%
-      dplyr::mutate(dplyr::across(all_of({{ columns_to_summarise }}), ~ (as.character(.x)))) %>%
-      dplyr::group_by(dplyr::across(all_of({{ columns_to_summarise }}, {{ factors }})), .drop = drop) %>%
+      dplyr::mutate(dplyr::across(dplyr::all_of({{ columns_to_summarise }}), ~ (as.character(.x)))) %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of({{ columns_to_summarise }}, {{ factors }})), .drop = drop) %>%
       dplyr::summarise(n = dplyr::n(),
                        perc = dplyr::n()/nrow(data) * 100) %>%
       dplyr::ungroup()

@@ -41,7 +41,7 @@ download_sheet <- function(data_list, spreadsheet_name, status = "primary", colo
                                       # Tab contents
                                       shinyjs::useShinyjs(),
                                       shinyauthr::loginUI(paste0("login", j)),
-                                      uiOutput(paste0("build_download", j))
+                                      shiny::uiOutput(paste0("build_download", j))
   )
   
   return(tab_item)

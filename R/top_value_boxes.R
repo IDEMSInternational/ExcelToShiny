@@ -22,7 +22,7 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
   variable <- spreadsheet_row$variable
   variable_value <- spreadsheet_row$variable_value
   value_box_type <- spreadsheet_row$value
-  data_frame <- data_frame %>% ungroup()
+  data_frame <- data_frame %>% dplyr::ungroup()
   if (value_box_type == "value_box"){
     if (!is.na(spreadsheet_row$variable_value)){
       df_box <- summary_table(data_frame, factors = .data[[variable]], wider_table = TRUE, together = FALSE, naming_convention = FALSE)
@@ -36,7 +36,7 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
     value <- round((data_frame %>% dplyr::summarise(mean = mean(.data[[variable]], na.rm = TRUE)))$mean, 2)
   } else {
     mean_value <- round((data_frame %>% dplyr::summarise(mean = mean(.data[[variable]], na.rm = TRUE)))$mean, 2)
-    sd_value <- round((data_frame %>% dplyr::summarise(sd = sd(.data[[variable]], na.rm = TRUE)))$sd, 2)
+    sd_value <- round((data_frame %>% dplyr::summarise(sd = stats::sd(.data[[variable]], na.rm = TRUE)))$sd, 2)
     value <- paste0(mean_value, " (", sd_value, ")")
   }
   return(shinydashboard::valueBox(value, subtitle = text, icon = shiny::icon(icon_pic), color = colour))

@@ -22,6 +22,7 @@ Imports:
   rlang,
   stringr,
   shiny,
+  shinyauthr,
   shinydashboard,
   shinyjs,
   tibble,

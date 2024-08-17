@@ -6,6 +6,7 @@
 #' @param data_frame The data frame used for displaying content.
 #' @param data_list A list containing data associated with the content.
 #' @param loop A vector of loop indices, used for nested tabbed displays. Default is NULL.
+#' @param list_of_reactives A list of reactive statements.
 #' @param k An integer specifying the initial value for looping through tabbed displays. Default is 1.
 #'
 #' @return A list of display boxes, each containing the content to be displayed.
