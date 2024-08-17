@@ -9,22 +9,6 @@
 #' @param k An integer specifying the initial value for looping through tabbed displays. Default is 1.
 #'
 #' @return A list of display boxes, each containing the content to be displayed.
-#'
-#' @export
-#'
-#' @examples
-#' # Create and display content using server_display_contents
-#' content_list <- list(
-#'   ID = c("content1", "content2"),
-#'   type = c("Display", "Tabbed_display")
-#'   # Add other content details here
-#' )
-#' data_frame <- data.frame(...)  # Define your data frame
-#' data_list <- list(...)  # Define your data list
-#' display_boxes <- server_display_contents(contents1 = content_list, data_frame = data_frame, data_list = data_list)
-#'
-#' # Render the display boxes in your Shiny app UI
-#' shiny::uiOutput("display_boxes")
 server_display_contents_tabbed <- function(contents1 = contents, data_frame, data_list, loop = NULL, list_of_reactives, k = 1){
   # Contents to display
   names_display <- contents1[["ID"]]

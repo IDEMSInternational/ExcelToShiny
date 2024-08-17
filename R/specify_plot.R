@@ -1,7 +1,17 @@
-#' Creating box to be used in `PLH_shiny` function
+#' Create a Plot and Table Based on Data Manipulation Instructions
 #'
-#' @return Box for use in `Shiny`
-#' @export
+#' This function generates a plot and a table from a dataset based on manipulation instructions provided in a `spreadsheet` object. 
+#' The function supports optional grouping and allows for dynamic data manipulation and plot creation.
+#'
+#' @param data A dataset to manipulate and plot. Can be a list or a data frame.
+#' @param spreadsheet An object containing data manipulation and graph manipulation instructions.
+#' @param grouped_vars Optional. Variables to group the data by, provided as a character vector.
+#'
+#' @return A list containing two elements:
+#' \describe{
+#'   \item{`table`}{A table generated from the data based on the `spreadsheet$table_manip` instructions.}
+#'   \item{`plot`}{A `ggplot` object created based on the `spreadsheet$graph_manip` instructions.}
+#' }
 specify_plot <- function(data, spreadsheet, grouped_vars = NULL) {
   all_return <- list(table = NULL, plot = NULL)
 

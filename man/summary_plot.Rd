@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_plot.R
 \name{summary_plot}
 \alias{summary_plot}
-\title{Plot PLH data}
+\title{Plot Summaries from PLH Data}
 \usage{
 summary_plot(
   data = plhdata_org_clean,
@@ -14,24 +14,22 @@ summary_plot(
 )
 }
 \arguments{
-\item{data}{Data frame to calculate summaries from.}
+\item{data}{A data frame to plot.}
 
-\item{columns_to_summarise}{Variables to dplyr::summarise.}
+\item{columns_to_summarise}{The variable to plot.}
 
-\item{naming_convention}{logical. Default \code{TRUE}. Whether to apply naming conventions.}
+\item{naming_convention}{Logical. Default \code{TRUE}. Whether to apply naming conventions to axis labels.}
 
-\item{replace}{String of values in the \code{columns_to_summarise} variable to remove in the table (before the value to keep).}
+\item{replace}{A string indicating values to remove from the \code{columns_to_summarise} variable (before the value to keep).}
 
-\item{replace_after}{String of values in the \code{columns_to_summarise} variable to remove in the table (after the value to keep).}
+\item{replace_after}{A string indicating values to remove from the \code{columns_to_summarise} variable (after the value to keep).}
 
-\item{plot_type}{Whether to display a \code{histogram} or \code{boxplot}}
+\item{plot_type}{A character string indicating whether to create a \code{histogram} or \code{boxplot}.}
 }
 \value{
-\code{ggplot} object
+A \code{ggplot} object representing the plot.
 }
 \description{
-Plot either a histogram or boxplot for PLH data.
-}
-\examples{
-# TODO
+This function generates either a histogram or boxplot for a specified variable in PLH data.
+It allows for customisation of axis labels and supports naming conventions.
 }

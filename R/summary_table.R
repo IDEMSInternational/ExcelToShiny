@@ -1,25 +1,24 @@
-#' Calculate and format summaries from PLH data
-#' 
-#' @description Calculate and format summaries table
+#' Create and Format Summary Tables from PLH Data
 #'
-#' @param data Data frame to calculate summaries from.
-#' @param factors List of factors to group by.
+#' This function calculates and formats summary tables from PLH data, supporting both frequency and mean summaries. 
+#' It can output the table in a wide format, apply naming conventions, and optionally display the table using `gt`.
+#'
+#' @param data A data frame to summarise.
+#' @param factors A list of factors to group by.
 #' @param columns_to_summarise Variables to summarise.
-#' @param summaries Whether `frequencies` or `mean` summaries are calculated.
-#' @param replace String of values in the `columns_to_summarise` variable to remove in the table (before the value to keep).
-#' @param include_margins logical. Default `FALSE`. Whether to include margins.
-#' @param wider_table logical. Default `TRUE`. Whether to have a wider table if `summaries = "frequencies"`.
-#' @param display_table logical. Default `FALSE`. Return table in `gt::gt()` table format.
-#' @param naming_convention logical. Default `TRUE`. Whether to apply naming conventions when `summaries = "mean"`.
-#' @param include_percentages logical. Default `FALSE`. Whether to include percentages when `summaries = "frequencies"`.
-#' @param together logical. Default `FALSE`. If `summaries = "frequencies"`, whether to combine the count and percentage into one cell.
-#' @param drop logical. Default `FALSE`. When running `group_by`, whether to drop unused columns.
-#'
-#' @return Summaries table as `tibble` or `gt`.
-#' @export
+#' @param summaries A character string indicating whether to calculate `frequencies` or `mean` summaries.
+#' @param replace A string of values in the `columns_to_summarise` variable to remove in the table (before the value to keep).
+#' @param include_margins Logical. Default `FALSE`. Whether to include margins in the summary.
+#' @param wider_table Logical. Default `TRUE`. Whether to present a wider table if `summaries = "frequencies"`.
+#' @param display_table Logical. Default `FALSE`. Whether to return the table in `gt::gt()` format.
+#' @param naming_convention Logical. Default `TRUE`. Whether to apply naming conventions when `summaries = "mean"`.
+#' @param include_percentages Logical. Default `FALSE`. Whether to include percentages when `summaries = "frequencies"`.
+#' @param together Logical. Default `FALSE`. If `summaries = "frequencies"`, whether to combine the count and percentage into one cell.
+#' @param drop Logical. Default `FALSE`. When running `group_by`, whether to drop unused columns.
+#' 
 #' @importFrom rlang .data
-#'
-#' @examples # TODO
+#' 
+#' @return A summary table as a `tibble` or a `gt` table, depending on the `display_table` parameter.
 summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise = NULL, summaries = c("frequencies", "mean"),
                           replace = "rp.contact.field.", include_margins = FALSE, wider_table = TRUE,
                           display_table = FALSE, naming_convention = TRUE, include_percentages = FALSE,

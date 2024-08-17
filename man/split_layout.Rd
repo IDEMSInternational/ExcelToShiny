@@ -2,23 +2,21 @@
 % Please edit documentation in R/split_layout.R
 \name{split_layout}
 \alias{split_layout}
-\title{Title}
+\title{Create a Split Layout for Shiny UI}
 \usage{
 split_layout(..., cellWidths = NULL, cellArgs = list())
 }
 \arguments{
-\item{...}{todo}
+\item{...}{UI elements to be included in the layout.}
 
-\item{cellWidths}{todo}
+\item{cellWidths}{A character vector specifying the widths of the cells. If not provided, cells are given equal width.}
 
-\item{cellArgs}{todo}
+\item{cellArgs}{A list of additional arguments to pass to each cell.}
 }
 \value{
-todo
+A \code{div} element containing the specified UI elements, arranged in a split layout.
 }
 \description{
-Title
-}
-\examples{
-#todo
+This function creates a split layout for use in Shiny applications, allowing multiple UI elements to be displayed side by side.
+It is highly customisable with options for adjusting cell widths and passing additional arguments to individual cells.
 }

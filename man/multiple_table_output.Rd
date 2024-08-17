@@ -2,7 +2,7 @@
 % Please edit documentation in R/multiple_table_output.R
 \name{multiple_table_output}
 \alias{multiple_table_output}
-\title{Return a list of summary tables}
+\title{Generate Multiple Summary Tables}
 \usage{
 multiple_table_output(
   data = plhdata_org_clean,
@@ -14,24 +14,22 @@ multiple_table_output(
 )
 }
 \arguments{
-\item{data}{Data frame to calculate summaries from.}
+\item{data}{Data frame to calculate summaries from. Default is \code{plhdata_org_clean}.}
 
-\item{columns_to_summarise}{Variables to summarise.}
+\item{columns_to_summarise}{A vector of variable names (as strings) to summarise.}
 
-\item{replace}{String of which values to remove before the final string.}
+\item{replace}{A string indicating the pattern to remove from the variable names before displaying them. Default is \code{"rp.contact.field."}.}
 
-\item{replace_after}{String of which values to remove after the final string.}
+\item{replace_after}{A string indicating the pattern to remove after the variable names. Default is \code{NULL}.}
 
-\item{summaries}{Whether \code{frequencies} or \code{mean} summaries are calculated.}
+\item{summaries}{A string indicating whether to calculate \code{"frequencies"} or \code{"mean"} summaries. Default is \code{c("frequencies", "mean")}.}
 
-\item{na.rm}{logical. Default \code{TRUE}. If \code{summaries = "mean"}, whether to include \code{NA} values.}
+\item{na.rm}{Logical indicating whether to remove \code{NA} values when calculating means. Default is \code{TRUE}.}
 }
 \value{
-List of summary tables.
+A list of summary tables, where each table corresponds to the summary of the respective variable.
 }
 \description{
-Return a list of summary tables
-}
-\examples{
-#TODO
+This function generates a list of summary tables based on the provided data and columns to summarise.
+It supports calculating either frequencies or means for each specified variable.
 }

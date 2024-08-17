@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_calculation.R
 \name{summary_calculation}
 \alias{summary_calculation}
-\title{Calculate summaries from PLH data}
+\title{Calculate Summary Statistics}
 \usage{
 summary_calculation(
   data = plhdata_org_clean,
@@ -15,23 +15,24 @@ summary_calculation(
 )
 }
 \arguments{
-\item{data}{Data frame to calculate summaries from.}
+\item{data}{A data frame to calculate summaries from.}
 
-\item{factors}{List of factors to group by.}
+\item{factors}{A list of factors to group by.}
 
-\item{columns_to_summarise}{Variables to dplyr::summarise.}
+\item{columns_to_summarise}{Variables to summarise using \code{dplyr::summarise}.}
 
-\item{summaries}{Whether \code{frequencies} or \code{mean} summaries are calculated.}
+\item{summaries}{A character string indicating whether to calculate \code{frequencies} or \code{mean} summaries.}
 
-\item{together}{logical. Default \code{FALSE}. If \code{summaries = "frequencies"}, whether to combine the count and percentage into one cell.}
+\item{together}{Logical. Default \code{FALSE}. If \code{summaries = "frequencies"}, whether to combine the count and percentage into one cell.}
 
-\item{include_margins}{logical. Default \code{FALSE}. Whether to include margins.}
+\item{include_margins}{Logical. Default \code{FALSE}. Whether to include margins in the summary.}
 
-\item{drop}{logical. Default \code{FALSE}. Whether to drop columns in \code{group_by}.}
+\item{drop}{Logical. Default \code{FALSE}. Whether to drop unused levels in grouping factors.}
 }
 \value{
-Summaries table
+A summary table as a \code{tibble}.
 }
 \description{
-Calculate summaries from PLH data
+This function calculates either frequency counts or mean summaries from a given dataset.
+It supports grouping by factors and can include marginal summaries if desired.
 }

@@ -1,30 +1,16 @@
 #' Server Display Contents
 #'
-#' This function processes and displays contents, including display and tabbed display sheets, in a Shiny application server. It allows you to organize and present data frames and data lists in a structured way.
+#' This function processes and displays content within a Shiny application, including handling display sheets and tabbed displays. It organises data into a structured format suitable for visualisation.
 #'
-#' @param contents1 A list containing information about the content to be displayed.
-#' @param data_frame The data frame used for displaying content.
-#' @param data_list A list containing data associated with the content.
-#' @param loop A vector of loop indices, used for nested tabbed displays. Default is NULL.
-#' @param k An integer specifying the initial value for looping through tabbed displays. Default is 1.
+#' @param contents1 A list or data frame containing metadata and information about the content to be displayed.
+#' @param data_frame The primary data frame used to generate the displayed content.
+#' @param data_list A list of additional data frames used in various parts of the display.
+#' @param loop Optional. A vector of loop indices for nested tabbed displays.
+#' @param list_of_reactives A list of reactive expressions used to update content dynamically in Shiny.
+#' @param id_name A string specifying the ID of the content to be displayed.
+#' @param k Optional. An integer index for looping through tabbed displays.
 #'
-#' @return A list of display boxes, each containing the content to be displayed.
-#'
-#' @export
-#'
-#' @examples
-#' # Create and display content using server_display_contents
-#' content_list <- list(
-#'   ID = c("content1", "content2"),
-#'   type = c("Display", "Tabbed_display")
-#'   # Add other content details here
-#' )
-#' data_frame <- data.frame(...)  # Define your data frame
-#' data_list <- list(...)  # Define your data list
-#' display_boxes <- server_display_contents(contents1 = content_list, data_frame = data_frame, data_list = data_list)
-#'
-#' # Render the display boxes in your Shiny app UI
-#' shiny::uiOutput("display_boxes")
+#' @return A list of display boxes that can be rendered in a Shiny UI.
 server_display_contents <- function(contents1 = contents, data_frame, data_list, loop = NULL, list_of_reactives, id_name, k = 1){
   
   # Contents to display

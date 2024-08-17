@@ -1,14 +1,14 @@
-#' Title
+#' Generate Tabbed Display Layout
 #'
-#' @param spreadsheet_ID_names todo
-#' @param data_list todo
-#' @param d_box todo
-#' @param q todo
+#' This function generates a tabbed display layout for a Shiny application. It creates and arranges rows within each tab 
+#' based on the provided spreadsheet ID names and the associated data.
 #'
-#' @return todo
-#' @export
+#' @param spreadsheet_ID_names A list of spreadsheet ID names corresponding to different display elements.
+#' @param data_list A list containing the data associated with each spreadsheet ID.
+#' @param d_box A list containing display box configurations for each element.
+#' @param q An integer indicating which spreadsheet ID and display box to use (default is 1).
 #'
-#' @examples #todo
+#' @return A list of `shiny::fluidRow` objects that represent the layout for the tabbed display.
 tabbed_display_display <- function(spreadsheet_ID_names, data_list, d_box, q = 1){
   ## --- Contents for 1st display tab --- ##
   spreadsheet_ID_name <- spreadsheet_ID_names[[q]] # for now

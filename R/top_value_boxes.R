@@ -1,11 +1,14 @@
-#' Creating top value box to be used in `PLH_shiny` function
+#' Create a Top Value Box for Shiny
 #'
-#' @param data_frame Data frame that contains the data to analyse.
-#' @param spreadsheet Spreadsheet that contains the template.
-#' @param unique_ID Unique identifier.
+#' This function creates a top value box for use in a Shiny application. The value box displays summary information 
+#' based on a specified variable from a data frame, with additional options for mean or value-based boxes.
 #'
-#' @return Top value box for use in `Shiny`
-#' @export
+#' @param data_frame A data frame containing the data to be summarised.
+#' @param spreadsheet A data frame representing the spreadsheet template.
+#' @param processed_spreadsheet A data frame representing the processed spreadsheet data.
+#' @param unique_ID A string specifying the unique identifier for the value box.
+#'
+#' @return A `shinydashboard::valueBox` object for use in a Shiny application.
 top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, unique_ID){
   
   # Extract the relevant row from the processed spreadsheet

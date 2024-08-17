@@ -15,33 +15,23 @@ server_display_contents(
 )
 }
 \arguments{
-\item{contents1}{A list containing information about the content to be displayed.}
+\item{contents1}{A list or data frame containing metadata and information about the content to be displayed.}
 
-\item{data_frame}{The data frame used for displaying content.}
+\item{data_frame}{The primary data frame used to generate the displayed content.}
 
-\item{data_list}{A list containing data associated with the content.}
+\item{data_list}{A list of additional data frames used in various parts of the display.}
 
-\item{loop}{A vector of loop indices, used for nested tabbed displays. Default is NULL.}
+\item{loop}{Optional. A vector of loop indices for nested tabbed displays.}
 
-\item{k}{An integer specifying the initial value for looping through tabbed displays. Default is 1.}
+\item{list_of_reactives}{A list of reactive expressions used to update content dynamically in Shiny.}
+
+\item{id_name}{A string specifying the ID of the content to be displayed.}
+
+\item{k}{Optional. An integer index for looping through tabbed displays.}
 }
 \value{
-A list of display boxes, each containing the content to be displayed.
+A list of display boxes that can be rendered in a Shiny UI.
 }
 \description{
-This function processes and displays contents, including display and tabbed display sheets, in a Shiny application server. It allows you to organize and present data frames and data lists in a structured way.
-}
-\examples{
-# Create and display content using server_display_contents
-content_list <- list(
-  ID = c("content1", "content2"),
-  type = c("Display", "Tabbed_display")
-  # Add other content details here
-)
-data_frame <- data.frame(...)  # Define your data frame
-data_list <- list(...)  # Define your data list
-display_boxes <- server_display_contents(contents1 = content_list, data_frame = data_frame, data_list = data_list)
-
-# Render the display boxes in your Shiny app UI
-shiny::uiOutput("display_boxes")
+This function processes and displays content within a Shiny application, including handling display sheets and tabbed displays. It organises data into a structured format suitable for visualisation.
 }

@@ -1,16 +1,16 @@
-#' Return a list of summary tables
+#' Generate Multiple Summary Tables
 #'
-#' @param data Data frame to calculate summaries from.
-#' @param columns_to_summarise Variables to summarise.
-#' @param replace String of which values to remove before the final string.
-#' @param replace_after String of which values to remove after the final string.
-#' @param summaries Whether `frequencies` or `mean` summaries are calculated.
-#' @param na.rm logical. Default `TRUE`. If `summaries = "mean"`, whether to include `NA` values.
+#' This function generates a list of summary tables based on the provided data and columns to summarise.
+#' It supports calculating either frequencies or means for each specified variable.
 #'
-#' @return List of summary tables.
-#' @export
+#' @param data Data frame to calculate summaries from. Default is `plhdata_org_clean`.
+#' @param columns_to_summarise A vector of variable names (as strings) to summarise.
+#' @param replace A string indicating the pattern to remove from the variable names before displaying them. Default is `"rp.contact.field."`.
+#' @param replace_after A string indicating the pattern to remove after the variable names. Default is `NULL`.
+#' @param summaries A string indicating whether to calculate `"frequencies"` or `"mean"` summaries. Default is `c("frequencies", "mean")`.
+#' @param na.rm Logical indicating whether to remove `NA` values when calculating means. Default is `TRUE`.
 #'
-#' @examples #TODO
+#' @return A list of summary tables, where each table corresponds to the summary of the respective variable.
 multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = c("frequencies", "mean"), na.rm = TRUE){
   summaries <- match.arg(summaries)
   

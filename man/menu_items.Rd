@@ -2,19 +2,17 @@
 % Please edit documentation in R/menu_items.R
 \name{menu_items}
 \alias{menu_items}
-\title{Title}
+\title{Generate Shiny Dashboard Menu Items}
 \usage{
 menu_items(contents_list = data_list$contents)
 }
 \arguments{
-\item{contents_list}{todo}
+\item{contents_list}{A data frame containing the details for each menu item to be generated. The data frame should include columns such as \code{name}, \code{ID}, and \code{icon}.
+Default is \code{data_list$contents}.}
 }
 \value{
-todo
+A list of \code{shinydashboard} menu items, which can be directly added to a dashboard's sidebar.
 }
 \description{
-Title
-}
-\examples{
- #todo
+This function generates a list of menu items for a \code{shinydashboard} based on the provided contents list. Each menu item corresponds to a tab in the dashboard.
 }

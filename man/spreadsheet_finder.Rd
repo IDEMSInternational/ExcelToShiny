@@ -2,18 +2,18 @@
 % Please edit documentation in R/spreadsheet_finder.R
 \name{spreadsheet_finder}
 \alias{spreadsheet_finder}
-\title{Find values from a spreadsheet}
+\title{Find a Value from a Spreadsheet}
 \usage{
 spreadsheet_finder(data, column)
 }
 \arguments{
-\item{data}{Name of spreadsheet.}
+\item{data}{A data frame or list representing the spreadsheet.}
 
-\item{column}{Column to filter to.}
+\item{column}{The name of the column to search for.}
 }
 \value{
-value from column
+The value from the specified column, or \code{NULL} if the column is not found.
 }
 \description{
-Find values from a spreadsheet
+This function retrieves a value from a specific column in a spreadsheet-like data structure.
 }

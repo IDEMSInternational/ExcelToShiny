@@ -1,18 +1,14 @@
 #' Server Display Sheet Setup
 #'
-#' This function sets up display sheets for a Shiny application server. It processes and filters spreadsheet data, creating display boxes for specific types of content, such as bar charts, box plots, and summaries.
+#' This function sets up the content and layout for display sheets within a Shiny server. It processes the spreadsheet data and prepares it for visualisation in a Shiny app.
 #'
-#' @param spreadsheet_data A data frame containing spreadsheet data.
-#' @param data_frame The data frame used for creating display sheets.
-#' @param j An index or identifier for the current display sheet.
-#' @param loop A vector of loop indices, used for nested displays. Default is NULL.
+#' @param spreadsheet_data A data frame containing the metadata and instructions for creating the display.
+#' @param data_frame The main data frame from which the content will be generated.
+#' @param j An integer or index for identifying the specific display sheet.
+#' @param loop Optional. A vector of loop indices for handling nested displays.
+#' @param list_of_reactives A list of reactive expressions used to dynamically update content in Shiny.
 #'
 #' @return A list of display boxes for the specified content type.
-#'
-#' @export
-#'
-#' @examples
-#' # todo
 server_display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop, list_of_reactives) {
   # Filter the data once and store it in a variable
   filtered_spreadsheet_data <- spreadsheet_data %>% dplyr::filter(type %in% c("box"))

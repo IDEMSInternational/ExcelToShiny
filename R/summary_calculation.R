@@ -1,19 +1,17 @@
-#' Calculate summaries from PLH data
+#' Calculate Summary Statistics
 #'
-#' @param data Data frame to calculate summaries from.
-#' @param factors List of factors to group by.
-#' @param columns_to_summarise Variables to dplyr::summarise.
-#' @param summaries Whether `frequencies` or `mean` summaries are calculated.
-#' @param together logical. Default `FALSE`. If `summaries = "frequencies"`, whether to combine the count and percentage into one cell.
-#' @param include_margins logical. Default `FALSE`. Whether to include margins.
-#' @param drop logical. Default `FALSE`. Whether to drop columns in `group_by`.
+#' This function calculates either frequency counts or mean summaries from a given dataset. 
+#' It supports grouping by factors and can include marginal summaries if desired.
+#'
+#' @param data A data frame to calculate summaries from.
+#' @param factors A list of factors to group by.
+#' @param columns_to_summarise Variables to summarise using `dplyr::summarise`.
+#' @param summaries A character string indicating whether to calculate `frequencies` or `mean` summaries.
+#' @param together Logical. Default `FALSE`. If `summaries = "frequencies"`, whether to combine the count and percentage into one cell.
+#' @param include_margins Logical. Default `FALSE`. Whether to include margins in the summary.
+#' @param drop Logical. Default `FALSE`. Whether to drop unused levels in grouping factors.
 #' @importFrom rlang :=
-#' @return Summaries table
-#' @export
-
-
-#summary_calculation1(df %>% group_by(uuid), factors = gender)
-
+#' @return A summary table as a `tibble`.
 summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise = NULL, summaries = c("frequencies", "mean"),
                                 together = FALSE, include_margins = FALSE, drop = FALSE){
   summaries <- match.arg(summaries)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/scatter_table.R
 \name{scatter_table}
 \alias{scatter_table}
-\title{Creating box to be used in \code{PLH_shiny} function}
+\title{Create Scatter Plot Table for Shiny}
 \usage{
 scatter_table(
   data,
@@ -13,20 +13,19 @@ scatter_table(
 )
 }
 \arguments{
-\item{data}{todo}
+\item{data}{A data frame or list used as the data source. If a list is provided, the function returns the table and an empty plot.}
 
-\item{variable}{todo}
+\item{variable}{A string specifying the variable(s) to be used for the scatter plot. The variable should be in a format suitable for plotting (e.g., two numeric columns for X and Y axes).}
 
-\item{type}{todo}
+\item{type}{A string indicating the type of table to generate. Options are \code{"freq"} for frequency tables or \code{"summary"} for summary statistics. Default is \code{"freq"}.}
 
-\item{spreadsheet}{todo}
+\item{spreadsheet}{A data frame containing metadata or additional manipulation instructions for creating the plot.}
+
+\item{grouped_vars}{Optional. A string or vector of strings specifying variables by which the data should be grouped before generating the plot or table.}
 }
 \value{
-table for use in \code{Shiny}
+A list with two elements: \code{table} containing the summary or frequency table, and \code{plot}, a ggplot2 object representing the scatter plot.
 }
 \description{
-Creating box to be used in \code{PLH_shiny} function
-}
-\examples{
-#todo
+The \code{scatter_table} function generates a table and scatter plot based on the specified variables from the dataset. This function is intended to be used within a Shiny application to create interactive visualisations and summaries.
 }

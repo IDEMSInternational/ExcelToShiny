@@ -10,7 +10,6 @@
 #' @param j An integer index used for identifying the current tab item within the dashboard. Default is `1`.
 #'
 #' @return A `tabItem` object for inclusion in a Shiny dashboard, containing the organised display elements.
-#' @export
 display_sheet <- function(data_list, spreadsheet_name, d_box, status = "primary", colour = "blue", j = 1){
   # Create the "div" for each row.
   # each row is stored in a list, split_row[[j]] (j = row)

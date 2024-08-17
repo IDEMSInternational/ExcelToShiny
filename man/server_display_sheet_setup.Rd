@@ -13,20 +13,19 @@ server_display_sheet_setup(
 )
 }
 \arguments{
-\item{spreadsheet_data}{A data frame containing spreadsheet data.}
+\item{spreadsheet_data}{A data frame containing the metadata and instructions for creating the display.}
 
-\item{data_frame}{The data frame used for creating display sheets.}
+\item{data_frame}{The main data frame from which the content will be generated.}
 
-\item{j}{An index or identifier for the current display sheet.}
+\item{j}{An integer or index for identifying the specific display sheet.}
 
-\item{loop}{A vector of loop indices, used for nested displays. Default is NULL.}
+\item{loop}{Optional. A vector of loop indices for handling nested displays.}
+
+\item{list_of_reactives}{A list of reactive expressions used to dynamically update content in Shiny.}
 }
 \value{
 A list of display boxes for the specified content type.
 }
 \description{
-This function sets up display sheets for a Shiny application server. It processes and filters spreadsheet data, creating display boxes for specific types of content, such as bar charts, box plots, and summaries.
-}
-\examples{
-# todo
+This function sets up the content and layout for display sheets within a Shiny server. It processes the spreadsheet data and prepares it for visualisation in a Shiny app.
 }

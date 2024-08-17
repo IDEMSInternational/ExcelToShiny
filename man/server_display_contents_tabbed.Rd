@@ -30,17 +30,3 @@ A list of display boxes, each containing the content to be displayed.
 \description{
 This function processes and displays contents, including display and tabbed display sheets, in a Shiny application server. It allows you to organize and present data frames and data lists in a structured way.
 }
-\examples{
-# Create and display content using server_display_contents
-content_list <- list(
-  ID = c("content1", "content2"),
-  type = c("Display", "Tabbed_display")
-  # Add other content details here
-)
-data_frame <- data.frame(...)  # Define your data frame
-data_list <- list(...)  # Define your data list
-display_boxes <- server_display_contents(contents1 = content_list, data_frame = data_frame, data_list = data_list)
-
-# Render the display boxes in your Shiny app UI
-shiny::uiOutput("display_boxes")
-}

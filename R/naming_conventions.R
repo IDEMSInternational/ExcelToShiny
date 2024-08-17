@@ -1,22 +1,21 @@
-#' Quick change to naming conventions in tables/data frames
-#' @description Quick and simple way to remove strings in a variable name, and have consistent naming structure in the package.
+#' Standardise Naming Conventions for Variables
 #'
-#' @param x String containing variable name(s) to change.
-#' @param replace String of which values to remove before the final string.
-#' @param replace_after String of which values to remove after the final string.
+#' This function standardises the naming conventions for a given set of variable names by removing specified patterns and capitalising the first letter.
 #'
-#' @return String containing variable name(s) in consistent naming convention
+#' @param x A vector of strings containing variable names to standardise.
+#' @param replace A string indicating the pattern to remove from the start of the variable names.
+#' @param replace_after A string indicating the pattern to remove from the end of the variable names.
+#'
+#' @return A vector of strings containing the standardized variable names.
 #' @export
 #'
 #' @examples
-#' # String of values we want to change the naming convention in
+#' # Example usage:
 #' data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",
 #'                      "rp.contact.field.w_praise_hp_review_started",
 #'                      "rp.contact.field.w_instruct_hp_review_started",
 #'                      "rp.contact.field.w_stress_hp_review_started")
-#' # Want to remove "rp.contact.field.w_" and "_hp_review_started"
-#' naming_conventions(data_hp_started, replace = "rp.contact.field.w_",
-#'                    replace_after = "_hp_review_started")
+#' naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_hp_review_started")
 naming_conventions <- function(x, replace, replace_after) {
   if (!missing(replace)){
     x <- gsub(paste("^.*?", replace, ".*", sep = ""), "", x)

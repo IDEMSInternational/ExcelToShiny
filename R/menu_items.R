@@ -1,11 +1,11 @@
-#' Title
+#' Generate Shiny Dashboard Menu Items
 #'
-#' @param contents_list  todo
+#' This function generates a list of menu items for a `shinydashboard` based on the provided contents list. Each menu item corresponds to a tab in the dashboard.
 #'
-#' @return  todo
-#' @export
+#' @param contents_list A data frame containing the details for each menu item to be generated. The data frame should include columns such as `name`, `ID`, and `icon`.
+#'                       Default is `data_list$contents`.
 #'
-#' @examples  #todo
+#' @return A list of `shinydashboard` menu items, which can be directly added to a dashboard's sidebar.
 menu_items <- function(contents_list = data_list$contents){ #todo fix that
   add_menu <- NULL
   for (i in 1:nrow(contents_list)){

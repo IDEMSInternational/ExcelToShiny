@@ -2,20 +2,23 @@
 % Please edit documentation in R/top_value_boxes.R
 \name{top_value_boxes}
 \alias{top_value_boxes}
-\title{Creating top value box to be used in \code{PLH_shiny} function}
+\title{Create a Top Value Box for Shiny}
 \usage{
 top_value_boxes(data_frame, spreadsheet, processed_spreadsheet, unique_ID)
 }
 \arguments{
-\item{data_frame}{Data frame that contains the data to analyse.}
+\item{data_frame}{A data frame containing the data to be summarised.}
 
-\item{spreadsheet}{Spreadsheet that contains the template.}
+\item{spreadsheet}{A data frame representing the spreadsheet template.}
 
-\item{unique_ID}{Unique identifier.}
+\item{processed_spreadsheet}{A data frame representing the processed spreadsheet data.}
+
+\item{unique_ID}{A string specifying the unique identifier for the value box.}
 }
 \value{
-Top value box for use in \code{Shiny}
+A \code{shinydashboard::valueBox} object for use in a Shiny application.
 }
 \description{
-Creating top value box to be used in \code{PLH_shiny} function
+This function creates a top value box for use in a Shiny application. The value box displays summary information
+based on a specified variable from a data frame, with additional options for mean or value-based boxes.
 }

@@ -1,14 +1,16 @@
-#' Title
+#' Create a Tabbed Sheet Layout for Shiny
 #'
-#' @param data_list todo
-#' @param spreadsheet_name todo
-#' @param d_box todo
-#' @param j todo
+#' This function generates a tabbed sheet layout for a Shiny application, where each tab corresponds to a different display type.
+#' It dynamically creates tab panels based on the provided spreadsheet data.
 #'
-#' @return todo
-#' @export
+#' @param data_list A list containing the data associated with each spreadsheet.
+#' @param spreadsheet_name The name of the spreadsheet to generate the tabs from.
+#' @param d_box A list containing display box configurations for each element.
+#' @param status The status of the display box (e.g., "primary").
+#' @param colour The background colour of the display box.
+#' @param j An integer indicating the tab panel index.
 #'
-#' @examples #todo
+#' @return A `shinydashboard::tabItem` object representing the tabbed sheet layout.
 tabbed_sheet <- function(data_list = data_list,
                          spreadsheet_name = data_list$contents$ID[[i]],
                          d_box,

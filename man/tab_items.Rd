@@ -2,19 +2,16 @@
 % Please edit documentation in R/tab_items.R
 \name{tab_items}
 \alias{tab_items}
-\title{Title}
+\title{Create Tab Items for a Shiny Dashboard}
 \usage{
 tab_items(...)
 }
 \arguments{
-\item{...}{todo}
+\item{...}{A series of tab panels to be included as tab items.}
 }
 \value{
-todo
+A \code{div} element containing the tab content for a Shiny dashboard.
 }
 \description{
-Title
-}
-\examples{
- #todo
+This function creates tab items for a Shiny dashboard. Each tab item corresponds to a panel within the tab content.
 }

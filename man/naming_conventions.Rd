@@ -2,30 +2,28 @@
 % Please edit documentation in R/naming_conventions.R
 \name{naming_conventions}
 \alias{naming_conventions}
-\title{Quick change to naming conventions in tables/data frames}
+\title{Standardise Naming Conventions for Variables}
 \usage{
 naming_conventions(x, replace, replace_after)
 }
 \arguments{
-\item{x}{String containing variable name(s) to change.}
+\item{x}{A vector of strings containing variable names to standardise.}
 
-\item{replace}{String of which values to remove before the final string.}
+\item{replace}{A string indicating the pattern to remove from the start of the variable names.}
 
-\item{replace_after}{String of which values to remove after the final string.}
+\item{replace_after}{A string indicating the pattern to remove from the end of the variable names.}
 }
 \value{
-String containing variable name(s) in consistent naming convention
+A vector of strings containing the standardized variable names.
 }
 \description{
-Quick and simple way to remove strings in a variable name, and have consistent naming structure in the package.
+This function standardises the naming conventions for a given set of variable names by removing specified patterns and capitalising the first letter.
 }
 \examples{
-# String of values we want to change the naming convention in
+# Example usage:
 data_hp_started <- c("rp.contact.field.w_1on1_hp_review_started",
                      "rp.contact.field.w_praise_hp_review_started",
                      "rp.contact.field.w_instruct_hp_review_started",
                      "rp.contact.field.w_stress_hp_review_started")
-# Want to remove "rp.contact.field.w_" and "_hp_review_started"
-naming_conventions(data_hp_started, replace = "rp.contact.field.w_",
-                   replace_after = "_hp_review_started")
+naming_conventions(data_hp_started, replace = "rp.contact.field.w_", replace_after = "_hp_review_started")
 }

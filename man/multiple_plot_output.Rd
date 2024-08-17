@@ -2,7 +2,7 @@
 % Please edit documentation in R/multiple_plot_output.R
 \name{multiple_plot_output}
 \alias{multiple_plot_output}
-\title{Return a list of ggplot2 plots}
+\title{Generate Multiple ggplot2 Plots}
 \usage{
 multiple_plot_output(
   data = plhdata_org_clean,
@@ -13,22 +13,20 @@ multiple_plot_output(
 )
 }
 \arguments{
-\item{data}{Data frame to calculate summaries from.}
+\item{data}{Data frame to calculate summaries from. Default is \code{plhdata_org_clean}.}
 
-\item{columns_to_summarise}{Variables to summarise.}
+\item{columns_to_summarise}{A vector of variable names (as strings) to summarize and plot.}
 
-\item{replace}{String of which values to remove before the final string.}
+\item{replace}{A string indicating the pattern to remove from the variable names before displaying them. Default is \code{"rp.contact.field."}.}
 
-\item{replace_after}{String of which values to remove after the final string.}
+\item{replace_after}{A string indicating the pattern to remove after the variable names. Default is \code{NULL}.}
 
-\item{plot_type}{Whether to display a \code{histogram} or \code{boxplot}}
+\item{plot_type}{A string indicating the type of plot to generate, either \code{"histogram"} or \code{"boxplot"}. Default is \code{c("histogram", "boxplot")}.}
 }
 \value{
-List of ggplot2 objects.
+A list of ggplot2 objects, where each object is a plot for the corresponding variable.
 }
 \description{
-Return a list of ggplot2 plots
-}
-\examples{
-# TODO
+This function generates a list of ggplot2 plots based on the provided data and columns to summarize.
+It supports creating either histograms or boxplots for each specified variable.
 }

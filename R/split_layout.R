@@ -1,13 +1,13 @@
-#' Title
+#' Create a Split Layout for Shiny UI
 #'
-#' @param ... todo
-#' @param cellWidths todo 
-#' @param cellArgs  todo
+#' This function creates a split layout for use in Shiny applications, allowing multiple UI elements to be displayed side by side. 
+#' It is highly customisable with options for adjusting cell widths and passing additional arguments to individual cells.
 #'
-#' @return todo
-#' @export
+#' @param ... UI elements to be included in the layout.
+#' @param cellWidths A character vector specifying the widths of the cells. If not provided, cells are given equal width.
+#' @param cellArgs A list of additional arguments to pass to each cell.
 #'
-#' @examples #todo
+#' @return A `div` element containing the specified UI elements, arranged in a split layout.
 split_layout <- function(..., cellWidths = NULL, cellArgs = list()){
   children <- (...)
   childIdx <- !nzchar(names(children) %||% character(length(children)))

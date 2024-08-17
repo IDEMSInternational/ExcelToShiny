@@ -2,7 +2,7 @@
 % Please edit documentation in R/summary_table.R
 \name{summary_table}
 \alias{summary_table}
-\title{Calculate and format summaries from PLH data}
+\title{Create and Format Summary Tables from PLH Data}
 \usage{
 summary_table(
   data = plhdata_org_clean,
@@ -20,36 +20,34 @@ summary_table(
 )
 }
 \arguments{
-\item{data}{Data frame to calculate summaries from.}
+\item{data}{A data frame to summarise.}
 
-\item{factors}{List of factors to group by.}
+\item{factors}{A list of factors to group by.}
 
 \item{columns_to_summarise}{Variables to summarise.}
 
-\item{summaries}{Whether \code{frequencies} or \code{mean} summaries are calculated.}
+\item{summaries}{A character string indicating whether to calculate \code{frequencies} or \code{mean} summaries.}
 
-\item{replace}{String of values in the \code{columns_to_summarise} variable to remove in the table (before the value to keep).}
+\item{replace}{A string of values in the \code{columns_to_summarise} variable to remove in the table (before the value to keep).}
 
-\item{include_margins}{logical. Default \code{FALSE}. Whether to include margins.}
+\item{include_margins}{Logical. Default \code{FALSE}. Whether to include margins in the summary.}
 
-\item{wider_table}{logical. Default \code{TRUE}. Whether to have a wider table if \code{summaries = "frequencies"}.}
+\item{wider_table}{Logical. Default \code{TRUE}. Whether to present a wider table if \code{summaries = "frequencies"}.}
 
-\item{display_table}{logical. Default \code{FALSE}. Return table in \code{gt::gt()} table format.}
+\item{display_table}{Logical. Default \code{FALSE}. Whether to return the table in \code{gt::gt()} format.}
 
-\item{naming_convention}{logical. Default \code{TRUE}. Whether to apply naming conventions when \code{summaries = "mean"}.}
+\item{naming_convention}{Logical. Default \code{TRUE}. Whether to apply naming conventions when \code{summaries = "mean"}.}
 
-\item{include_percentages}{logical. Default \code{FALSE}. Whether to include percentages when \code{summaries = "frequencies"}.}
+\item{include_percentages}{Logical. Default \code{FALSE}. Whether to include percentages when \code{summaries = "frequencies"}.}
 
-\item{together}{logical. Default \code{FALSE}. If \code{summaries = "frequencies"}, whether to combine the count and percentage into one cell.}
+\item{together}{Logical. Default \code{FALSE}. If \code{summaries = "frequencies"}, whether to combine the count and percentage into one cell.}
 
-\item{drop}{logical. Default \code{FALSE}. When running \code{group_by}, whether to drop unused columns.}
+\item{drop}{Logical. Default \code{FALSE}. When running \code{group_by}, whether to drop unused columns.}
 }
 \value{
-Summaries table as \code{tibble} or \code{gt}.
+A summary table as a \code{tibble} or a \code{gt} table, depending on the \code{display_table} parameter.
 }
 \description{
-Calculate and format summaries table
-}
-\examples{
-# TODO
+This function calculates and formats summary tables from PLH data, supporting both frequency and mean summaries.
+It can output the table in a wide format, apply naming conventions, and optionally display the table using \code{gt}.
 }

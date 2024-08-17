@@ -1,14 +1,14 @@
-#' Creating box to be used in `PLH_shiny` function
+#' Create Scatter Plot Table for Shiny
 #'
-#' @param data  todo
-#' @param variable todo 
-#' @param type todo
-#' @param spreadsheet todo
+#' The `scatter_table` function generates a table and scatter plot based on the specified variables from the dataset. This function is intended to be used within a Shiny application to create interactive visualisations and summaries.
 #'
-#' @return table for use in `Shiny`
-#' @export
-#' 
-#' @examples #todo
+#' @param data A data frame or list used as the data source. If a list is provided, the function returns the table and an empty plot.
+#' @param variable A string specifying the variable(s) to be used for the scatter plot. The variable should be in a format suitable for plotting (e.g., two numeric columns for X and Y axes).
+#' @param type A string indicating the type of table to generate. Options are `"freq"` for frequency tables or `"summary"` for summary statistics. Default is `"freq"`.
+#' @param spreadsheet A data frame containing metadata or additional manipulation instructions for creating the plot.
+#' @param grouped_vars Optional. A string or vector of strings specifying variables by which the data should be grouped before generating the plot or table.
+#'
+#' @return A list with two elements: `table` containing the summary or frequency table, and `plot`, a ggplot2 object representing the scatter plot.
 scatter_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, grouped_vars = NULL) {
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)

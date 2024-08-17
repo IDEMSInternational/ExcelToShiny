@@ -2,7 +2,7 @@
 % Please edit documentation in R/tabbed_sheet.R
 \name{tabbed_sheet}
 \alias{tabbed_sheet}
-\title{Title}
+\title{Create a Tabbed Sheet Layout for Shiny}
 \usage{
 tabbed_sheet(
   data_list = data_list,
@@ -14,20 +14,22 @@ tabbed_sheet(
 )
 }
 \arguments{
-\item{data_list}{todo}
+\item{data_list}{A list containing the data associated with each spreadsheet.}
 
-\item{spreadsheet_name}{todo}
+\item{spreadsheet_name}{The name of the spreadsheet to generate the tabs from.}
 
-\item{d_box}{todo}
+\item{d_box}{A list containing display box configurations for each element.}
 
-\item{j}{todo}
+\item{status}{The status of the display box (e.g., "primary").}
+
+\item{colour}{The background colour of the display box.}
+
+\item{j}{An integer indicating the tab panel index.}
 }
 \value{
-todo
+A \code{shinydashboard::tabItem} object representing the tabbed sheet layout.
 }
 \description{
-Title
-}
-\examples{
-#todo
+This function generates a tabbed sheet layout for a Shiny application, where each tab corresponds to a different display type.
+It dynamically creates tab panels based on the provided spreadsheet data.
 }

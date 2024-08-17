@@ -1,17 +1,16 @@
-#' Plot PLH data
-#' @description Plot either a histogram or boxplot for PLH data.
+#' Plot Summaries from PLH Data
+#' 
+#' This function generates either a histogram or boxplot for a specified variable in PLH data. 
+#' It allows for customisation of axis labels and supports naming conventions.
 #'
-#' @param data Data frame to calculate summaries from.
-#' @param columns_to_summarise Variables to dplyr::summarise.
-#' @param naming_convention logical. Default `TRUE`. Whether to apply naming conventions.
-#' @param replace String of values in the `columns_to_summarise` variable to remove in the table (before the value to keep).
-#' @param replace_after String of values in the `columns_to_summarise` variable to remove in the table (after the value to keep).
-#' @param plot_type Whether to display a `histogram` or `boxplot`
+#' @param data A data frame to plot.
+#' @param columns_to_summarise The variable to plot.
+#' @param naming_convention Logical. Default `TRUE`. Whether to apply naming conventions to axis labels.
+#' @param replace A string indicating values to remove from the `columns_to_summarise` variable (before the value to keep).
+#' @param replace_after A string indicating values to remove from the `columns_to_summarise` variable (after the value to keep).
+#' @param plot_type A character string indicating whether to create a `histogram` or `boxplot`.
 #'
-#' @return `ggplot` object
-#' @export
-#'
-#' @examples # TODO
+#' @return A `ggplot` object representing the plot.
 summary_plot <- function(data = plhdata_org_clean, columns_to_summarise, naming_convention = TRUE, replace = "rp.contact.field.",
                          replace_after = NULL,
                          plot_type = c("histogram", "boxplot")) {	

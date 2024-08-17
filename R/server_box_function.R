@@ -1,25 +1,13 @@
 #' Server Box Function
 #'
-#' This function processes and generates box plots and frequency tables for a Shiny application server. It reads data from a data frame and applies specified filters and operations based on spreadsheet data.
+#' This function processes and generates tables and plots based on specified parameters. It is used within a Shiny application to dynamically create visual and tabular content.
 #'
-#' @param data_frame The data frame used for generating box plots and frequency tables.
-#' @param spreadsheet A data frame containing spreadsheet data that defines the operations and filters to be applied.
-#' @param unique_ID An identifier for the current operation.
+#' @param data_frame The data frame containing the data to be visualised or summarised.
+#' @param spreadsheet A data frame specifying the operations, filters, and configurations to be applied.
+#' @param unique_ID A string that uniquely identifies the operation or plot type being executed.
+#' @param list_of_reactives A list of reactive data frames used to dynamically update content in a Shiny app.
 #'
-#' @return A list containing table and plot objects resulting from the processing of the spreadsheet data.
-#'
-#' @export
-#'
-#' @examples
-#' # Process spreadsheet data using server_box_function
-#' data_frame <- data.frame(...)  # Define your data frame
-#' spreadsheet_data <- data.frame(...)  # Define your spreadsheet data
-#' unique_ID <- "boxplot_variable1"
-#' result <- server_box_function(data_frame, spreadsheet_data, unique_ID)
-#'
-#' # Access table and plot objects from the result
-#' table_obj <- result$table_obj
-#' plot_obj <- result$plot_obj
+#' @return A list containing `table_obj`, a data frame or table of results, and `plot_obj`, a ggplot2 object representing the plot.
 server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reactives) {
   # Initial Checks for validity of input parameters
   if (!exists("data_frame") || !exists("spreadsheet") || is.null(unique_ID) || !exists("list_of_reactives")) {
