@@ -492,7 +492,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         })
       } else {
         # build the download:
-        output[[paste0("build_download", j)]] <- renderUI({
+        output[[paste0("build_download", j)]] <- shiny::renderUI({
           shintagList(shiny::fluidRow(
             shinydashboard::box(width = 6, 
                 shiny::selectInput(paste0("dataset", j),

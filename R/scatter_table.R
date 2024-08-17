@@ -53,7 +53,7 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
       ggplot2::labs(x = naming_conventions(variable[1]), y = naming_conventions(variable[2]))
     
     if (!is.null(grouped_vars)){
-      return_plot <- return_plot  + facet_wrap(grouped_vars)
+      return_plot <- return_plot + ggplot2::facet_wrap(grouped_vars)
     }
     return(return_plot)
   }

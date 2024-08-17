@@ -12,10 +12,10 @@
 #'
 #' @examples
 #' # Grouped summary table
-#' result <- bar_table(data = mtcars, variable = "mpg", type = "summary", 
-#'                    spreadsheet = list(), grouped_vars = "cyl")
-#' print(result$table)
-#' print(result$plot)
+#' #result <- bar_table(data = mtcars, variable = "mpg", type = "summary", 
+#' #                   spreadsheet = list(), grouped_vars = "cyl")
+#' #print(result$table)
+#' #print(result$plot)
 #'
 bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, grouped_vars = NULL) {
   type <- match.arg(type)

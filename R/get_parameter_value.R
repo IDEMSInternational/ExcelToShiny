@@ -8,7 +8,7 @@
 #' @param logical Logical value indicating whether the parameter value should be treated as a logical (`TRUE` or `FALSE`). Default is `FALSE`.
 #'
 #' @return The value of the specified parameter. The return type depends on the `list` and `logical` arguments:
-#' \itemise{
+#' \itemize{
 #'   \item If `list = FALSE` and `logical = FALSE`, it returns the parameter as a string.
 #'   \item If `list = TRUE`, it returns the parameter as a character vector (list).
 #'   \item If `logical = TRUE`, it returns the parameter as a logical value.

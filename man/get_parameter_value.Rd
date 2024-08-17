@@ -22,7 +22,7 @@ get_parameter_value(
 }
 \value{
 The value of the specified parameter. The return type depends on the \code{list} and \code{logical} arguments:
-\itemise{
+\itemize{
 \item If \code{list = FALSE} and \code{logical = FALSE}, it returns the parameter as a string.
 \item If \code{list = TRUE}, it returns the parameter as a character vector (list).
 \item If \code{logical = TRUE}, it returns the parameter as a logical value.

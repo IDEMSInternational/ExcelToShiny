@@ -47,7 +47,7 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
     ggplot2::geom_boxplot(data = data, ggplot2::aes(y = .data[[variable]])) +
     ggplot2::labs(x = "Count")
   if (!is.null(grouped_vars)){
-    plot_to_return <- plot_to_return + facet_wrap(grouped_vars)
+    plot_to_return <- plot_to_return + ggplot2::facet_wrap(grouped_vars)
   }
   
   if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
