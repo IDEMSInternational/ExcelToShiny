@@ -8,7 +8,7 @@
 #' @param logical Logical value indicating whether the parameter value should be treated as a logical (`TRUE` or `FALSE`). Default is `FALSE`.
 #'
 #' @return The value of the specified parameter. The return type depends on the `list` and `logical` arguments:
-#' \itemize{
+#' \itemise{
 #'   \item If `list = FALSE` and `logical = FALSE`, it returns the parameter as a string.
 #'   \item If `list = TRUE`, it returns the parameter as a character vector (list).
 #'   \item If `logical = TRUE`, it returns the parameter as a logical value.
@@ -24,11 +24,11 @@
 #'
 #' # Extract a parameter value as a list
 #' param_list <- 'options = c("Option1", "Option2", "Option3")'
-#' get_parameter_value(param_list, name = "options", list = TRUE)  # Returns c("Option1", "Option2", "Option3")
+#' get_parameter_value(param_list, name = "options", list = TRUE)
 #'
 #' # Extract a logical parameter value
 #' param_logical <- 'is_active = TRUE'
-#' get_parameter_value(param_logical, name = "is_active", logical = TRUE)  # Returns TRUE
+#' get_parameter_value(param_logical, name = "is_active", logical = TRUE) 
 #'
 #' # Parameter not found
 #' param_not_found <- 'other_param = 42'

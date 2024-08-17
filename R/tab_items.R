@@ -6,6 +6,6 @@
 #'
 #' @return A `div` element containing the tab content for a Shiny dashboard.
 tab_items <- function(...) {
-  lapply(..., shinydashboard:::tagAssert, class = "tab-pane")
+  lapply(..., tag_assert, class = "tab-pane")
   shiny::div(class = "tab-content", ...)
 }
