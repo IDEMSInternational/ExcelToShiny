@@ -1,6 +1,5 @@
 #' PLH Shiny Function - Create and Launch a Shiny Dashboard
-#' 
-#' This function is now Depreciated. Look at `build_shiny` instead.
+#'
 #' The PLH_shiny function generates a Shiny dashboard application based on the provided datasets and specifications. This function is designed to create a dynamic and interactive user interface that includes value boxes, filters, groupings, plots, tables, and downloadable content, all customisable through the input parameters.
 #'
 #' @param title A string specifying the title of the dashboard.
@@ -50,7 +49,7 @@
 #' }
 #'
 #' @note Ensure that the data_list and data_frame parameters are correctly formatted to match the expected structure for the dashboard to function properly.
-PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14", key_var = NULL){
+build_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14", key_var = NULL){
   colour <- tolower(colour)
   if (colour == "blue") {
     status = "primary"
@@ -83,7 +82,7 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
     results <- check_variables_existence(sheet, data_frame = data_frame_name)
     if (!is.null(results) && nrow(results) > 0) check_unknown_variables(results)
   }
-
+  
   # Populate items for the tabs ------------------------------------------------
   display_box <- display_contents(data_frame = data_frame, contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
   my_tab_items <- create_tab_items(data_list = data_list,
@@ -481,11 +480,11 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
           if (credentials()$info$user == "admin"){
             shiny::tagList(shiny::fluidRow(
               shinydashboard::box(width = 6, 
-                  shiny::selectInput(paste0("dataset", j),
-                                     data_label,
-                                     choices = data_names),
-                  # Button
-                  shiny::downloadButton(paste0("downloadData", j), download_label)),
+                                  shiny::selectInput(paste0("dataset", j),
+                                                     data_label,
+                                                     choices = data_names),
+                                  # Button
+                                  shiny::downloadButton(paste0("downloadData", j), download_label)),
               shiny::fluidRow(shinydashboard::box(width = 12,
                                                   shiny::dataTableOutput(paste0("table", j)),
                                                   style='width:100%;overflow-x: scroll;'))))
@@ -496,11 +495,11 @@ PLH_shiny <- function (title, data_list, data_frame, status = "primary", colour 
         output[[paste0("build_download", j)]] <- shiny::renderUI({
           shiny::tagList(shiny::fluidRow(
             shinydashboard::box(width = 6, 
-                shiny::selectInput(paste0("dataset", j),
-                                   data_label,
-                                   choices = data_names),
-                # Button
-                shiny::downloadButton(paste0("downloadData", j), download_label)),
+                                shiny::selectInput(paste0("dataset", j),
+                                                   data_label,
+                                                   choices = data_names),
+                                # Button
+                                shiny::downloadButton(paste0("downloadData", j), download_label)),
             shiny::fluidRow(shinydashboard::box(width = 12,
                                                 shiny::dataTableOutput(paste0("table", j)),
                                                 style='width:100%;overflow-x: scroll;'))))

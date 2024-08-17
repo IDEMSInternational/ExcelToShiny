@@ -3,6 +3,7 @@
 export("%>%")
 export(PLH_shiny)
 export(add_na_variable)
+export(build_shiny)
 export(get_parameter_value)
 export(naming_conventions)
 importFrom(magrittr,"%>%")
