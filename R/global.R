@@ -1,1 +1,1 @@
-utils::globalVariables(c("plhdata_org_clean", "n", "Org", "Total", "count", "group", "location", "perc", "type", "name", "status", "colour", "contents"))
+utils::globalVariables(c("plhdata_org_clean", "n", "Org", "Total", "count", "group", "location", "perc", "type", "name", "status", "colour", "contents", 'data_l', 'parameter_list', 'values', 'credentials_data', 'user', 'password', 'data', 'data_list', 'variable', 'tags'))
