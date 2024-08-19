@@ -1,0 +1,90 @@
+### Vignette: Using ExcelToShiny
+
+---
+title: "Using ExcelToShiny"
+author: "Lily Clements"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using ExcelToShiny}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+library(ExcelToShiny)
+library(readxl)
+library(dplyr)
+library(rio)
+library(NHANES)
+library(shiny)
+library(shinydashboard)
+```
+
+# Introduction
+This vignette demonstrates how to use the `ExcelToShiny` package to create a Shiny dashboard from an Excel spreadsheet.
+
+## Loading an Excel Spreadsheet
+To demonstrate the usage of `build_shiny`, we'll first load an example Excel file.
+
+```{r load-data, message=FALSE, warning=FALSE}
+# Path to the example Excel file
+example_excel <- rio::import_list("data/nhanes_data.xlsx")
+```
+
+## Preparing the Data
+
+We'll prepare the `NHANES` dataset by selecting individual records and ensuring that the `ID` column is in character format.
+
+```{r prepare-data, message=FALSE, warning=FALSE}
+# Load the NHANES dataset
+data(NHANES)
+
+# Prepare the data by selecting individual records
+NHANES_by_ind <- NHANES %>%
+  group_by(ID) %>%
+  mutate(count = 1:n()) %>%
+  filter(count == 1) %>%
+  ungroup()
+
+# Ensure that the ID column is in character format
+NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+```
+
+## Loading Credentials
+
+We'll load the credentials required for the Shiny app. This isn't always needed - but in our example, we use this in the "Download" tab.
+
+```{r load-credentials, message=FALSE, warning=FALSE}
+# Source the credentials data
+source("data/credentials_data.R")
+```
+
+## Creating a Shiny Dashboard
+
+Now, we will use the `build_shiny` function to create a Shiny dashboard based on the loaded Excel file and prepared data.
+
+```{r create-dashboard, message=FALSE, warning=FALSE, eval = FALSE}
+# Create the Shiny dashboard using the Excel file and prepared data
+build_shiny(title = "Testing Shiny Dashboard",
+            data_list = example_excel,
+            data_frame = NHANES_by_ind,
+            status = "primary",
+            colour = "blue",
+            key_var = "ID")
+```
+
+The `build_shiny()` function generates a Shiny app.
+
+# Conclusion
+
+This vignette has shown how to use the `ExcelToShiny` package to generate a Shiny dashboard from an Excel spreadsheet and a prepared dataset. 
+
+There is documentation on the different elements of the Excel Spreadsheet available. 

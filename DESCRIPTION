@@ -30,3 +30,9 @@ Imports:
   viridis
 Remotes:
   IDEMSInternational/postgresr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)

@@ -79,9 +79,9 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
       }
     } else {
       table_data <- dplyr::filter(data, !is.na(data[[variable]]))
-      
+
       if (!is.null(grouped_vars)){
-        table_data <- table_data %>% dplyr::group_by(!!rlang::sym(grouped_vars))
+        table_data <- table_data %>% dplyr::group_by(!!!rlang::syms(grouped_vars))
       }
       all_return$table <- table_data %>%
         dplyr::summarise(Median = round(stats::median(!!rlang::sym(variable), na.rm = TRUE), 2),

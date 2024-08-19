@@ -16,8 +16,6 @@
 #' @param together Logical. Default `FALSE`. If `summaries = "frequencies"`, whether to combine the count and percentage into one cell.
 #' @param drop Logical. Default `FALSE`. When running `group_by`, whether to drop unused columns.
 #' 
-#' @importFrom rlang .data
-#' 
 #' @return A summary table as a `tibble` or a `gt` table, depending on the `display_table` parameter.
 summary_table <- function(data = plhdata_org_clean, factors = Org, columns_to_summarise = NULL, summaries = c("frequencies", "mean"),
                           replace = "rp.contact.field.", include_margins = FALSE, wider_table = TRUE,
