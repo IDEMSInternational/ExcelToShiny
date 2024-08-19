@@ -15,92 +15,61 @@
 summary_calculation <- function(data = plhdata_org_clean, factors, columns_to_summarise = NULL, summaries = c("frequencies", "mean"),
                                 together = FALSE, include_margins = FALSE, drop = FALSE){
   summaries <- match.arg(summaries)
-  if (summaries == "frequencies"){
+  if (summaries == "frequencies") {
     summary_output <- data %>%
-      dplyr::mutate(dplyr::across(dplyr::all_of({{ columns_to_summarise }}), ~ (as.character(.x)))) %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of({{ columns_to_summarise }}, {{ factors }})), .drop = drop) %>%
-      dplyr::summarise(n = dplyr::n(),
+      dplyr::mutate(dplyr::across(c({{ columns_to_summarise }}),~ (as.character(.x)))) %>%
+      dplyr::group_by(dplyr::across(c({{ columns_to_summarise }}, {{ factors }})), .drop = drop) %>%
+      dplyr::summarise(n = dplyr::n(), 
                        perc = dplyr::n()/nrow(data) * 100) %>%
       dplyr::ungroup()
-    if (include_margins){
-      cts_margin <- data %>%
-        dplyr::group_by(dplyr::across(dplyr::all_of({{ columns_to_summarise }})), .drop = drop) %>%
-        dplyr::summarise(n = dplyr::n(),
-                         perc = dplyr::n()/nrow(data) * 100)      
-      ftr_margin <- data %>%
-        dplyr::group_by(dplyr::across(dplyr::all_of({{ factors }})), .drop = drop) %>%
-        dplyr::summarise(n = dplyr::n(),
-                         perc = dplyr::n()/nrow(data) * 100)      
-      corner_margin <- data %>%
-        dplyr::summarise(n = dplyr::n(),
+    if (include_margins) {
+      cts_margin <- data %>% dplyr::group_by(dplyr::across(c({{ columns_to_summarise }})), .drop = drop) %>%
+        dplyr::summarise(n = dplyr::n(), 
                          perc = dplyr::n()/nrow(data) * 100)
-      summary_output <- dplyr::bind_rows(summary_output, cts_margin, ftr_margin, corner_margin, .id = "id")
-      
-      summary_output <- summary_output %>%
-        #ungroup() %>%
-        dplyr::mutate(dplyr::across({{ factors }}, as.character)) %>%
+      ftr_margin <- data %>% dplyr::group_by(dplyr::across(c({{ factors }})), .drop = drop) %>%
+        dplyr::summarise(n = dplyr::n(), 
+                         perc = dplyr::n()/nrow(data) * 100)
+      corner_margin <- data %>% dplyr::summarise(n = dplyr::n(), 
+                                                 perc = dplyr::n()/nrow(data) * 100)
+      summary_output <- dplyr::bind_rows(summary_output, 
+                                         cts_margin, ftr_margin, corner_margin, .id = "id")
+      summary_output <- summary_output %>% dplyr::mutate(dplyr::across({{ factors }}, as.character)) %>%
         dplyr::mutate(dplyr::across({{ factors }}, ~ifelse(id %in% c(2, 4), "Total", .x))) %>%
         dplyr::mutate(dplyr::across({{ columns_to_summarise }}, ~ifelse(id %in% c(3, 4), "Total", .x)))
-      
-      summary_output <- summary_output %>%
-        dplyr::mutate(dplyr::across({{ factors }}, ~forcats::fct_relevel(.x, "Total", after = Inf))) %>%
-        dplyr::mutate(dplyr::across({{ columns_to_summarise }}, ~forcats::fct_relevel(.x, "Total", after = Inf))) %>%
+      summary_output <- summary_output %>% dplyr::mutate(dplyr::across({{ factors }}, ~forcats::fct_relevel(.x, "Total", after = Inf))) %>% 
+        dplyr::mutate(dplyr::across({{ columns_to_summarise }}, ~forcats::fct_relevel(.x, "Total", after = Inf))) %>% 
         dplyr::select(-c("id"))
     }
-    if (together){
-      summary_output <- summary_output %>%
-        dplyr::mutate("Count (%)" := stringr::str_c(`n`, ' (', round(`perc`, 2), ")")) %>%
+    if (together) {
+      summary_output <- summary_output %>% dplyr::mutate(`:=`("Count (%)", 
+                                                              stringr::str_c(n, " (", round(perc, 2), ")"))) %>% 
         dplyr::select(-c(n, perc))
     }
-  } else {
-    summary_output <- data %>%
-      dplyr::group_by(dplyr::across({{ factors }}), .drop = drop) %>%
-      #dplyr::mutate(dplyr::across({{ columns_to_summarise }}, ~as.numeric(.))) %>%
+  }
+  else {
+    summary_output <- data %>% dplyr::group_by(dplyr::across({{ factors }}), .drop = drop) %>%
       dplyr::summarise(dplyr::across({{ columns_to_summarise }}, ~mean(.x, na.rm = TRUE)))
-    
-    if (include_margins){
-      corner_margin <- data %>%
-        dplyr::summarise(dplyr::across(dplyr::all_of({{ columns_to_summarise }}), ~mean(.x, na.rm  = TRUE)))
-      
+    if (include_margins) {
+      corner_margin <- data %>% dplyr::summarise(dplyr::across(c({{ columns_to_summarise }}),
+                                                               ~mean(.x, na.rm = TRUE)))
       summary_output <- dplyr::bind_rows(summary_output, corner_margin, .id = "id")
-      
-      summary_output <- summary_output %>%
-        dplyr::ungroup() %>%
+      summary_output <- summary_output %>% dplyr::ungroup() %>% 
         dplyr::mutate(dplyr::across({{ factors }}, as.character)) %>%
         dplyr::mutate(dplyr::across({{ factors }}, ~ifelse(id == 2, "Total", .x)))
-      
       summary_output <- summary_output %>%
-        dplyr::mutate(dplyr::across({{ factors }}, ~forcats::fct_relevel(.x, "Total", after = Inf))) %>%
+        dplyr::mutate(dplyr::across({{ factors }}, ~forcats::fct_relevel(.x, "Total", after = Inf))) %>% 
         dplyr::select(-c("id"))
     }
   }
-  if (length(data %>% dplyr::select({{ factors }})) == 1){
+  if (length(data %>% dplyr::select({{ factors }})) == 1) {
     cell_values_levels <- data %>% dplyr::pull({{ factors }}) %>% levels()
-    if (include_margins){ cell_values_levels <- c(cell_values_levels, "Total") }
-    
+    if (include_margins) {
+      cell_values_levels <- c(cell_values_levels, "Total")
+    }
     summary_output <- summary_output %>%
-      dplyr::mutate(dplyr::across({{ factors }},
-                                  ~ factor(.x))) %>%
-      dplyr::mutate(dplyr::across({{ factors }},
-                                  ~ forcats::fct_relevel(.x, cell_values_levels)))
+      dplyr::mutate(dplyr::across({{ factors }}, ~factor(.x))) %>%
+      dplyr::mutate(dplyr::across({{ factors }}, ~forcats::fct_relevel(.x, cell_values_levels)))
     summary_output <- summary_output %>% dplyr::arrange({{ factors }})
   }
-  # if (length(data %>% dplyr::select({{ columns_to_summarise }})) == 1){
-  #   print("Ok in here then?")
-  #   print(columns_to_summarise)
-  #   print(head(data))
-  #   print(head(data %>% dplyr::select( columns_to_summarise )))
-  #   cell_values_levels <- data %>% dplyr::pull({{ columns_to_summarise }}) %>% levels()
-  #   print("then here1")
-  #   if (include_margins){ cell_values_levels <- c(cell_values_levels, "Total") }
-  #   print("then here2")
-  #   summary_output <- summary_output %>%
-  #     dplyr::mutate(dplyr::across({{ columns_to_summarise }},
-  #                                 ~ factor(.x))) %>%
-  #     dplyr::mutate(dplyr::across({{ columns_to_summarise }},
-  #                                 ~ forcats::fct_relevel(.x, cell_values_levels)))
-  #   summary_output <- summary_output %>% dplyr::arrange({{ columns_to_summarise }})
-  #   print("then here3")
-  # }
   return(unique(summary_output))
 }
