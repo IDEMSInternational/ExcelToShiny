@@ -90,7 +90,7 @@ The **"Contents"** sheet should be the initial sheet and must be titled "content
 
 Each page listed in the sidebar corresponds to its dedicated sheet within the spreadsheet, where the specific content for that page is outlined. The "Contents" tab, in essence, functions as the master reference for all these distinct spreadsheet sheets.
 
-``````{r include-image, echo=FALSE, fig.align='center', out.width = '70%'}
+```{r include-image, echo=FALSE, fig.align='center', out.width = '70%'}
 knitr::include_graphics("inst/extdata/contents_tab.png")
 ```
 

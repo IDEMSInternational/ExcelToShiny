@@ -10,6 +10,8 @@
 #'
 #' @return A list with two elements: `table`, containing the generated summary table, and `plot`, containing the corresponding ggplot object.
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' # Grouped summary table
 #' #result <- bar_table(data = mtcars, variable = "mpg", type = "summary", 
