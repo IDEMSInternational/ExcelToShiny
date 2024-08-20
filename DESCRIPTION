@@ -17,7 +17,6 @@ Imports:
   magrittr,
   plotly,
   plyr,
-  postgresr,
   purrr, 
   rlang,
   stringr,
@@ -28,8 +27,6 @@ Imports:
   tibble,
   tidyr,
   viridis
-Remotes:
-  IDEMSInternational/postgresr
 Suggests: 
     knitr,
     rmarkdown
