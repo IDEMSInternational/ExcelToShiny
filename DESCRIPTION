@@ -29,7 +29,11 @@ Imports:
   viridis
 Suggests: 
     knitr,
-    rmarkdown
+    NHANES, 
+    readxl,
+    rio,
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
