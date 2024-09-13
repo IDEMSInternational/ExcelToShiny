@@ -1,7 +1,7 @@
 # library(testthat)
 # library(ExcelToShiny)
 # 
-# test_that("create_shiny_dashboard creates a Shiny app", {
+#test_that("create_shiny_dashboard creates a Shiny app", {
 #   # Test with a valid Excel file path
 #   excel_file <- system.file("extdata", "example_dashboard.xlsx", package = "PLHShiny")
 #   shiny_app <- build_shiny(excel_file)
@@ -15,7 +15,7 @@
 #   expect_true(is.function(shiny_app$server))
 # })
 # 
-# test_that("create_shiny_dashboard handles errors", {
-#   # Test with an invalid file path
-#   expect_error(create_shiny_dashboard("nonexistent_file.xlsx"))
-# })
+test_that("create_shiny_dashboard handles errors", {
+  # Test with an invalid file path
+  expect_error(create_shiny_dashboard("nonexistent_file.xlsx"))
+})
