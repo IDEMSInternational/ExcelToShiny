@@ -11,14 +11,14 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, eval = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r}
+```{r, eval = FALSE}
 library(ExcelToShiny)
 library(readxl)
 library(dplyr)
@@ -34,7 +34,7 @@ This vignette demonstrates how to use the `ExcelToShiny` package to create a Shi
 ## Loading an Excel Spreadsheet
 To demonstrate the usage of `build_shiny`, we'll first load an example Excel file.
 
-```{r load-data, message=FALSE, warning=FALSE}
+```{r load-data, message=FALSE, warning=FALSE, eval = FALSE}
 # Path to the example Excel file
 example_excel <- rio::import_list("data/nhanes_data.xlsx")
 ```
@@ -43,7 +43,7 @@ example_excel <- rio::import_list("data/nhanes_data.xlsx")
 
 We'll prepare the `NHANES` dataset by selecting individual records and ensuring that the `ID` column is in character format.
 
-```{r prepare-data, message=FALSE, warning=FALSE}
+```{r prepare-data, message=FALSE, warning=FALSE, eval = FALSE}
 # Load the NHANES dataset
 data(NHANES)
 
@@ -62,7 +62,7 @@ NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
 
 We'll load the credentials required for the Shiny app. This isn't always needed - but in our example, we use this in the "Download" tab.
 
-```{r load-credentials, message=FALSE, warning=FALSE}
+```{r load-credentials, message=FALSE, warning=FALSE, eval = FALSE}
 # Source the credentials data
 source("data/credentials_data.R")
 ```
