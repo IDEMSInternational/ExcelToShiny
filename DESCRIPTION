@@ -1,10 +1,10 @@
 Package: ExcelToShiny
-Title: Functions useful in PLH analysis
-Version: 0.0.0.9000
+Title: Automate Shiny Dashboard Creation from Excel Templates
+Version: 0.1.0
 Authors@R: 
     person("Lily", "Clements", , "lily@idems.international", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8864-0552"))
-Description: Convenience functions to analyse PLH data.
+Description: Provides functions for automating the creation of Shiny dashboards from structured Excel templates. This package simplifies the process of building interactive data visualisations, enhancing accessibility, reproducibility, and flexibility in data presentation.
 License: LGPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
