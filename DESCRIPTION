@@ -16,7 +16,6 @@ Imports:
   gt, 
   magrittr,
   plotly,
-  plyr,
   purrr, 
   rlang,
   stringr,
