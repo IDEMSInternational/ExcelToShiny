@@ -55,21 +55,15 @@ Finally, the use of structured templates ensures that dashboards can be easily r
 
 ## Example: Building a Basic Dashboard
 
-To create a dashboard from an spreadsheet template:
+To create a dashboard from an spreadsheet template, first design a file with the necessary structure for the dashboard, including tabs, charts, and tables.
+The next task is to read in the Excel Template and your data to display needed for the dashboard. You can do data manipulation at this stage to the data, if needed. Finally, using the `build_shiny` function, the user can built their shiny dashboard.
 
-1. **Create a Template**: Design a file with the necessary structure for the dashboard, including tabs, charts, and tables.
-
-2. **Read in the Data**: As outlined in more detail in the vignette, the next task is to read in the Excel Template and your data to display needed for the dashboard. You can do data manipulation at this stage to the data, if needed. 
-
-```{r}
+```
 library(ExcelToShiny)
 
 # Load in the Excel Template from it's location
 excel_file <- "path_to_template.xlsx"
-```
 
-3. **Launch the Dashboard**: Finally, using the `build_shiny` function, the user can built their shiny dashboard.
-```{r}
 # Create the Shiny Dashboard
 shiny_app <- build_shiny(title = "Testing App",
                          data_list = excel_file,
