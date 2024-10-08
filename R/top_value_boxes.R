@@ -23,7 +23,9 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
   variable_value <- spreadsheet_row$variable_value
   value_box_type <- spreadsheet_row$value
   data_frame <- data_frame %>% dplyr::ungroup()
-  if (value_box_type == "value_box"){
+  if (value_box_type == "value_box_rows"){
+    value <- nrow(data_frame)
+  } else if (value_box_type == "value_box"){
     if (!is.na(spreadsheet_row$variable_value)){
       df_box <- summary_table(data_frame, factors = .data[[variable]], wider_table = TRUE, together = FALSE, naming_convention = FALSE)
       df_box <- df_box %>% dplyr::mutate(group = .data[[variable]], count = n, .drop = FALSE) %>%
