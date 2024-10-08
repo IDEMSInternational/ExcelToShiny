@@ -29,6 +29,7 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
       df_box <- df_box %>% dplyr::mutate(group = .data[[variable]], count = n, .drop = FALSE) %>%
         dplyr::select(c(group, count))
       value <- (df_box %>% dplyr::filter(group == variable_value))$count
+      if (length(value) == 0) value <- 0
     } else {
       value <- nrow(data_frame)
     }
