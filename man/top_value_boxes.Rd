@@ -4,7 +4,13 @@
 \alias{top_value_boxes}
 \title{Create a Top Value Box for Shiny}
 \usage{
-top_value_boxes(data_frame, spreadsheet, processed_spreadsheet, unique_ID)
+top_value_boxes(
+  data_frame,
+  spreadsheet,
+  processed_spreadsheet,
+  unique_ID,
+  list_of_reactives
+)
 }
 \arguments{
 \item{data_frame}{A data frame containing the data to be summarised.}
@@ -14,6 +20,8 @@ top_value_boxes(data_frame, spreadsheet, processed_spreadsheet, unique_ID)
 \item{processed_spreadsheet}{A data frame representing the processed spreadsheet data.}
 
 \item{unique_ID}{A string specifying the unique identifier for the value box.}
+
+\item{list_of_reactives}{A list of reactive data frames used to dynamically update content in a Shiny app.}
 }
 \value{
 A \code{shinydashboard::valueBox} object for use in a Shiny application.

@@ -380,7 +380,8 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
         top_box <- top_value_boxes(data_frame = filtered_data(),
                                    spreadsheet = spreadsheet_shiny_value_box,
                                    processed_spreadsheet = processed_spreadsheet_data,
-                                   unique_ID = ID)
+                                   unique_ID = ID,
+                                   list_of_reactives = list_of_reactives)
         output[[ID]] <- shinydashboard::renderValueBox(top_box)
       })
     })
