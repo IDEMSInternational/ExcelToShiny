@@ -159,30 +159,35 @@ Here we have three different components: value boxes, filtering, and group boxes
   - filter_box: Provides filtering options.
   - group_by_box: Provides grouping options.
 - **Value**: Takes different values at the moment depending on what type is.
-  - If type is value_box, then the options here are value_box (which gives the frequency of rows for the variable given in the variable parameter), mean_box (which gives the mean for the variable given in the variable parameter), and mean_sd_box (which gives the mean and SD for the variable given in the variable parameter)
-  - If type is filter_box or group_by_box, then the only current option is “checkbox_group”. This gives a set of checkbox options.
+  - If type is value_box, then the options here are value_box_rows (which gives the number of rows), value_box (which gives the frequency of rows for the variable given in the variable parameter), mean_box (which gives the mean for the variable given in the variable parameter), and mean_sd_box (which gives the mean and SD for the variable given in the variable parameter)
+  - If type is filter_box, then the options are "checkbox_group" and "dates". The former gives a set of checkbox options, and the latter can be used to filter by dates.
+  - If type is group_by_box, then the only options currently is "checkbox_group", which gives a set of checkbox options.
 - **Parameter List**: Parameters that the item declared in type takes. E.g., for value_box, parameters include "text", "colour", and "icon". For filter_box, parameters are "label", "choices", and "selected".
 - **Variable** Name of the variable in the data displayed in the dashboard.
   - _Example_: If you want to display data for all individuals who are male, specify "gender" here.
 - **Variable_value**: For value_box only, the variable value you wish to display that corresponds to the variable.
   - _Example_: If displaying data for "gender == 'males'", then "males" should be specified here.
 
-| **type**     | **value**      | **parameter_list**                                                                                                     | **variable_value**                                             |
-|--------------|----------------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|
-| value_box  | value_box    | Accepted values are: "text", "colour", "icon". These read into valueBox in Shiny.                             | The variable value you wish to display that corresponds to the variable. |
-|              |                | - "text": The value for the "subtitle" parameter. This is the text displayed in the value box (e.g., "Males in the study"). |                                                               |
+| **type**     | **value**      | **parameter_list**                                                                                                     | **variable_value**                                             | **data**
+|--------------|----------------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|----------------------------------------|
+| value_box  | value_box_rows    | Accepted values are: "text", "colour", "icon". These read into valueBox in Shiny.                             | Not relevant. | Name of data frame to use. |
+|              |                | - "text": The value for the "subtitle" parameter. This is the text displayed in the value box (e.g., "Males in the study"). |                                                               | |
 |              |                | - "icon": The icon parameter. The icon to display is found at [FontAwesome](https://fontawesome.com/).               |                                                               |
-|              |                | - "colour": The colour of the box. Accepted values are: red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, or black. See shinydashboard::validColors for the list. |   |
-| value_box  | mean_box     | Same as above.                                                                                                         | Not relevant. |
-| value_box  | mean_sd_box  | Same as above.                                                                                                       | Not relevant |
-| filter_box | checkbox_group | Accepted values are any parameters read into checkboxGroupInput in Shiny. Most used are: "label", "choices", "selected". | Not relevant.                                                |
-|              |                | - "label": Displayed label for the control, or NULL for no label.                                                   |                                                               |
-|              |                | - "choices": List of values to show checkboxes for. Named elements will display names rather than values.           |                                                               |
-|              |                | - "selected": Values that should be initially selected, if any.                                                       |   |
-| group_by_box | checkbox_group | Accepted values are any parameters read into checkboxInput in Shiny. Most used are: "label", "value". | Not relevant.                                                |
-|              |                | - "label": Displayed label for the control, or NULL for no label.                                                   |                                                               |
-|              |                | - "choices": List of values to show checkboxes for. Named elements will display names rather than values.           |                                                               |
-|              |                | - "selected": Values that should be initially selected, if any.                                                       |  |
+|              |                | - "colour": The colour of the box. Accepted values are: red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, or black. See shinydashboard::validColors for the list. |   |                                                             | |
+| value_box  | value_box    | Accepted values are: "text", "colour", "icon". These read into valueBox in Shiny.                             | The variable value you wish to display that corresponds to the variable. | Name of data frame to use. |
+|              |                | - "text": The value for the "subtitle" parameter. This is the text displayed in the value box (e.g., "Males in the study"). |                                                               | |
+|              |                | - "icon": The icon parameter. The icon to display is found at [FontAwesome](https://fontawesome.com/).               |                                                               | |
+|              |                | - "colour": The colour of the box. Accepted values are: red, yellow, aqua, blue, light-blue, green, navy, teal, olive, lime, orange, fuchsia, purple, maroon, or black. See shinydashboard::validColors for the list. |   | |
+| value_box  | mean_box     | Same as above.                                                                                                         | Not relevant. | Name of data frame to use.|
+| value_box  | mean_sd_box  | Same as above.                                                                                                       | Not relevant | Name of data frame to use. |
+| filter_box | checkbox_group | Accepted values are any parameters read into checkboxGroupInput in Shiny. Most used are: "label", "choices", "selected". | Not relevant.                                                |Not relevant. |
+|              |                | - "label": Displayed label for the control, or NULL for no label.                                                   |                                                               | |
+|              |                | - "choices": List of values to show checkboxes for. Named elements will display names rather than values.           |                                                               | |
+|              |                | - "selected": Values that should be initially selected, if any.                                                       |   | |
+| group_by_box | checkbox_group | Accepted values are any parameters read into checkboxInput in Shiny. Most used are: "label", "value". | Not relevant.                                                | Not relevant. |
+|              |                | - "label": Displayed label for the control, or NULL for no label.                                                   |                                                               | |
+|              |                | - "choices": List of values to show checkboxes for. Named elements will display names rather than values.           |                                                               | |
+|              |                | - "selected": Values that should be initially selected, if any.                                                       |  | |
 
 
 ### Detailed Options
@@ -213,6 +218,7 @@ Below is an example of the spreadsheet titled main_page:
 
 | **type**       | **value**        | **parameter_list**                                                    | **variable** | **variable_value** |
 |----------------|------------------|-----------------------------------------------------------------------|--------------|--------------------|
+| value_box | value_box_rows |	text = "Total individuals in the study", colour = "aqua", icon = "tick"		|     |     |
 | value_box    | value_box      | text = "Men in the study", colour = "yellow", icon = "male"         | Gender     | male             |
 | value_box    | value_box      | text = "Women in the study", colour = "purple", icon = "female"     | Gender     | female           |
 | value_box    | mean_box       | text = "Average age", colour = "green", icon = "active"| Age |  |
@@ -222,8 +228,19 @@ Below is an example of the spreadsheet titled main_page:
 We can see where these parameter_list values correspond to in the dashboard:
 
 ```{r include-image5, echo=FALSE, fig.align='center', out.width = '70%'}
-knitr::include_graphics("inst/extdata/main_page_explained.png")
+knitr::include_graphics("inst/extdata/top_boxes.png")
 ```
+
+You can additionally specify the data frame for the `value_box` types by adding in a `data` column. By default it uses the variable you have given for `data_frame` in your `build_shiny` function.
+
+| **type**       | **value**        | **parameter_list**                                                    | **variable** | **variable_value** | **data** |
+|----------------|------------------|-----------------------------------------------------------------------|--------------|--------------------|------------|
+| value_box | value_box_rows |	text = "Total individuals in the study", colour = "aqua", icon = "tick"		|     |     | NHANES_by_ind |
+| value_box    | value_box      | text = "Men in the study", colour = "yellow", icon = "male"         | Gender     | male             | NHANES_by_ind |
+| value_box    | value_box      | text = "Women in the study", colour = "purple", icon = "female"     | Gender     | female           | NHANES_by_ind |
+| value_box    | mean_box       | text = "Average age", colour = "green", icon = "active"| Age |  | NHANES_by_ind |
+| filter_box   | checkbox_group | label = "User Gender", choices = c("female", "male"), selected = c("female", "male")| Gender | |
+| group_by_box | checkbox_group | label = "Gender", value = FALSE | Gender   |        |
 
 ## Display Page
 
