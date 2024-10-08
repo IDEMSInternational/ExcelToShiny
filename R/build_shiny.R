@@ -73,7 +73,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
   
   # list of sheets
   # check the variables exist
-  for (df_name in names(data_l)){
+  for (df_name in names(data_list)){
     sheet <- data_list[[df_name]]
     data_frame_name <- deparse(substitute(data_frame))
     results <- NULL

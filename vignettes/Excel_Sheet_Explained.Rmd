@@ -3,11 +3,11 @@
 title: "Using Excel for Shiny Authoring System"
 author: "Lily Clements"
 date: "r Sys.Date()"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Using Excel for Shiny Authoring System}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+output:
+  html_document:
+    df_print: paged
+vignette: "%\\VignetteIndexEntry{Using Excel for Shiny Authoring System} %\\VignetteEngine{knitr::rmarkdown}
+  %\\VignetteEncoding{UTF-8}\n"
 ---
 
 ```{r setup, include=FALSE}
@@ -53,6 +53,7 @@ library(shiny)
 library(shinydashboard)
 library(dplyr)
 library(NHANES)
+library(ggplot2)
 
 # Path to the example Excel file. Look under "vignettes/data/nhanes_data.xlsx"
 example_excel <- rio::import_list("data/nhanes_data.xlsx")
