@@ -23,7 +23,6 @@ main_page_filter <- function(spreadsheet){
       filter_data_i <- filter_data[i,]
       name <- filter_data_i$name
       if (filter_data_i$value == "checkbox_group"){
-        print("0")
         spreadsheet_parameters <- filter_data_i$parameter_list
         label <- get_parameter_value(spreadsheet_parameters, name = "label")
         choices <- get_parameter_value(spreadsheet_parameters, name = "choices", TRUE)
@@ -38,7 +37,6 @@ main_page_filter <- function(spreadsheet){
                                                        choices = choices, selected = selected,
                                                        choiceNames = choiceNames, choiceValues = choiceValues)
       } else if (filter_data_i$value == "date") {
-        print("1")
         spreadsheet_parameters <- filter_data_i$parameter_list
         label <- get_parameter_value(spreadsheet_parameters, name = "label")
         width <- get_parameter_value(spreadsheet_parameters, name = "width")

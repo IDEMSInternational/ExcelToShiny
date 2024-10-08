@@ -22,7 +22,7 @@ split_layout <- function(..., cellWidths = NULL, cellArgs = list()){
   do.call(shiny::tags$div, c(list(class = "shiny-split-layout"), 
                       attribs, mapply(children, cellWidths, FUN = function(x, 
                                                                            w) {
-                        do.call(tags$div, c(list(style = sprintf("width: %s;", 
+                        do.call(shiny::tags$div, c(list(style = sprintf("width: %s;", 
                                                                  w)), cellArgs, list(x)))
                       }, SIMPLIFY = FALSE)))
 }
