@@ -71,9 +71,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
     }
   }
   
-  
   # list of sheets
-  
   # check the variables exist
   for (df_name in names(data_l)){
     sheet <- data_list[[df_name]]
@@ -103,7 +101,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
       }
     } 
     
-    # checkbox filters
+    # Filters
     checkbox_data <- data_list$main_page %>% dplyr::filter(type %in% c("filter_box"))
     if (nrow(checkbox_data) > 0) {
       filter_on_main_page <- main_page_filter(spreadsheet = checkbox_data)
@@ -111,7 +109,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
       filter_on_main_page <- NULL
     }
     
-    # checkbox group bys
+    # Group bys
     group_by_data_box <- data_list$main_page %>% dplyr::filter(type %in% c("group_by_box"))
     if (nrow(group_by_data_box) > 0) {
       group_on_main_page <- main_page_group(spreadsheet = group_by_data_box)
@@ -122,6 +120,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
     filter_on_main_page <- NULL
     group_on_main_page <- NULL
   }
+  
   # Assuming menu_items(data_list$contents) returns a list of menuItem objects
   menu_items_list <- menu_items(data_list$contents)
   
@@ -262,20 +261,28 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
           filtered_data <- grouped_data()
           variable <- filter_box_data$variable
           name <- filter_box_data$name
+          
           # filter for each variable specified.
           for (i in 1:nrow(filter_box_data)){
             current_var <- variable[[i]]
             current_name <- input[[name[[i]]]]
             
-            if (is.character(current_name)) {
-              # For character variables, use %in% for exact matching
-              filtered_data <- filtered_data %>% 
-                dplyr::filter(.data[[current_var]] %in% current_name)
-            } else if (is.numeric(current_name)) {
-              # For numeric variables, we'll assume they are exact values to match
-              filtered_data <- filtered_data %>%
-                dplyr::filter(.data[[current_var]] %in% current_name)
+            if (filter_box_data$value == "date" & class(filtered_data[[current_var]]) != "Date"){
+              warning(paste0("For the date filter the variable has to be a date variable. Setting ", current_var, " as date using as.Date() function"))
+              filtered_data[[current_var]] <- as.Date(filtered_data[[current_var]])
             }
+            
+            # if (is.character(current_name)) {
+            #   # For character variables, use %in% for exact matching
+            #   filtered_data <- filtered_data %>% 
+            #     dplyr::filter(.data[[current_var]] %in% current_name)
+            # } else if (is.numeric(current_name)) {
+            #   # For numeric variables, we'll assume they are exact values to match
+            #   filtered_data <- filtered_data %>%
+            #     dplyr::filter(.data[[current_var]] %in% current_name)
+            # }
+            filtered_data <- filtered_data %>%
+              dplyr::filter(.data[[current_var]] %in% current_name)
           }
           return(filtered_data)
         })

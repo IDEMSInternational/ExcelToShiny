@@ -2,16 +2,25 @@
 % Please edit documentation in R/main_page_filter.R
 \name{main_page_filter}
 \alias{main_page_filter}
-\title{Generate Checkbox Group Input Elements}
+\title{Generate Checkbox Group and Date Input Elements}
 \usage{
 main_page_filter(spreadsheet)
 }
 \arguments{
-\item{spreadsheet}{A data frame containing information about the checkbox groups to be created. The data frame should include columns such as \code{type}, \code{name}, and \code{parameter_list} that define the checkbox group inputs.}
+\item{spreadsheet}{A data frame containing information about the input elements to be created. The data frame should include columns such as \code{type}, \code{name}, and \code{parameter_list} that define the input elements. Supported input types are "checkbox_group" for checkbox groups and "date" for date inputs.}
 }
 \value{
-A \code{shinydashboard::box} object containing the generated checkbox group input elements and an action button for submission.
+A \code{shinydashboard::box} object containing the generated input elements (checkbox group and/or date input) and an action button for submission.
 }
 \description{
-This function generates a set of checkbox group input elements based on the provided checkbox data, and returns them within a Shiny dashboard box along with a submit action button.
+This function generates a set of input elements (checkbox group and date input) based on the provided data, and returns them within a Shiny dashboard box along with a submit action button.
+}
+\details{
+This function supports two types of inputs:
+\enumerate{
+\item \strong{Checkbox Group Inputs}: Created when \code{type} is "checkbox_group". The \code{parameter_list} should include parameters like \code{label}, \code{choices}, \code{selected}, \code{width}, \code{choiceNames}, and \code{choiceValues} to customize the checkbox group.
+\item \strong{Date Inputs}: Created when \code{type} is "date". The \code{parameter_list} should include parameters such as \code{label}, \code{value}, \code{min}, \code{max}, \code{format}, \code{startview}, and \code{weekstart} to customize the date input.
+}
+
+Both input types are returned within a \code{shinydashboard::box} alongside a submit button for triggering the action based on the selected filters.
 }
