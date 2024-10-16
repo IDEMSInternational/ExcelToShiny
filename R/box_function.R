@@ -19,8 +19,8 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   spreadsheet_parameters <- spreadsheet$parameter_list
   spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, stringr::fixed("\", "), simplify = TRUE))
   #spreadsheet_parameters <- data.frame(stringr::str_split(spreadsheet_parameters, stringr::fixed(", "), simplify = TRUE))
-  spreadsheet_parameters_names <- sub("\\= .*", "", spreadsheet_parameters)
-  spreadsheet_parameters_values <- gsub(".*= ", "", spreadsheet_parameters)
+  spreadsheet_parameters_names <- sub("\\=.*", "", spreadsheet_parameters)
+  spreadsheet_parameters_values <- gsub(".*=", "", spreadsheet_parameters)
   spreadsheet_parameters_values <- stringr::str_remove_all(spreadsheet_parameters_values, stringr::fixed("\""))
   values <- spreadsheet_parameters_values
   names <- spreadsheet_parameters_names
@@ -28,26 +28,30 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   
   #repeat for all variables like text, etc. so make into a function?
   content_text <- trimws(spreadsheet_finder(data = spreadsheet_df, "content_text "))
-  text <- trimws(spreadsheet_finder(data = spreadsheet_df, "text "))
-  width <- trimws(spreadsheet_finder(data = spreadsheet_df, "width "))
-  colour <- trimws(spreadsheet_finder(data = spreadsheet_df, "colour "))
-  footer <- trimws(spreadsheet_finder(data = spreadsheet_df, "footer "))
+  text <- trimws(spreadsheet_finder(data = spreadsheet_df, "text"))
+  width <- trimws(spreadsheet_finder(data = spreadsheet_df, "width"))
+  colour <- trimws(spreadsheet_finder(data = spreadsheet_df, "colour"))
+  footer <- trimws(spreadsheet_finder(data = spreadsheet_df, "footer"))
   colour <- tolower(colour)
-  if (colour == "blue") {
+  if (length(colour) == 0){
     status = "primary"
-  } else if (colour == "green") {
-    status = "success"
-  } else if (colour == "light blue") {
-    status = "info"
-  } else if (colour == "orange") {
-    status = "warning"
-  } else if (colour == "red") {
-    status = "danger"
   } else {
-    warning("Valid colours are blue, green, light blue, orange, red")
-    status = "primary"
+    if (colour == "blue") {
+      status = "primary"
+    } else if (colour == "green") {
+      status = "success"
+    } else if (colour == "light blue") {
+      status = "info"
+    } else if (colour == "orange") {
+      status = "warning"
+    } else if (colour == "red") {
+      status = "danger"
+    } else {
+      warning("Valid colours are blue, green, light blue, orange, red")
+      status = "primary"
+    }
   }
-  
+
   if (!is.null(spreadsheet$table_manip) && is.na(spreadsheet$table_manip) && spreadsheet$value == "specify_plot"){
     all_return[[1]] <- shinydashboard::box(width=NULL,
                                            collapsible = FALSE,
