@@ -16,9 +16,6 @@
 #' # Grouped summary table
 #' #result <- bar_table(data = mtcars, variable = "mpg", type = "summary", 
 #' #                   spreadsheet = list(), grouped_vars = "cyl")
-#' #print(result$table)
-#' #print(result$plot)
-#'
 bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, grouped_vars = NULL) {
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)
@@ -37,7 +34,6 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
     command_string <- spreadsheet$data_manip
     
     # Construct the full command
-    
     if (!is.null(grouped_vars)){
       full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ")", command_string)
     } else {
@@ -55,22 +51,18 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
 
   # Refactor the histogram plotting into a separate function
   create_histogram_plot <- function(data, variable, grouped_vars) {
+    plot_to_return <- ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]])) +
+      ggplot2::geom_histogram(stat = "count") +
+      viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
+      ggplot2::labs(y = "Count", x = naming_conventions(variable)) 
     if (!is.null(grouped_vars)){
-      ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]])) +
-        ggplot2::geom_histogram(stat = "count") +
-        viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-        ggplot2::labs(y = "Count", x = naming_conventions(variable)) +
+      plot_to_return <- plot_to_return +
         ggplot2::facet_wrap(grouped_vars)
-    } else {
-      ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]])) +
-        ggplot2::geom_histogram(stat = "count") +
-        viridis::scale_fill_viridis(discrete = TRUE, na.value = "navy") +
-        ggplot2::labs(y = "Count", x = naming_conventions(variable)) 
     }
+    return(plot_to_return)
   }
   
   if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip) && spreadsheet$table_manip == "none"){
-    #all_return$table <- NA
     all_return$table <- "No Table Given"
   } else {
     if (type == "freq") {

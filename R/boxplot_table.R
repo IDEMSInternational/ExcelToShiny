@@ -42,22 +42,16 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
     })
   }
   
-  plot_to_return <- ggplot2::ggplot()
-  plot_to_return <- plot_to_return +
-    ggplot2::geom_boxplot(data = data, ggplot2::aes(y = .data[[variable]])) +
-    ggplot2::labs(x = "Count")
-  if (!is.null(grouped_vars)){
-    plot_to_return <- plot_to_return + ggplot2::facet_wrap(grouped_vars)
-  }
-  
-  if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
-    plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)
-    plot_to_return <- tryCatch({
-      eval(parse(text = plot_command))
-    }, error = function(e) {
-      message("Error in evaluating graph manipulation code: ", e$message)
-      plot_to_return  # Return the original plot object in case of an error
-    })
+  # Refactor the boxplot into a separate function
+  create_boxplot <- function(data, variable, grouped_vars) {
+    plot_to_return <- ggplot2::ggplot(data, ggplot2::aes(x = 1, y = .data[[variable]])) +
+      ggplot2::geom_boxplot() +
+      ggplot2::labs(x = "Count", y = naming_conventions(variable))
+    if (!is.null(grouped_vars)){
+      plot_to_return <- plot_to_return +
+        ggplot2::facet_wrap(grouped_vars)
+    }
+    return(plot_to_return)
   }
   
   if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip) && spreadsheet$table_manip == "none"){
@@ -65,23 +59,34 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
   } else {
     if (type == "freq"){
       if (!is.null(grouped_vars)){
-        table_data <- summary_table(data = data, factors = c(variable, grouped_vars), include_margins = FALSE)
+        all_return$table <- summary_table(data = data, factors = c(variable, grouped_vars), include_margins = FALSE)
       } else {
-        table_data <- summary_table(data = data, factors = variable, include_margins = FALSE)
+        all_return$table <- summary_table(data = data, factors = variable, include_margins = FALSE)
       }
     } else {
       table_data <- dplyr::filter(data, !is.na(data[[variable]]))
       
       if (!is.null(grouped_vars)){
-        table_data <- table_data %>% dplyr::group_by(!!rlang::sym(grouped_vars))
+        table_data <- table_data %>% dplyr::group_by(!!!rlang::syms(grouped_vars))
       }
-      table_data <- table_data %>%
+      all_return$table <- table_data %>%
         dplyr::summarise(Median = round(stats::median(!!rlang::sym(variable), na.rm = TRUE), 2),
                          SD = round(stats::sd(!!rlang::sym(variable), na.rm = TRUE), 2)) # temp. remove N
       # N = length(!is.na(!!sym(variable))))
     }
   }
-  all_return[[1]] <- table_data
-  all_return[[2]] <- plot_to_return
+  
+  plot_obj <- create_boxplot(data, variable, grouped_vars)
+  if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
+    plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)
+    
+    plot_obj <- tryCatch({
+      eval(parse(text = plot_command))
+    }, error = function(e) {
+      message("Error in evaluating graph manipulation code: ", e$message)
+      plot_obj  # Return the original plot object in case of an error
+    })
+  }
+  all_return$plot <- plot_obj
   return(all_return)
 }

@@ -33,7 +33,4 @@ This function generates a list containing a summary table and a plot for use in 
 # Grouped summary table
 #result <- bar_table(data = mtcars, variable = "mpg", type = "summary", 
 #                   spreadsheet = list(), grouped_vars = "cyl")
-#print(result$table)
-#print(result$plot)
-
 }
