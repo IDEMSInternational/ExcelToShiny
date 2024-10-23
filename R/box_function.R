@@ -23,11 +23,11 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   spreadsheet_parameters_values <- gsub(".*=", "", spreadsheet_parameters)
   spreadsheet_parameters_values <- stringr::str_remove_all(spreadsheet_parameters_values, stringr::fixed("\""))
   values <- spreadsheet_parameters_values
-  names <- spreadsheet_parameters_names
+  names <- trimws(spreadsheet_parameters_names)
   spreadsheet_df <- data.frame(names, values)
   
   #repeat for all variables like text, etc. so make into a function?
-  content_text <- trimws(spreadsheet_finder(data = spreadsheet_df, "content_text "))
+  content_text <- trimws(spreadsheet_finder(data = spreadsheet_df, "content_text"))
   text <- trimws(spreadsheet_finder(data = spreadsheet_df, "text"))
   width <- trimws(spreadsheet_finder(data = spreadsheet_df, "width"))
   colour <- trimws(spreadsheet_finder(data = spreadsheet_df, "colour"))
@@ -52,7 +52,34 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
     }
   }
 
-  if (!is.null(spreadsheet$table_manip) && is.na(spreadsheet$table_manip) && spreadsheet$value == "specify_plot"){
+  if (spreadsheet$value == "specify_plot"){
+    if (is.null(spreadsheet$table_manip) | (!is.null(spreadsheet$table_manip) && is.na(spreadsheet$table_manip))){
+      all_return[[1]] <- shinydashboard::box(width=NULL,
+                                             collapsible = FALSE,
+                                             title = text,
+                                             status = status, # primary, success, info, warning, danger
+                                             solidHeader = TRUE,
+                                             footer = footer,
+                                             content_text,
+                                             style='width:100%;overflow-x: scroll;',
+                                             plotly::plotlyOutput(outputId = label_plot, height = "240"))
+      all_return[[4]] <- NULL
+      all_return[[5]] <- label_plot 
+    } else {
+      all_return[[1]] <- shinydashboard::box(width=NULL,
+                                             collapsible = FALSE,
+                                             title = text,
+                                             status = status, # primary, success, info, warning, danger
+                                             solidHeader = TRUE,
+                                             footer = footer,
+                                             content_text,
+                                             style='width:100%;overflow-x: scroll;',
+                                             plotly::plotlyOutput(outputId = label_plot, height = "240"),
+                                             shiny::tableOutput(label_table))
+      all_return[[4]] <- label_table
+      all_return[[5]] <- label_plot
+    }
+  } else if (spreadsheet$value == "data_frame"){
     all_return[[1]] <- shinydashboard::box(width=NULL,
                                            collapsible = FALSE,
                                            title = text,
@@ -61,8 +88,9 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            footer = footer,
                                            content_text,
                                            style='width:100%;overflow-x: scroll;',
-                                           plotly::plotlyOutput(outputId = label_plot, height = "240"))
-    all_return[[4]] <- NULL
+                                           shiny::tableOutput(label_table))
+    all_return[[4]] <- label_table
+    all_return[[5]] <- NULL
   } else if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip) && (spreadsheet$table_manip == "none")){
     all_return[[1]] <- shinydashboard::box(width=NULL,
                                            collapsible = FALSE,
@@ -74,6 +102,7 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            style='width:100%;overflow-x: scroll;',
                                            plotly::plotlyOutput(outputId = label_plot, height = "240"))
     all_return[[4]] <- NULL
+    all_return[[5]] <- label_plot
   } else {
     all_return[[1]] <- shinydashboard::box(width=NULL,
                                            collapsible = FALSE,
@@ -86,14 +115,13 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
                                            plotly::plotlyOutput(outputId = label_plot, height = "240"),
                                            shiny::tableOutput(label_table))
     all_return[[4]] <- label_table
+    all_return[[5]] <- label_plot
   }
   
   all_return[[2]] <- "A"
   all_return[[3]] <- "B"
-  all_return[[5]] <- label_plot
   all_return[[6]] <- unique_ID
   names(all_return) <- c("gui_obj", "table_obj", "plot_obj", "label_table", "label_plot", "ID")
-  
   return(all_return)
 }
 

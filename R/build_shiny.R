@@ -267,7 +267,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
             current_var <- variable[[i]]
             current_name <- input[[name[[i]]]]
             
-            if (filter_box_data$value == "date" & class(filtered_data[[current_var]]) != "Date"){
+            if (filter_box_data$value %in% c("date", "date_group", "date_range", "date_range_group") & class(filtered_data[[current_var]]) != "Date"){
               warning(paste0("For the date filter the variable has to be a date variable. Setting ", current_var, " as date using as.Date() function"))
               filtered_data[[current_var]] <- as.Date(filtered_data[[current_var]])
             }
@@ -281,8 +281,13 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
             #   filtered_data <- filtered_data %>%
             #     dplyr::filter(.data[[current_var]] %in% current_name)
             # }
-            filtered_data <- filtered_data %>%
-              dplyr::filter(.data[[current_var]] %in% current_name)
+            if (filter_box_data$value %in% c("date_range", "date_range_group")){
+              filtered_data <- filtered_data %>%
+                dplyr::filter(.data[[current_var]] >= current_name[1] & .data[[current_var]] <= current_name[2])
+            } else {
+              filtered_data <- filtered_data %>%
+                dplyr::filter(.data[[current_var]] %in% current_name) 
+            }
           }
           return(filtered_data)
         })

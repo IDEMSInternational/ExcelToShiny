@@ -25,12 +25,11 @@ display_sheet_setup <- function(spreadsheet_data, data_frame, j, loop) {
   d_box <- lapply(seq_len(nrow(filtered_spreadsheet_data)), function(i) {
     ID <- filtered_spreadsheet_data[i,]$name
     labels <- create_labels(i)
-    box_function(data_frame = data_frame, 
-                 spreadsheet = filtered_spreadsheet_data,
-                 unique_ID = ID,
-                 label_table = labels$label_table,
-                 label_plot = labels$label_plot)
+      box_function(data_frame = data_frame, 
+                   spreadsheet = filtered_spreadsheet_data,
+                   unique_ID = ID,
+                   label_table = labels$label_table,
+                   label_plot = labels$label_plot)
   })
-  
   return(d_box)
 }
