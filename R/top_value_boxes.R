@@ -34,6 +34,20 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
   variable_value <- spreadsheet_row$variable_value
   value_box_type <- spreadsheet_row$value
   data_frame_read <- data_frame_read %>% dplyr::ungroup()
+  
+  get_fn <- function(data_frame_read, variable, fun_str) {
+    # Remove "_box" from the function string
+    fun_clean <- sub("_box", "", fun_str)
+    
+    # Match the cleaned string to the actual function
+    fun <- match.fun(fun_clean)
+    
+    # Apply the function
+    value <- round((data_frame_read %>% 
+                      dplyr::summarise(result = fun(.data[[variable]], na.rm = TRUE)))$result, 2)
+    return(value)
+  }
+  
   if (value_box_type == "value_box_rows"){ # get the number of rows in a filtered data frame
     value <- nrow(data_frame_read)
   } else if (value_box_type == "value_box"){ # get a specific value 
@@ -46,12 +60,12 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
     } else {
       value <- nrow(data_frame_read)
     }
-  } else if (value_box_type == "mean_box"){
-    value <- round((data_frame_read %>% dplyr::summarise(mean = mean(.data[[variable]], na.rm = TRUE)))$mean, 2)
-  } else {
+  } else if (value_box_type == "mean_sd_box"){
     mean_value <- round((data_frame_read %>% dplyr::summarise(mean = mean(.data[[variable]], na.rm = TRUE)))$mean, 2)
     sd_value <- round((data_frame_read %>% dplyr::summarise(sd = stats::sd(.data[[variable]], na.rm = TRUE)))$sd, 2)
     value <- paste0(mean_value, " (", sd_value, ")")
+  } else {
+    value <- get_fn(data_frame_read = data_frame_read, variable = variable, fun_str = value_box_type)
   }
   return(shinydashboard::valueBox(value, subtitle = text, icon = shiny::icon(icon_pic), color = colour))
 }
