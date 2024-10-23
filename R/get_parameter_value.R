@@ -6,7 +6,7 @@
 #' @param name The name of the parameter whose value you want to extract. Default is `"label"`.
 #' @param list Logical value indicating whether the parameter value should be treated as a list. Default is `FALSE`.
 #' @param logical Logical value indicating whether the parameter value should be treated as a logical (`TRUE` or `FALSE`). Default is `FALSE`.
-#'
+#' @param date Logical value indicating whether the parameter value should be treated as a date (`TRUE` or `FALSE`). Default is `FALSE`.
 #' @return The value of the specified parameter. The return type depends on the `list` and `logical` arguments:
 #' \itemize{
 #'   \item If `list = FALSE` and `logical = FALSE`, it returns the parameter as a string.
@@ -33,7 +33,7 @@
 #' # Parameter not found
 #' param_not_found <- 'other_param = 42'
 #' get_parameter_value(param_not_found)  # Returns NULL
-get_parameter_value <- function(spreadsheet_parameters, name = "label", list = FALSE, logical = FALSE){
+get_parameter_value <- function(spreadsheet_parameters, name = "label", list = FALSE, logical = FALSE, date = FALSE){
   #spreadsheet_parameters <- trimws(spreadsheet_parameters)
   if (stringr::str_detect(spreadsheet_parameters, paste0(name, " ="))) {
     if (stringr::str_detect(spreadsheet_parameters, paste0(name, " = "))) {
@@ -52,7 +52,22 @@ get_parameter_value <- function(spreadsheet_parameters, name = "label", list = F
   }
   
   if (!is.null(label_form)){
-    if (list == FALSE){
+    if (date == TRUE){
+      label_pattern <- paste0(label_form, '"(.*?)"')  # Match as.Date("value")
+      label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]
+      
+      # if it's NA, check in case as.Date has been added:
+      if (is.na(label_match)){
+        # Match for both simple and as.Date formats
+        label_form <- paste0(label_form, "as.Date\\(")  # Adjust for as.Date() structure
+        label_pattern <- paste0(label_form, '"(.*?)"\\)')  # Match as.Date("value")
+        
+        # Extract the full match
+        label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]
+      }
+      # Clean up to extract the date (removes name=as.Date( and the surrounding quotes)
+      label <- gsub(paste0(label_form, '"|"|\\)'), '', label_match)
+    } else if (list == FALSE){
       if (logical == FALSE){
         label_pattern <- paste0(label_form, '"(.*?)"')
         label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]

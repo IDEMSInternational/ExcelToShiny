@@ -9,7 +9,8 @@
 #' @details
 #' This function supports two types of inputs:
 #' 1. **Checkbox Group Inputs**: Created when `type` is "checkbox_group". The `parameter_list` should include parameters like `label`, `choices`, `selected`, `width`, `choiceNames`, and `choiceValues` to customize the checkbox group.
-#' 2. **Date Inputs**: Created when `type` is "date". The `parameter_list` should include parameters such as `label`, `value`, `min`, `max`, `format`, `startview`, and `weekstart` to customize the date input.
+#' 2. **Date Inputs**: Created when `type` is "date". The `parameter_list` should include parameters such as `label`, `value`, `min`, `max`, `format`, `startview`, and `weekstart` to customise the date input.
+#' 3. **Date Range Inputs**: Created when `type` is "date_range". The `parameter_list` should include parameters such as `label`, `start`, `end`, `min`, `max`, `format`, `startview`, and `weekstart` to customise the date input.
 #'
 #' Both input types are returned within a `shinydashboard::box` alongside a submit button for triggering the action based on the selected filters.
 main_page_filter <- function(spreadsheet){
@@ -36,7 +37,7 @@ main_page_filter <- function(spreadsheet){
                                                        label = label, width = width,
                                                        choices = choices, selected = selected,
                                                        choiceNames = choiceNames, choiceValues = choiceValues)
-      } else if (filter_data_i$value == "date") {
+      } else if (filter_data_i$value %in% c("date", "date_group")) {
         spreadsheet_parameters <- filter_data_i$parameter_list
         label <- get_parameter_value(spreadsheet_parameters, name = "label")
         width <- get_parameter_value(spreadsheet_parameters, name = "width")
@@ -56,6 +57,26 @@ main_page_filter <- function(spreadsheet){
                                               label = label, value = value, width = width,
                                               min = min, max = max, format = format, startview = startview,
                                               weekstart = weekstart)
+      } else if (filter_data_i$value %in% c("date_range", "date_range_group")) {
+        spreadsheet_parameters <- filter_data_i$parameter_list
+        label <- get_parameter_value(spreadsheet_parameters, name = "label")
+        start <- get_parameter_value(spreadsheet_parameters, name = "start", date = TRUE)
+        end <- get_parameter_value(spreadsheet_parameters, name = "end", date = TRUE)
+        min <- get_parameter_value(spreadsheet_parameters, name = "min", date = TRUE)
+        max <- get_parameter_value(spreadsheet_parameters, name = "max", date = TRUE)
+        format <- get_parameter_value(spreadsheet_parameters, name = "format")
+        startview <- get_parameter_value(spreadsheet_parameters, name = "startview")
+        weekstart <- get_parameter_value(spreadsheet_parameters, name = "weekstart")
+        separator <- get_parameter_value(spreadsheet_parameters, name = "separator")
+        if (!is.null(value) && is.na(value)) value <- Sys.Date()
+        if (is.null(format)) format <- "yyyy-mm-dd"
+        if (is.null(startview)) startview <- "month"
+        if (is.null(weekstart)) weekstart <- 0
+        if (is.null(separator)) separator <- " to "
+        filter_input[[i]] <- shiny::dateRangeInput(inputId = paste0(name),
+                                              label = label, start = as.Date(start), end = as.Date(end),
+                                              min = as.Date(min), max = as.Date(max), format = format, startview = startview,
+                                              weekstart = weekstart, separator = separator)
       }
     }
   }
