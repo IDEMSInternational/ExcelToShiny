@@ -73,13 +73,20 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
   )
   
   # Execute the appropriate function based on the 'value'
+  all_return <- list(table_obj = NULL, plot_obj = NULL)
   value <- filtered_spreadsheet$value
   if (!value %in% names(value_function_map)) {
-    stop("Invalid value type.")
+    if (value %in% "data_frame"){
+      all_return$table_obj <- data_frame_read
+      all_return$plot_obj <- NULL
+      return(all_return)
+    } else {
+      stop("Invalid value type.")
+    }
   }
   return_object <- value_function_map[[value]]()
-  # Initialize all_return with named elements
-  all_return <- list(table_obj = NULL, plot_obj = NULL)
+  
+  # Initialise all_return with named elements
   all_return$table_obj <- return_object[[1]]
   all_return$plot_obj <- return_object[[2]]
   return(all_return)

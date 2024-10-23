@@ -19,7 +19,8 @@ This function generates a set of input elements (checkbox group and date input) 
 This function supports two types of inputs:
 \enumerate{
 \item \strong{Checkbox Group Inputs}: Created when \code{type} is "checkbox_group". The \code{parameter_list} should include parameters like \code{label}, \code{choices}, \code{selected}, \code{width}, \code{choiceNames}, and \code{choiceValues} to customize the checkbox group.
-\item \strong{Date Inputs}: Created when \code{type} is "date". The \code{parameter_list} should include parameters such as \code{label}, \code{value}, \code{min}, \code{max}, \code{format}, \code{startview}, and \code{weekstart} to customize the date input.
+\item \strong{Date Inputs}: Created when \code{type} is "date". The \code{parameter_list} should include parameters such as \code{label}, \code{value}, \code{min}, \code{max}, \code{format}, \code{startview}, and \code{weekstart} to customise the date input.
+\item \strong{Date Range Inputs}: Created when \code{type} is "date_range". The \code{parameter_list} should include parameters such as \code{label}, \code{start}, \code{end}, \code{min}, \code{max}, \code{format}, \code{startview}, and \code{weekstart} to customise the date input.
 }
 
 Both input types are returned within a \code{shinydashboard::box} alongside a submit button for triggering the action based on the selected filters.

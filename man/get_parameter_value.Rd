@@ -8,7 +8,8 @@ get_parameter_value(
   spreadsheet_parameters,
   name = "label",
   list = FALSE,
-  logical = FALSE
+  logical = FALSE,
+  date = FALSE
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ get_parameter_value(
 \item{list}{Logical value indicating whether the parameter value should be treated as a list. Default is \code{FALSE}.}
 
 \item{logical}{Logical value indicating whether the parameter value should be treated as a logical (\code{TRUE} or \code{FALSE}). Default is \code{FALSE}.}
+
+\item{date}{Logical value indicating whether the parameter value should be treated as a date (\code{TRUE} or \code{FALSE}). Default is \code{FALSE}.}
 }
 \value{
 The value of the specified parameter. The return type depends on the \code{list} and \code{logical} arguments:
