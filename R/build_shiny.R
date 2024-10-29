@@ -168,10 +168,12 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
     # run through the other sheets and get all data frame names
     # then save them all as "name_1" to call later.
     # this is for filtering and checking purposes
-    complete_dfs <- NULL
+    complete_dfs <- list()
     list_of_df_names <- NULL
     for (i in 1:length(data_list)){
       if ("data" %in% names(data_list[[i]])) {
+        data_list[[i]] <- data_list[[i]] %>%
+          dplyr::mutate(data = ifelse(is.na(data), deparse(substitute(data_frame)), data))
         data_l_dfs <- data_list[[i]]$data
       } else {
         data_l_dfs <- NULL
@@ -180,6 +182,10 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
         list_of_df_names[[i]] <- unique(data_l_dfs)
       }
     }
+    
+    # basiclalt, run through and check if there's a data == NA column in any of the sheets
+    # if there is, then set it to be the deparse(substitute(df_name))
+    
     list_of_df_names <- unique(unlist(list_of_df_names))
     if (!is.null(list_of_df_names) && !is.na(list_of_df_names)){
       for (df_name in list_of_df_names){
@@ -195,6 +201,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
       force(df_name) # Force the evaluation of df_name
       shiny::reactive({
         filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
+        if (is.na(filtered_data_frame)) filtered_data_frame <- complete_dfs[[(paste0(deparse(substitute(df_name)), "_1"))]]
         if (!is.null(grouped_vars)){
           filtered_data_frame <- filtered_data_frame %>%
             dplyr::full_join(grouped_vars)
