@@ -26,20 +26,21 @@ display_contents <- function(contents1 = contents, data_frame, data_list, loop =
   contents_type <- contents1[["type"]]
   for (i in 1:nrow(contents1)){
     spreadsheet <- data_list[[names_display[[i]]]]
+    
     # # check unique names
     if (length(unique(spreadsheet$name)) != nrow(spreadsheet)){
       if (contents_type[[i]] != "Download"){
         stop(paste0("Non-unique names given in `name` column in ", names_display[[i]]))
       }
     }
-    
-    if (contents_type[[i]] == "Display"){
+
+    if (contents_type[[i]] %in% c("Display", "display")){
       display_box[[i]] <- display_sheet_setup(spreadsheet_data = spreadsheet,
                                               data_frame = data_frame,
                                               j = i,
                                               loop = loop)
     }
-    if (contents_type[[i]] == "Tabbed_display"){
+    if (contents_type[[i]] %in% c("Tabbed_display", "tabbed_display")){
       k_orig <- dplyr::first(k)
       # todo: can we have a tabbed display in a tabbed display - if so, looping it.
       display_box[[i]] <- display_contents(contents1 = spreadsheet, data_frame = data_frame, data_list = data_list, loop = k_orig)
