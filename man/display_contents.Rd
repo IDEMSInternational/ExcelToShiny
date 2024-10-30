@@ -5,7 +5,7 @@
 \title{Display Contents for Shiny Application}
 \usage{
 display_contents(
-  contents1 = contents,
+  contents = contents,
   data_frame,
   data_list,
   loop = NULL,
@@ -13,11 +13,11 @@ display_contents(
 )
 }
 \arguments{
-\item{contents1}{A data frame containing details about the contents to display. It should include columns such as \code{ID} for unique identifiers and \code{type} for the type of display.}
+\item{contents}{A data frame containing details about the contents to display. It should include columns such as \code{ID} for unique identifiers and \code{type} for the type of display.}
 
 \item{data_frame}{The primary data frame containing the data to be displayed.}
 
-\item{data_list}{A list containing the data for each content sheet, referenced by the \code{ID} from \code{contents1}.}
+\item{data_list}{A list containing the data for each content sheet, referenced by the \code{ID} from \code{contents}.}
 
 \item{loop}{An optional parameter used for handling nested "Tabbed_display" types. Default is \code{NULL}.}
 
@@ -27,5 +27,5 @@ display_contents(
 A list of display boxes ready to be integrated into a Shiny application.
 }
 \description{
-This function processes and displays contents within a Shiny application based on the specifications provided in the \code{contents1} data frame. It supports different types of displays, including standard "Display" sheets and "Tabbed_display" sheets.
+This function processes and displays contents within a Shiny application based on the specifications provided in the \code{contents} data frame. It supports different types of displays, including standard "Display" sheets and "Tabbed_display" sheets.
 }

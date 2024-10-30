@@ -12,7 +12,7 @@ create_tab_items <- function(data_list, d_box, status = "primary", colour = "blu
   my_tab_items <- NULL
   i_disp <- 1
   i_tb_disp <- 1
-  
+
   for (i in 1:nrow(data_list$contents)){
     if (data_list$contents$type[[i]] == "Display"){
       my_tab_items[[i]] <- display_sheet(data_list = data_list,
@@ -38,6 +38,5 @@ create_tab_items <- function(data_list, d_box, status = "primary", colour = "blu
       
     }
   }
-  
   return(my_tab_items)
 }

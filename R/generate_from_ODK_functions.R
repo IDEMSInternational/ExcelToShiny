@@ -44,7 +44,7 @@ create_from_type_ODK <- function(metadata = ODK_sample_survey_group, value = "bo
     ) %>%
     dplyr::rowwise() %>%
     dplyr::summarise(
-      create_box(type = "box", value = value, parameter_list = parameter_list, variable = variable, row = row),
+      create_box_ODK(type = "box", value = value, parameter_list = parameter_list, variable = variable, row = row),
       .groups = 'drop'
     )
 }
@@ -63,7 +63,7 @@ create_display_pages_from_metadata_ODK <- function(input_data = ODK_sample_surve
   input_data <- input_data %>%
     dplyr::filter(group == group_name, type %in% c("integer") | grepl("select_one|select_multiple", type))
   
-  data_group <- create_from_type(input_data)
+  data_group <- create_from_type_ODK(input_data)
   return(data_group)
 }
 
@@ -153,7 +153,7 @@ generate_data_list <- function(input_data, output_data) {
   # Generate display tabs for each `begin_group` (and for misc?)
   display_tabs <- purrr::map(
     .x = data_bg$group,
-    .f = ~ create_display_pages_from_metadata(input_data = input_data, output_data = output_data, group_name = .x)
+    .f = ~ create_display_pages_from_metadata_ODK(input_data = input_data, output_data = output_data, group_name = .x)
   )
   
   # Set names and merge display_tabs into excel_template

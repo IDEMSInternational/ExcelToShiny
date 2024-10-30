@@ -63,6 +63,19 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
   }
   
   # Setting up (pre-UI and pre-server items) --------------------------------
+  # Check the types in contents are all valid types (display, tabbed_display, and download)
+  data_list$contents <- data_list$contents %>%
+    mutate(type = ifelse(stringdist::stringdist(type, "Display", method = "lv") <= 2, "Display",
+                         ifelse(stringdist::stringdist(type, "Tabbed_display", method = "lv") <= 3, "Tabbed_display",
+                                ifelse(stringdist::stringdist(type, "Download", method = "lv") <= 3, "Download",
+                                       type))))
+  valid_contents_type <- c("Display", "Tabbed_display", "Download")
+  if (!all(data_list$contents$type %in% valid_contents_type)){
+    invalid_contents_type <- data_list$contents %>%
+      dplyr::filter(!type %in% valid_contents_type) %>%
+      dplyr::pull(type)
+    stop("Cannot read contents type: ", paste0(invalid_contents_type, sep = ", "), "Should be one of ", paste0(valid_contents_type, sep = ", "))
+  }
   contents <- data_list$contents
   
   for (i in 1:length(data_list)){
@@ -80,15 +93,30 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
     results <- check_variables_existence(sheet, data_frame = data_frame_name)
     if (!is.null(results) && nrow(results) > 0) check_unknown_variables(results)
   }
-  
+
   # Populate items for the tabs ------------------------------------------------
-  display_box <- display_contents(data_frame = data_frame, contents1 = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
+  display_box <- display_contents(data_frame = data_frame, contents = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"))
+
   my_tab_items <- create_tab_items(data_list = data_list,
                                    d_box = display_box,
                                    status = status,
                                    colour = colour)
   
-  # value box for main page ----------------------------------------------------
+  # value box for main page -------------------------------------------------------------------------------
+  # check type is one of value_box, filter_box, or group_by_box
+  data_list$main_page <- data_list$main_page %>%
+    mutate(type = ifelse(stringdist::stringdist(type, "value_box", method = "lv") <= 2, "value_box",
+                         ifelse(stringdist::stringdist(type, "filter_box", method = "lv") <= 3, "filter_box",
+                                ifelse(stringdist::stringdist(type, "group_by_box", method = "lv") <= 3, "group_by_box",
+                                       type))))
+  valid_boxes <- c("value_box", "filter_box", "group_by_box")
+  if (!all(data_list$main_page$type %in% valid_boxes)){
+    invalid_type <- data_list$main_page %>%
+      dplyr::filter(!type %in% valid_boxes) %>%
+      dplyr::pull(type)
+    stop("Cannot read type: ", paste0(invalid_type, sep = ", "), "on main_page. Should be one of ", paste0(valid_boxes, sep = ", "))
+  }
+  
   shiny_top_box_i <- NULL
   if (!is.null(data_list$main_page)){
     # value boxes
@@ -103,6 +131,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
     
     # Filters
     checkbox_data <- data_list$main_page %>% dplyr::filter(type %in% c("filter_box"))
+    checkbox_data
     if (nrow(checkbox_data) > 0) {
       filter_on_main_page <- main_page_filter(spreadsheet = checkbox_data)
     } else {
@@ -201,7 +230,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
       force(df_name) # Force the evaluation of df_name
       shiny::reactive({
         filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
-        if (is.na(filtered_data_frame)) filtered_data_frame <- complete_dfs[[(paste0(deparse(substitute(df_name)), "_1"))]]
+        #if (is.na(filtered_data_frame)) filtered_data_frame <- complete_dfs[[(paste0(deparse(substitute(df_name)), "_1"))]]
         if (!is.null(grouped_vars)){
           filtered_data_frame <- filtered_data_frame %>%
             dplyr::full_join(grouped_vars)
@@ -359,7 +388,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
       # Check if the current tab matches the given tab name
       if (input$tab == tab_name) {
         display_content(server_display_contents(data_frame = filtered_data(),
-                                                contents1 = contents, data_list = data_list,
+                                                contents = contents, data_list = data_list,
                                                 k = which(data_list$contents$type == "Tabbed_display"),
                                                 id_name = tab_name,
                                                 list_of_reactives = list_of_reactives))
