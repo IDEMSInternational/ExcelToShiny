@@ -35,14 +35,14 @@ display_sheet <- function(data_list, spreadsheet_name, d_box, status = "primary"
     }
     tab_item_objects[[l]] <- split_layout(row_l_set)
   }
-  
+
   for (l in 1:length(tab_item_objects)){
     tab_item_objects[[l]] <- shiny::fluidRow(shiny::column(12,
                                                            align = "center",
                                                            tab_item_objects[[l]]),
                                              width = 10)
   }
-  
+
   main_page_info <- which(data_list[["contents"]][["ID"]] == spreadsheet_name)
   main_page_info <- data_list[["contents"]][main_page_info,]
   

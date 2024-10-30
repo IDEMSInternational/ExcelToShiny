@@ -17,6 +17,34 @@ main_page_filter <- function(spreadsheet){
   # For the group input
   filter_input <- NULL
   filter_data <- spreadsheet %>% dplyr::filter(type == "filter_box")
+  
+  # if statement
+  filter_data <- filter_data %>%
+    mutate(value = ifelse(stringdist::stringdist(value, "checkbox_group", method = "lv") <= 3, "checkbox_group",
+                         ifelse(stringdist::stringdist(value, "date_range_group", method = "lv") <= 3, "date_range_group",
+                                ifelse(stringdist::stringdist(value, "date_group", method = "lv") <= 3, "date_group",
+                                       value))))
+  valid_filter_boxes <- c("checkbox_group", "date_range_group", "date_group")
+  if (!all(filter_data$value %in% valid_filter_boxes)){
+    invalid_filter_data <- filter_data %>%
+      dplyr::filter(!value %in% valid_filter_boxes)
+    invalid_type <- invalid_filter_data %>%
+      dplyr::pull(value)
+    
+    # if we can't read it, we can check if it has a choices option to see if it is a checkbox_group
+    for (i in 1:nrow(invalid_filter_data)){
+      invalid_filter_data_i <- invalid_filter_data[i,]
+      spreadsheet_parameters <- invalid_filter_data_i$parameter_list
+      choices <- get_parameter_value(spreadsheet_parameters, name = "choices", TRUE)
+      if (!is.null(choices)){
+        row_name <- invalid_filter_data_i$name
+        warning("Cannot read value ", invalid_filter_data_i$value, " on main_page for filter_box. Setting as checkbox_group.")
+        filter_data[filter_data$name == row_name, "value"] <- "checkbox_group" 
+      } else {
+        stop("Cannot read value: ", paste0(invalid_type, sep = ", "), "on main_page for filter_box. Should be one of ", paste0(valid_filter_boxes, sep = ", "))
+      }
+    }
+  }
 
   # for value == "checkbox_group"
   if (nrow(filter_data) > 0){
@@ -80,7 +108,6 @@ main_page_filter <- function(spreadsheet){
       }
     }
   }
-  # todo:
   return(shinydashboard::box(width = 6,
                              filter_input,
                              # then run the actionButton

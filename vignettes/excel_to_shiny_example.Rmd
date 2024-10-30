@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, eval = FALSE}
+library(ggplot2)
 library(ExcelToShiny)
 library(readxl)
 library(dplyr)
