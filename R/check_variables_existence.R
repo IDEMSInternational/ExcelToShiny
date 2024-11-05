@@ -8,10 +8,15 @@
 #' @return A data frame containing only the rows where the specified variables were not found in the corresponding data frames. The returned data frame includes a `results` column indicating the success of the check.
 check_variables_existence <- function(df, data_frame) {
   results <- vector("logical", nrow(df))
-  
   if (!is.null(df$variable)){
-    if (is.null(df[["data"]]) || is.na(df[["data"]])) df$data <- data_frame
-    
+    if (is.null(df[["data"]]) || any(is.na(df[["data"]]))) {
+      if (is.null(df[["data"]])){
+        df$data <- data_frame
+      } else {
+        df$data[is.na(df$data)] <- data_frame
+      }
+      #df$data <- data_frame
+    }
     for (i in 1:nrow(df)) {
       variable <- df$variable[i]
       data_name <- df[["data"]][i]
