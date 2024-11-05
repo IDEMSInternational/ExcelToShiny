@@ -216,7 +216,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
     # if there is, then set it to be the deparse(substitute(df_name))
     
     list_of_df_names <- unique(unlist(list_of_df_names))
-    if (!is.null(list_of_df_names) && !is.na(list_of_df_names)){
+    if (!is.null(list_of_df_names) && any(!is.na(list_of_df_names))){
       for (df_name in list_of_df_names){
         # store it for use of filtering et
         new_name <- paste0(df_name, "_1")
@@ -241,6 +241,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
         } else {
           filtered_data_frame
         }
+
         return(filtered_data_frame)
       })
     }
@@ -290,24 +291,24 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
       } else {
         grouped_data <- shiny::reactive({ data_frame })
       }
-      
+
       # if we have filtering involved -######-
       if (nrow(filter_box_data) > 0){
         filtered_data <- shiny::eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
           filtered_data <- grouped_data()
           variable <- filter_box_data$variable
           name <- filter_box_data$name
-          
+
           # filter for each variable specified.
           for (i in 1:nrow(filter_box_data)){
             current_var <- variable[[i]]
             current_name <- input[[name[[i]]]]
-            
-            if (filter_box_data$value %in% c("date", "date_group", "date_range", "date_range_group") & class(filtered_data[[current_var]]) != "Date"){
+
+            if (any(filter_box_data$value %in% c("date", "date_group", "date_range", "date_range_group")) && !inherits(filtered_data[[current_var]], "Date")) {
               warning(paste0("For the date filter the variable has to be a date variable. Setting ", current_var, " as date using as.Date() function"))
               filtered_data[[current_var]] <- as.Date(filtered_data[[current_var]])
             }
-            
+
             # if (is.character(current_name)) {
             #   # For character variables, use %in% for exact matching
             #   filtered_data <- filtered_data %>% 
@@ -317,13 +318,12 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
             #   filtered_data <- filtered_data %>%
             #     dplyr::filter(.data[[current_var]] %in% current_name)
             # }
-            if (filter_box_data$value %in% c("date_range", "date_range_group")){
-              filtered_data <- filtered_data %>%
-                dplyr::filter(.data[[current_var]] >= current_name[1] & .data[[current_var]] <= current_name[2])
-            } else {
-              filtered_data <- filtered_data %>%
-                dplyr::filter(.data[[current_var]] %in% current_name) 
-            }
+            filtered_data <- filtered_data %>%
+              dplyr::filter(if (any(filter_box_data$value %in% c("date_range", "date_range_group"))) {
+                .data[[current_var]] >= current_name[1] & .data[[current_var]] <= current_name[2]
+              } else {
+                .data[[current_var]] %in% current_name
+              })
           }
           return(filtered_data)
         })
@@ -362,7 +362,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
         list_of_reactives[[df_name]] <- create_reactive_expression(df_name, complete_dfs, NULL, valid_ids, NULL)
       }
     }
-    
+
     # display content is for displaying the content for where?
     # event reactive?
     # Display content is a list containing all the content to display later
