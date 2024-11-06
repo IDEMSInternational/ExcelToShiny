@@ -15,7 +15,7 @@
 specify_plot <- function(data, spreadsheet, grouped_vars = NULL) {
   all_return <- list(table = NULL, plot = NULL)
 
-  if (class(data) == "list") {
+  if (any(class(data) %in% "list")) {
     all_return$table <- data[[variable]]
     all_return$plot <- ggplot2::ggplot()
     return(all_return)
