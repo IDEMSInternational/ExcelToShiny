@@ -31,10 +31,20 @@ specify_plot <- function(data, spreadsheet, grouped_vars = NULL) {
   
   # Table manipulation
   if (!is.null(spreadsheet$table_manip) && !is.na(spreadsheet$table_manip)) {
+    
+    # Command string from the spreadsheet
+    command_string <- spreadsheet$table_manip
+    
+    # Clean and construct the full command
+    # Remove extra whitespace or control characters from command_string
+    command_string <- gsub("\r\n", "\n", command_string)  # Replace CRLF with LF for consistency
+    #command_string <- gsub("^%>%\\s*", "", command_string) # Remove leading %>% if present
+    #command_string <- paste0("data %>%", command_string)       # Append the dataset reference
+    
     if (startsWith(trimws(spreadsheet$table_manip), "%>%")){
-      all_return$table <- eval(parse(text = paste0("data ", group_cmd, spreadsheet$table_manip)))
+      all_return$table <- eval(parse(text = paste0("data ", group_cmd, command_string)))
     } else{
-      all_return$table <- eval(parse(text = spreadsheet$table_manip))      
+      all_return$table <- eval(parse(text = command_string))      
     }
   } else {
     all_return$table <- "No Table Given"
@@ -43,8 +53,14 @@ specify_plot <- function(data, spreadsheet, grouped_vars = NULL) {
   # Data manipulation for data in graphs:
   if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
     # Command string from the spreadsheet
-    command_string <- spreadsheet$data_manip 
-  
+    command_string <- spreadsheet$data_manip
+    
+    # Clean and construct the full command
+    # Remove extra whitespace or control characters from command_string
+    command_string <- gsub("\r\n", "\n", command_string)  # Replace CRLF with LF for consistency
+    #command_string <- gsub("^%>%\\s*", "", command_string) # Remove leading %>% if present
+    #command_string <- paste0("data %>%", command_string)       # Append the dataset reference
+
     # Construct the full command
     if (startsWith(trimws(spreadsheet$data_manip), "%>%")){
       full_command <- paste0("data ", group_cmd, command_string)
@@ -63,10 +79,17 @@ specify_plot <- function(data, spreadsheet, grouped_vars = NULL) {
   
   # Plot it
   plot_obj <- ggplot2::ggplot(data)
-
+  
   # Manipulations in the graphic
   add_string <- spreadsheet$graph_manip
+  
+  # Clean and construct the full command
+  # Remove extra whitespace or control characters from command_string
+  add_string <- gsub("\r\n", "\n", add_string)  # Replace CRLF with LF for consistency
+  add_string <- gsub("^+\\s*", "", add_string) # Remove leading + if present
+
   environment(plot_obj$mapping) <- environment()
+  
   if (!is.null(grouped_vars)){
     plot_command <- paste0("plot_obj + ", add_string, " + facet_wrap(vars(", grouped_vars, "))")
   } else {

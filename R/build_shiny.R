@@ -298,35 +298,50 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
           filtered_data <- grouped_data()
           variable <- filter_box_data$variable
           name <- filter_box_data$name
+          filter_data <- filter_box_data$data
 
           # filter for each variable specified.
           for (i in 1:nrow(filter_box_data)){
             current_var <- variable[[i]]
             current_name <- input[[name[[i]]]]
+            current_data <- filter_data[[i]]
+            
+            if (is.null(current_data)){
+              if (any(filter_box_data$value %in% c("date", "date_group", "date_range", "date_range_group")) && !inherits(filtered_data[[current_var]], "Date")) {
+                warning(paste0("For the date filter the variable has to be a date variable. Setting ", current_var, " as date using as.Date() function"))
+                filtered_data[[current_var]] <- as.Date(filtered_data[[current_var]])
+              }
+              filtered_data <- filtered_data %>%
+                dplyr::filter(if (any(filter_box_data$value %in% c("date_range", "date_range_group"))) {
+                  .data[[current_var]] >= current_name[1] & .data[[current_var]] <= current_name[2]
+                } else {
+                  .data[[current_var]] %in% current_name
+                })
+            } else {
+              current_data <- get(current_data)
 
-            if (any(filter_box_data$value %in% c("date", "date_group", "date_range", "date_range_group")) && !inherits(filtered_data[[current_var]], "Date")) {
-              warning(paste0("For the date filter the variable has to be a date variable. Setting ", current_var, " as date using as.Date() function"))
-              filtered_data[[current_var]] <- as.Date(filtered_data[[current_var]])
+              if (any(filter_box_data$value %in% c("date", "date_group", "date_range", "date_range_group")) && !inherits(filtered_data[[current_var]], "Date")) {
+                warning(paste0("For the date filter the variable has to be a date variable. Setting ", current_var, " as date using as.Date() function"))
+                current_data[[current_var]] <- as.Date(current_data[[current_var]])
+              }
+              key_vars <- current_data %>%
+                dplyr::filter(if (any(filter_box_data$value %in% c("date_range", "date_range_group"))) {
+                  .data[[current_var]] >= current_name[1] & .data[[current_var]] <= current_name[2]
+                } else {
+                  .data[[current_var]] %in% current_name
+                }) %>%
+                dplyr::pull(key)
+              
+              filtered_data <- filtered_data %>% dplyr::filter(key %in% key_vars)
             }
+            
+            
+            
 
-            # if (is.character(current_name)) {
-            #   # For character variables, use %in% for exact matching
-            #   filtered_data <- filtered_data %>% 
-            #     dplyr::filter(.data[[current_var]] %in% current_name)
-            # } else if (is.numeric(current_name)) {
-            #   # For numeric variables, we'll assume they are exact values to match
-            #   filtered_data <- filtered_data %>%
-            #     dplyr::filter(.data[[current_var]] %in% current_name)
-            # }
-            filtered_data <- filtered_data %>%
-              dplyr::filter(if (any(filter_box_data$value %in% c("date_range", "date_range_group"))) {
-                .data[[current_var]] >= current_name[1] & .data[[current_var]] <= current_name[2]
-              } else {
-                .data[[current_var]] %in% current_name
-              })
           }
           return(filtered_data)
-        })
+        }
+        )
         
         if (!is.null(key_var)){
           valid_ids <- shiny::reactive({
@@ -426,11 +441,6 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
         output[[ID]] <- shinydashboard::renderValueBox(top_box)
       })
     })
-    #}
-    
-    # blanking these out: Then it runs right away (because we're not running the tables stuff?)
-    # Keeping these in: it runs right away (because we're not running the tables stuff?)
-    # if it takes X minutes per person, then ...
     
     # The "display" sheets -----------------------------------------
     display_sheet_plot <- function(j = 1, i){

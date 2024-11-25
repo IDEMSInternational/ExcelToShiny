@@ -39,6 +39,11 @@ top_value_boxes <- function(data_frame, spreadsheet, processed_spreadsheet, uniq
     # Remove "_box" from the function string
     fun_clean <- sub("_box", "", fun_str)
     
+    if (fun_clean == "average"){
+      warning("'average_box' given for top box. Setting average as mean.")
+      fun_clean <- "mean"
+    }
+    
     # Match the cleaned string to the actual function
     fun <- match.fun(fun_clean)
     
