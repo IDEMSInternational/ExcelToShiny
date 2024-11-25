@@ -26,11 +26,16 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
     # Command string from the spreadsheet
     command_string <- spreadsheet$data_manip
     
+    # Clean and construct the full command
+    # Remove extra whitespace or control characters from command_string
+    command_string <- gsub("\r\n", "\n", command_string)  # Replace CRLF with LF for consistency
+    command_string <- gsub("^%>%\\s*", "", command_string) # Remove leading %>% if present
+    
     # Construct the full command
     if (!is.null(grouped_vars)){
-      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ")", command_string)
+      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ") %>%", command_string)
     } else {
-      full_command <- paste0("data ", command_string)
+      full_command <- paste0("data %>%", command_string)
     }
     
     # Evaluate the command
@@ -78,7 +83,13 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
   
   plot_obj <- create_boxplot(data, variable, grouped_vars)
   if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
-    plot_command <- paste0("plot_obj + ", spreadsheet$graph_manip)
+    command_string <- spreadsheet$graph_manip
+    
+    # Clean and construct the full command
+    # Remove extra whitespace or control characters from command_string
+    command_string <- gsub("\r\n", "\n", command_string)  # Replace CRLF with LF for consistency
+    command_string <- gsub("^+\\s*", "", command_string) # Remove leading %>% if present
+    plot_command <- paste0("plot_obj + ", command_string)
     
     plot_obj <- tryCatch({
       eval(parse(text = plot_command))
