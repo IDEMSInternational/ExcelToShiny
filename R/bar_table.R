@@ -35,15 +35,14 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
     
     # Clean and construct the full command
     # Remove extra whitespace or control characters from command_string
-    command_string <- gsub("\r\n", "\n", command_string)  # Replace CRLF with LF for consistency
-    command_string <- gsub("^%>%\\s*", "", command_string) # Remove leading + if present
-    command_string <- paste0("data %>%", command_string)       # Append the dataset reference
-    
+    command_string <- gsub("\r\n", "\n", command_string)   # Replace CRLF with LF for consistency
+    command_string <- gsub("^%>%\\s*", "", command_string) # Remove leading %>% if present
+
     # Construct the full command
     if (!is.null(grouped_vars)){
-      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ")", command_string)
+      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ") %>% ", command_string)
     } else {
-      full_command <- paste0("data ", command_string)
+      full_command <- paste0("data %>% ", command_string)
     }
     
     # Evaluate the command
@@ -54,7 +53,7 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
       data  # Return NULL or handle the error as appropriate
     })
   }
-
+  
   # Refactor the histogram plotting into a separate function
   create_histogram_plot <- function(data, variable, grouped_vars) {
     plot_to_return <- ggplot2::ggplot(data, ggplot2::aes(x = .data[[variable]])) +

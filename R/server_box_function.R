@@ -69,7 +69,8 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     boxplot_freq = function() boxplot_table(data = data_frame_read, variable = variable, type = "freq", spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
     boxplot_summary = function() boxplot_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
     scatter_summary = function() scatter_table(data = data_frame_read, variable = variable, type = "summary", spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
-    specify_plot = function() specify_plot(data = data_frame_read, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars)
+    specify_plot = function() specify_plot(data = data_frame_read, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars),
+    specify_table = function() specify_table(data = data_frame_read, spreadsheet = filtered_spreadsheet, grouped_vars = grouped_vars)
   )
   
   # Execute the appropriate function based on the 'value'
@@ -85,9 +86,9 @@ server_box_function <- function(data_frame, spreadsheet, unique_ID, list_of_reac
     }
   }
   return_object <- value_function_map[[value]]()
-  
+
   # Initialise all_return with named elements
   all_return$table_obj <- return_object[[1]]
-  all_return$plot_obj <- return_object[[2]]
+  if (length(return_object) > 1) all_return$plot_obj <- return_object[[2]]
   return(all_return)
 }

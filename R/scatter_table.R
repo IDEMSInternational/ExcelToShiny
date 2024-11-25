@@ -29,13 +29,12 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
     # Remove extra whitespace or control characters from command_string
     command_string <- gsub("\r\n", "\n", command_string)  # Replace CRLF with LF for consistency
     command_string <- gsub("^%>%\\s*", "", command_string) # Remove leading %>% if present
-    command_string <- paste0("data %>%", command_string)       # Append the dataset reference
-    
+
     # Construct the full command
     if (!is.null(grouped_vars)){
-      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ")", command_string)
+      full_command <- paste0("data %>% dplyr::group_by(", grouped_vars, ") %>% ", command_string)
     } else {
-      full_command <- paste0("data ", command_string)
+      full_command <- paste0("data %>% ", command_string)
     }
     
     # Evaluate the command
