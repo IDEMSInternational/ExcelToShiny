@@ -2,8 +2,8 @@
 ---
 title: "Using Excel for Shiny Authoring System"
 author: "Lily Clements"
-date: "r Sys.Date()"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
 vignette: "%\\VignetteIndexEntry{Using Excel for Shiny Authoring System} %\\VignetteEngine{knitr::rmarkdown}
@@ -38,11 +38,11 @@ When creating a spreadsheet for the Shiny authoring system, there are five key a
 4. **Tabbed Display Page**: Manages tabbed display sections.
 5. **Download Page**: Handles downloadable content and related settings.
 
-You can view a sample Excel spreadsheet on GitHub titled "nhanes_data.xlsx". This can be found under vignettes/data/.
+You can view a sample Excel spreadsheet on GitHub titled `"nhanes_data.xlsx"`. This can be found under `vignettes/data/`.
 
 ### Example Code
 
-Below is the R code needed to test the provided Excel spreadsheet and see how it integrates with the PLHShiny package:
+Below is the R code needed to test the provided Excel spreadsheet and see how it integrates with the `ExcelToShiny` package:
 
 ```{r eval = FALSE}
 library(rio)
@@ -159,7 +159,7 @@ Here we have three different components: value boxes, filtering, and group boxes
   - filter_box: Provides filtering options.
   - group_by_box: Provides grouping options.
 - **Value**: Takes different values at the moment depending on what type is.
-  - If type is value_box, then the options here are value_box_rows (which gives the number of rows), value_box (which gives the frequency of rows for the variable given in the variable parameter), mean_box (which gives the mean for the variable given in the variable parameter), and mean_sd_box (which gives the mean and SD for the variable given in the variable parameter)
+  - If type is value_box, then the options here are value_box_rows (which gives the number of rows), value_box (which gives the frequency of rows for the variable given in the variable parameter), mean_box (which gives the mean for the variable given in the variable parameter), and mean_sd_box (which gives the mean and SD for the variable given in the variable parameter). You can also specify any function valid in R, such as `sum_box`, `median_box`, and so forth.
   - If type is filter_box, then the options are "checkbox_group" and "dates". The former gives a set of checkbox options, and the latter can be used to filter by dates.
   - If type is group_by_box, then the only options currently is "checkbox_group", which gives a set of checkbox options.
 - **Parameter List**: Parameters that the item declared in type takes. E.g., for value_box, parameters include "text", "colour", and "icon". For filter_box, parameters are "label", "choices", and "selected".
@@ -169,7 +169,7 @@ Here we have three different components: value boxes, filtering, and group boxes
   - _Example_: If displaying data for "gender == 'males'", then "males" should be specified here.
 
 | **type**     | **value**      | **parameter_list**                                                                                                     | **variable_value**                                             | **data**
-|--------------|----------------|-----------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------|----------------------------------------|
+|---------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------|------------------------------------|
 | value_box  | value_box_rows    | Accepted values are: "text", "colour", "icon". These read into valueBox in Shiny.                             | Not relevant. | Name of data frame to use. |
 |              |                | - "text": The value for the "subtitle" parameter. This is the text displayed in the value box (e.g., "Males in the study"). |                                                               | |
 |              |                | - "icon": The icon parameter. The icon to display is found at [FontAwesome](https://fontawesome.com/).               |                                                               |
@@ -217,15 +217,15 @@ Here we have three different components: value boxes, filtering, and group boxes
 Below is an example of the spreadsheet titled main_page:
 
 | **type**       | **value**        | **parameter_list**                                                    | **variable** | **variable_value** |
-|----------------|------------------|-----------------------------------------------------------------------|--------------|--------------------|
-| value_box | value_box_rows |	text = "Total individuals in the study", colour = "aqua", icon = "tick"		|     |     |
-| value_box    | value_box      | text = "Men in the study", colour = "yellow", icon = "male"         | Gender     | male             |
-| value_box    | value_box      | text = "Women in the study", colour = "purple", icon = "female"     | Gender     | female           |
-| value_box    | mean_box       | text = "Average age", colour = "green", icon = "active"| Age |  |
-| filter_box   | checkbox_group | label = "User Gender", choices = c("female", "male"), selected = c("female", "male")| Gender | |
-| group_by_box | checkbox_group | label = "Gender", value = FALSE | Gender   |        |
+|--------------------|------------------------|-----------------------------------------------------------------------|--------------|-----------------------|
+| value_box | value_box_rows |	`text = "Total individuals in the study", colour = "aqua", icon = "tick"`		|     |     |
+| value_box    | value_box      | `text = "Men in the study", colour = "yellow", icon = "male"`         | Gender     | male             |
+| value_box    | value_box      | `text = "Women in the study", colour = "purple", icon = "female"`     | Gender     | female           |
+| value_box    | mean_box       | `text = "Average age", colour = "green", icon = "active"`| Age |  |
+| filter_box   | checkbox_group | `label = "User Gender", choices = c("female", "male"), selected = c("female", "male")` | Gender | |
+| group_by_box | checkbox_group | `label = "Gender", value = FALSE` | Gender   |        |
 
-We can see where these parameter_list values correspond to in the dashboard:
+We can see where these `parameter_list` values correspond to in the dashboard:
 
 ```{r include-image5, echo=FALSE, fig.align='center', out.width = '70%'}
 knitr::include_graphics("inst/extdata/top_boxes.png")
@@ -234,13 +234,13 @@ knitr::include_graphics("inst/extdata/top_boxes.png")
 You can additionally specify the data frame for the `value_box` types by adding in a `data` column. By default it uses the variable you have given for `data_frame` in your `build_shiny` function.
 
 | **type**       | **value**        | **parameter_list**                                                    | **variable** | **variable_value** | **data** |
-|----------------|------------------|-----------------------------------------------------------------------|--------------|--------------------|------------|
-| value_box | value_box_rows |	text = "Total individuals in the study", colour = "aqua", icon = "tick"		|     |     | NHANES_by_ind |
-| value_box    | value_box      | text = "Men in the study", colour = "yellow", icon = "male"         | Gender     | male             | NHANES_by_ind |
-| value_box    | value_box      | text = "Women in the study", colour = "purple", icon = "female"     | Gender     | female           | NHANES_by_ind |
-| value_box    | mean_box       | text = "Average age", colour = "green", icon = "active"| Age |  | NHANES_by_ind |
-| filter_box   | checkbox_group | label = "User Gender", choices = c("female", "male"), selected = c("female", "male")| Gender | |
-| group_by_box | checkbox_group | label = "Gender", value = FALSE | Gender   |        |
+|--------------------|------------------------|-----------------------------------------------------------------------|--------------|-----------------------|---------------|
+| value_box | value_box_rows |	`text = "Total individuals in the study", colour = "aqua", icon = "tick"`		|     |     | NHANES_by_ind |
+| value_box    | value_box      | `text = "Men in the study", colour = "yellow", icon = "male"`         | Gender     | male             | NHANES_by_ind |
+| value_box    | value_box      | `text = "Women in the study", colour = "purple", icon = "female"`     | Gender     | female           | NHANES_by_ind |
+| value_box    | mean_box       | `text = "Average age", colour = "green", icon = "active"` | Age |  | NHANES_by_ind |
+| filter_box   | checkbox_group | `label = "User Gender", choices = c("female", "male"), selected = c("female", "male")` | Gender | |
+| group_by_box | checkbox_group | `label = "Gender", value = FALSE` | Gender   |        |
 
 ## Display Page
 
@@ -308,9 +308,9 @@ Using `graph_manip`, you can add extra layers to your plots (`ggplot`) objects b
 
 | type | value            | parameter_list                        | graph_manip                                   | variable  | row |
   |------|------------------|---------------------------------------|-----------------------------------------------|-----------|-----|
-  | box  | bar_table        | text = "Taken Marijuana?", colour = "blue" | theme_minimal()                            | Marijuana | 1   |
-    | box  | bar_table        | text = "Taken hard drugs?", colour = "blue" | theme_minimal() + labs(x = "Taken Hard Drugs") | HardDrugs | 2   |
-      | box  | bar_table        | text = "Smoke now?", colour = "blue"  | theme_minimal() + labs(x = "Currently Smoke") | SmokeNow  | 3   |
+  | box  | bar_table        | `text = "Taken Marijuana?", colour = "blue"` | `theme_minimal()`                            | Marijuana | 1   |
+    | box  | bar_table        | `text = "Taken hard drugs?", colour = "blue"` | `theme_minimal() + labs(x = "Taken Hard Drugs")` | HardDrugs | 2   |
+      | box  | bar_table        | `text = "Smoke now?", colour = "blue"`  | `theme_minimal() + labs(x = "Currently Smoke")` | SmokeNow  | 3   |
 
 ```{r include-image-graphmanip, echo=FALSE, fig.align='center', out.width = '70%'}
 knitr::include_graphics("inst/extdata/display_graph_manip.png")
@@ -319,8 +319,8 @@ knitr::include_graphics("inst/extdata/display_graph_manip.png")
 `data_manip` is another column where you can add data manipulations. For example, if we wanted to look at the age that individuals with diabetes were diagnosed with diabetes, we would want to filter to look at only individuals with diabetes.
 
 | type | value        | data_manip                      | parameter_list                        | graph_manip                                   | variable  | row |
-|------|--------------|---------------------------------|---------------------------------------|-----------------------------------------------|-----------|-----|
-| box  | boxplot_table    | %>% filter(Diabetes == "Yes") | text = "", colour = "blue" | theme_minimal() + labs(y = "Diabetes Age") | DiabetesAge | 4   |
+|------|---------------------|---------------------------------|---------------------------------------|-----------------------------------------------|-------------|---------|
+| box  | boxplot_table    | `%>% filter(Diabetes == "Yes")` | `text = "", colour = "blue"` | `theme_minimal() + labs(y = "Diabetes Age")` | DiabetesAge | 4   |
               
 Alternatively, you can use `filter_variable` and `filter_value` to filter to specific values:
 
@@ -329,8 +329,8 @@ Alternatively, you can use `filter_variable` and `filter_value` to filter to spe
 - **filter_value**: You may want to filter your data frame to display only certain values.
 
 | type | value        | parameter_list                        | graph_manip                                   | variable  | filter_variable | filter_value | row |
- |------|--------------|---------------------------------------|-----------------------------------------------|-----------|-----------------|--------------|-----|
-| box  | boxplot_table    | text = "", colour = "blue" | theme_minimal() + labs(y = "Diabetes Age") | Diabetes | Yes | 4   |
+ |------|-------------------|---------------------------------------|-----------------------------------------------|-----------|-----------------|--------------|-----|
+| box  | boxplot_table    | `text = "", colour = "blue"` | `theme_minimal() + labs(y = "Diabetes Age")` | Diabetes | Yes | 4   |
 
 ```{r include-image-filter, echo=FALSE, fig.align='center', out.width = '70%'}
 knitr::include_graphics("inst/extdata/display_tab_filtered.png")
@@ -347,11 +347,13 @@ One option for `value` is `specify_plot`, where you can define the plot and tabl
 Under `graph_manip`:
                     
 ```{r eval = FALSE}
-geom_point(aes(x = BPDiaAve, y = BPSysAve, colour = AgeDecade)) + labs(x = "Average Diastolic BP", y = "Average Systolic BP") + theme_minimal()
+geom_point(aes(x = BPDiaAve, y = BPSysAve, colour = AgeDecade)) + 
+  labs(x = "Average Diastolic BP", y = "Average Systolic BP") +
+  theme_minimal()
 ```
                   
 | type | value        | data_manip | table_manip                                       | graph_manip                                                                            | parameter_list                                    | variable | variable_value | row | data          |
-|------|--------------|------------|--------------------------------------------------|----------------------------------------------------------------------------------------|--------------------------------------------------|-----------|----------------|-----|---------------|
+|--------------|------------------------------|------------|--------------------------------------------------|----------------------------------------------------------------------------------------|--------------------------------------------------|-----------|----------------|-----|---------------|
 | box  | specify_plot | `<NA>`     | `%>% group_by(AgeDecade) %>% summarise(min(BPDiaAve))` | `geom_point(aes(x = BPDiaAve, y = BPSysAve, colour = AgeDecade)) + labs(x = "Average Diastolic BP", y = "Average Systolic BP") + theme_minimal()` | text = "Average Diastolic BP by Systolic BP", colour = "blue" | ID        | `<NA>`         | 1   | NHANES_by_ind |
 
 ```{r include-image-specify, echo=FALSE, fig.align='center', out.width = '70%'}
