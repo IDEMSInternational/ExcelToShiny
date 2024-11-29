@@ -33,9 +33,9 @@ A set of functions useful in analysing PLH data.
 
 You can install the development version of plhR from [GitHub](https://github.com/) with:
 
-``` r
+```{r}
 # install.packages("devtools")
-devtools::install_github("lilyclements/plhR")
+# devtools::install_github("IDEMSInternational/ExcelToShiny")
 ```
 
 ## Example
@@ -43,7 +43,7 @@ devtools::install_github("lilyclements/plhR")
 This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
-library(plhR)
+# library(ExcelToShiny)
 ## basic example code
 ```
 
