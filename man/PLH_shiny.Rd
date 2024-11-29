@@ -33,7 +33,6 @@ PLH_shiny(
 A Shiny App object that, when run, launches the interactive dashboard.
 }
 \description{
-This function is now Depreciated. Look at \code{build_shiny} instead.
 The PLH_shiny function generates a Shiny dashboard application based on the provided datasets and specifications. This function is designed to create a dynamic and interactive user interface that includes value boxes, filters, groupings, plots, tables, and downloadable content, all customisable through the input parameters.
 }
 \details{

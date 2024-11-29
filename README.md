@@ -25,7 +25,7 @@ You can install the development version of plhR from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("lilyclements/plhR")
+# devtools::install_github("IDEMSInternational/ExcelToShiny")
 ```
 
 ## Example
@@ -33,7 +33,7 @@ devtools::install_github("lilyclements/plhR")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(plhR)
+# library(ExcelToShiny)
 ## basic example code
 ```
 
