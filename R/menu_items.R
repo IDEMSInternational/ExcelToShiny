@@ -12,7 +12,7 @@ menu_items <- function(contents_list = data_list$contents){ #todo fix that
     if (is.null(contents_list$icon[[i]]) || (!is.null(contents_list$icon[[i]]) & is.na(contents_list$icon[[i]]))){
       icon_display <- NULL
     } else {
-      icon_display <- shiny::icon(contents_list$icon)
+      icon_display <- shiny::icon(contents_list$icon[[i]])
     }
     add_menu[[i]] <- shinydashboard::menuItem(contents_list$name[[i]], tabName = contents_list$ID[[i]], icon = icon_display)
   }
