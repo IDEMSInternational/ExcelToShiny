@@ -131,7 +131,6 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
     
     # Filters
     checkbox_data <- data_list$main_page %>% dplyr::filter(type %in% c("filter_box"))
-    checkbox_data
     if (nrow(checkbox_data) > 0) {
       filter_on_main_page <- main_page_filter(spreadsheet = checkbox_data)
     } else {
@@ -176,7 +175,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
         shiny::fluidRow(shiny_top_box_i),
         
         # tabs info
-        shiny::column(6, align = "center",
+        shiny::column(12, align = "center",
                       filter_on_main_page,
                       group_on_main_page
                       # shiny::splitLayout(shiny::textInput(inputId = "datefrom_text", 
