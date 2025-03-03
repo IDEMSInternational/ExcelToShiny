@@ -17,7 +17,7 @@ main_page_filter <- function(spreadsheet){
   # For the group input
   filter_input <- NULL
   filter_data <- spreadsheet %>% dplyr::filter(type == "filter_box")
-  
+
   # if statement
   filter_data <- filter_data %>%
     mutate(value = ifelse(stringdist::stringdist(value, "checkbox_group", method = "lv") <= 3, "checkbox_group",
@@ -30,7 +30,7 @@ main_page_filter <- function(spreadsheet){
       dplyr::filter(!value %in% valid_filter_boxes)
     invalid_type <- invalid_filter_data %>%
       dplyr::pull(value)
-    
+
     # if we can't read it, we can check if it has a choices option to see if it is a checkbox_group
     for (i in 1:nrow(invalid_filter_data)){
       invalid_filter_data_i <- invalid_filter_data[i,]
@@ -96,7 +96,6 @@ main_page_filter <- function(spreadsheet){
         startview <- get_parameter_value(spreadsheet_parameters, name = "startview")
         weekstart <- get_parameter_value(spreadsheet_parameters, name = "weekstart")
         separator <- get_parameter_value(spreadsheet_parameters, name = "separator")
-        if (!is.null(value) && is.na(value)) value <- Sys.Date()
         if (is.null(format)) format <- "yyyy-mm-dd"
         if (is.null(startview)) startview <- "month"
         if (is.null(weekstart)) weekstart <- 0
