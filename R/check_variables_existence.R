@@ -23,9 +23,9 @@ check_variables_existence <- function(df, data_frame) {
       
       if (!is.na(variable)){
         if (is.na(data_name)){
-          data_frame_obj <- get(data_frame)
+          data_frame_obj <- get(data_frame, envir = parent.frame(2))
         } else {
-          data_frame_obj <- get(data_name)
+          data_frame_obj <- get(data_name, envir = parent.frame(2))
         }
         
         if (variable %in% names(data_frame_obj)) {
