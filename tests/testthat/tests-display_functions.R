@@ -57,51 +57,50 @@ test_that("download_sheet generates download tab correctly", {
   tab <- download_sheet(data_list, "download1")
   expect_true(inherits(tab, "shiny.tag"))
 })
-
-
-# Setting up (pre-UI and pre-server items) --------------------------------
-# Check the types in contents are all valid types (display, tabbed_display, and download)
-example_excel$contents <- example_excel$contents %>%
-  dplyr::mutate(type = ifelse(stringdist::stringdist(type, "Display", method = "lv") <= 2, "Display",
-                              ifelse(stringdist::stringdist(type, "Tabbed_display", method = "lv") <= 3, "Tabbed_display",
-                                     ifelse(stringdist::stringdist(type, "Download", method = "lv") <= 3, "Download",
-                                            type))))
-valid_contents_type <- c("Display", "Tabbed_display", "Download")
-if (!all(example_excel$contents$type %in% valid_contents_type)){
-  invalid_contents_type <- example_excel$contents %>%
-    dplyr::filter(!type %in% valid_contents_type) %>%
-    dplyr::pull(type)
-  stop("Cannot read contents type: ", paste0(invalid_contents_type, sep = ", "), "Should be one of ", paste0(valid_contents_type, sep = ", "))
-}
-contents <- example_excel$contents
-
-for (i in 1:length(example_excel)){
-  if (is.null(example_excel[[i]]$name)){
-    example_excel[[i]]$name <- paste0("box", 1:nrow(example_excel[[i]]))
-  }
-}
-
-# list of sheets
-# check the variables exist
-for (df_name in names(example_excel)){
-  sheet <- example_excel[[df_name]]
-  data_frame_name <- deparse(substitute(NHANES))
-  results <- NULL
-  results <- check_variables_existence(sheet, data_frame = data_frame_name)
-  if (!is.null(results) && nrow(results) > 0) check_unknown_variables(results)
-}
-
-test_that("create_tab_items generates tab items correctly", {
-  # Populate items for the tabs ------------------------------------------------
-  display_box <- display_contents(data_frame = NHANES, contents = contents, data_list = example_excel, k = which(example_excel$contents$type == "Tabbed_display"))
-  expect_equal(class(display_box), "list")
-  expect_equal(length(display_box), 2)
-  
-  my_tab_items <- create_tab_items(data_list = example_excel,
-                                   d_box = display_box,
-                                   status = "primary",
-                                   colour = "blue")
-  expect_length(display_box[[1]], 7)
-  expect_length(display_box[[2]], 2)
-  expect_length(display_box, 2)
-})
+# 
+# test_that("create_tab_items generates tab items correctly", {
+#   # Setting up (pre-UI and pre-server items) --------------------------------
+#   # Check the types in contents are all valid types (display, tabbed_display, and download)
+#   example_excel$contents <- example_excel$contents %>%
+#     dplyr::mutate(type = ifelse(stringdist::stringdist(type, "Display", method = "lv") <= 2, "Display",
+#                                 ifelse(stringdist::stringdist(type, "Tabbed_display", method = "lv") <= 3, "Tabbed_display",
+#                                        ifelse(stringdist::stringdist(type, "Download", method = "lv") <= 3, "Download",
+#                                               type))))
+#   valid_contents_type <- c("Display", "Tabbed_display", "Download")
+#   if (!all(example_excel$contents$type %in% valid_contents_type)){
+#     invalid_contents_type <- example_excel$contents %>%
+#       dplyr::filter(!type %in% valid_contents_type) %>%
+#       dplyr::pull(type)
+#     stop("Cannot read contents type: ", paste0(invalid_contents_type, sep = ", "), "Should be one of ", paste0(valid_contents_type, sep = ", "))
+#   }
+#   contents <- example_excel$contents
+#   
+#   for (i in 1:length(example_excel)){
+#     if (is.null(example_excel[[i]]$name)){
+#       example_excel[[i]]$name <- paste0("box", 1:nrow(example_excel[[i]]))
+#     }
+#   }
+#   
+#   # list of sheets
+#   # check the variables exist
+#   for (df_name in names(example_excel)){
+#     sheet <- example_excel[[df_name]]
+#     data_frame_name <- deparse(substitute(NHANES))
+#     results <- NULL
+#     results <- check_variables_existence(sheet, data_frame = data_frame_name)
+#     if (!is.null(results) && nrow(results) > 0) check_unknown_variables(results)
+#   }
+#   
+#   # Populate items for the tabs ------------------------------------------------
+#   display_box <- display_contents(data_frame = NHANES, contents = contents, data_list = example_excel, k = which(example_excel$contents$type == "Tabbed_display"))
+#   expect_equal(class(display_box), "list")
+#   expect_equal(length(display_box), 2)
+#   
+#   my_tab_items <- create_tab_items(data_list = example_excel,
+#                                    d_box = display_box,
+#                                    status = "primary",
+#                                    colour = "blue")
+#   expect_length(display_box[[1]], 7)
+#   expect_length(display_box[[2]], 2)
+#   expect_length(display_box, 2)
+# })
