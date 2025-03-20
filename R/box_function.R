@@ -1,4 +1,4 @@
-#' Creating a Box for Use in the `PLH_shiny` Function
+#' Creating a Box for Use in the `build_shiny` Function
 #'
 #' This function generates a box element for use in `Shiny` applications, tailored for the `PLH_shiny` function. It reads parameters from a spreadsheet template and constructs the box accordingly.
 #'
