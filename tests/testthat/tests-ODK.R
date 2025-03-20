@@ -59,9 +59,9 @@ test_that("create_display_pages_from_metadata_ODK filters correctly", {
 
 test_that("generate_data_list creates structured list", {
   # Read in the data:
-  ODK_sample_survey <- readxl::read_excel("testdata/ODK_sample_survey.xlsx")
+  ODK_sample_survey <- readxl::read_excel("testdata/ODK_test_survey.xlsx")
   #ODK_sample_survey_choices <- read_excel("C:/Users/lclem/Downloads/ODK_sample_survey.xlsx", sheet = "choices")
-  our_survey_data <- readxl::read_excel("testdata/ODK_sample_data.xlsx")
+  our_survey_data <- readxl::read_excel("testdata/ODK_test_data.xlsx")
   
   # just for some sample rows
   ODK_sample_survey_1 <- ODK_sample_survey
