@@ -9,6 +9,7 @@
 #' @param colour A string specifying the skin colour of the Shiny App. Valid options include "blue", "green", "light blue", "orange", and "red". Each colour corresponds to a different status.
 #' @param date_from A string representing the initial date to filter data from, in the format "YYYY-MM-DD". The default is "2021-10-14".
 #' @param key_var A string specifying the name of the key variable that links different data frames together. If NULL, no key-based linking is performed.
+#' @param deploy_shiny Default TRUE. Boolean denoting if the function should deploy the shiny dashboard.
 #'
 #' @return A Shiny App object that, when run, launches the interactive dashboard.
 #' @export
@@ -49,7 +50,7 @@
 #' }
 #'
 #' @note Ensure that the data_list and data_frame parameters are correctly formatted to match the expected structure for the dashboard to function properly.
-build_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14", key_var = NULL){
+build_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14", key_var = NULL, deploy_shiny = TRUE){
   colour <- tolower(colour)
   if (colour == "blue") {
     status = "primary"
@@ -65,7 +66,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
   # Setting up (pre-UI and pre-server items) --------------------------------
   # Check the types in contents are all valid types (display, tabbed_display, and download)
   data_list$contents <- data_list$contents %>%
-    mutate(type = ifelse(stringdist::stringdist(type, "Display", method = "lv") <= 2, "Display",
+    dplyr::mutate(type = ifelse(stringdist::stringdist(type, "Display", method = "lv") <= 2, "Display",
                          ifelse(stringdist::stringdist(type, "Tabbed_display", method = "lv") <= 3, "Tabbed_display",
                                 ifelse(stringdist::stringdist(type, "Download", method = "lv") <= 3, "Download",
                                        type))))
@@ -105,7 +106,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
   # value box for main page -------------------------------------------------------------------------------
   # check type is one of value_box, filter_box, or group_by_box
   data_list$main_page <- data_list$main_page %>%
-    mutate(type = ifelse(stringdist::stringdist(type, "value_box", method = "lv") <= 2, "value_box",
+    dplyr::mutate(type = ifelse(stringdist::stringdist(type, "value_box", method = "lv") <= 2, "value_box",
                          ifelse(stringdist::stringdist(type, "filter_box", method = "lv") <= 3, "filter_box",
                                 ifelse(stringdist::stringdist(type, "group_by_box", method = "lv") <= 3, "group_by_box",
                                        type))))
@@ -577,5 +578,6 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
       download_table(j = j)
     }
   }
-  shiny::shinyApp(ui = ui, server = server)
+  if (deploy_shiny) shiny::shinyApp(ui = ui, server = server)
+  else return(list(ui = ui, server = server))
 }

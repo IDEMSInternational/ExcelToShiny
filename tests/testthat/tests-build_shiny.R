@@ -17,5 +17,32 @@
 # 
 test_that("create_shiny_dashboard handles errors", {
   # Test with an invalid file path
-  expect_error(create_shiny_dashboard("nonexistent_file.xlsx"))
+  expect_error(build_shiny("nonexistent_file.xlsx"))
+})
+
+
+test_that("create_shiny_dashboard runs successfully", {
+  library(NHANES)
+  # Load the NHANES dataset
+  data(NHANES)
+  
+  # Prepare the data by selecting individual records
+  NHANES_by_ind <- NHANES %>%
+    dplyr::group_by(ID) %>%
+    dplyr::mutate(count = 1:dplyr::n()) %>%
+    dplyr::filter(count == 1) %>%
+    dplyr::ungroup()
+  
+  # Ensure that the ID column is in character format
+  NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+  example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+  
+  shiny_dashboard <- build_shiny(title = "New Dashboard", 
+                                 data_list = example_excel,
+                                 data_fram = NHANES,
+                                 status = "primary",
+                                 colour = "blue",
+                                 key_var = "ID",
+                                 deploy_shiny = FALSE)
+  expect_equal(class(shiny_dashboard), "list")
 })
