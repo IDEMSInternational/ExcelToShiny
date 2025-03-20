@@ -86,3 +86,4 @@ test_that("hasCssClass detects class presence", {
   tag_no_class <- shiny::tags$div()
   expect_false(hasCssClass(tag_no_class, "test-class"))
 })
+
