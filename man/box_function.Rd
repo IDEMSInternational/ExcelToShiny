@@ -2,7 +2,7 @@
 % Please edit documentation in R/box_function.R
 \name{box_function}
 \alias{box_function}
-\title{Creating a Box for Use in the \code{PLH_shiny} Function}
+\title{Creating a Box for Use in the \code{build_shiny} Function}
 \usage{
 box_function(data_frame, spreadsheet, unique_ID, label_table, label_plot)
 }

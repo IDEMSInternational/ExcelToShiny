@@ -11,7 +11,8 @@ build_shiny(
   status = "primary",
   colour = "blue",
   date_from = "2021-10-14",
-  key_var = NULL
+  key_var = NULL,
+  deploy_shiny = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ build_shiny(
 \item{date_from}{A string representing the initial date to filter data from, in the format "YYYY-MM-DD". The default is "2021-10-14".}
 
 \item{key_var}{A string specifying the name of the key variable that links different data frames together. If NULL, no key-based linking is performed.}
+
+\item{deploy_shiny}{Default TRUE. Boolean denoting if the function should deploy the shiny dashboard.}
 }
 \value{
 A Shiny App object that, when run, launches the interactive dashboard.

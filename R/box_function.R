@@ -124,4 +124,3 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   names(all_return) <- c("gui_obj", "table_obj", "plot_obj", "label_table", "label_plot", "ID")
   return(all_return)
 }
-
