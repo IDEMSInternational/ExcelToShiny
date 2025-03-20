@@ -45,4 +45,15 @@ test_that("create_shiny_dashboard runs successfully", {
                                  key_var = "ID",
                                  deploy_shiny = FALSE)
   expect_equal(class(shiny_dashboard), "list")
+  
+  credentials_data <- data.frame(
+    user = c("admin"),
+    password = c("password"),
+    stringsAsFactors = FALSE
+  )  
+  # Try launching the app
+  expect_silent({
+    app <- shiny::shinyApp(ui = shiny_dashboard$ui, server = shiny_dashboard$server)
+    shiny::stopApp(app)  # Immediately stop it to prevent blocking execution
+  })
 })

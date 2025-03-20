@@ -52,15 +52,20 @@
 #' @note Ensure that the data_list and data_frame parameters are correctly formatted to match the expected structure for the dashboard to function properly.
 build_shiny <- function (title, data_list, data_frame, status = "primary", colour = "blue", date_from = "2021-10-14", key_var = NULL, deploy_shiny = TRUE){
   colour <- tolower(colour)
-  if (colour == "blue") {
-    status = "primary"
-  } else if (colour == "green") { status = "success"
-  } else if (colour == "light blue") { status = "info"
-  } else if (colour == "orange") { status = "warning"
-  } else if (colour == "red") { status = "danger"
-  } else {
-    warning("Valid colours are blue, green, light blue, orange, red")
-    status = "primary"
+  
+  status_map <- c(
+    "blue" = "primary",
+    "green" = "success",
+    "light blue" = "info",
+    "orange" = "warning",
+    "red" = "danger"
+  )
+  
+  status <- status_map[colour]
+  
+  if (is.na(status)) {
+    warning("Valid colours are: blue, green, light blue, orange, red")
+    status <- "primary"
   }
   
   # Setting up (pre-UI and pre-server items) --------------------------------
