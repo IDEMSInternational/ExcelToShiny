@@ -65,7 +65,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
   # Setting up (pre-UI and pre-server items) --------------------------------
   # Check the types in contents are all valid types (display, tabbed_display, and download)
   data_list$contents <- data_list$contents %>%
-    mutate(type = ifelse(stringdist::stringdist(type, "Display", method = "lv") <= 2, "Display",
+    dplyr::mutate(type = ifelse(stringdist::stringdist(type, "Display", method = "lv") <= 2, "Display",
                          ifelse(stringdist::stringdist(type, "Tabbed_display", method = "lv") <= 3, "Tabbed_display",
                                 ifelse(stringdist::stringdist(type, "Download", method = "lv") <= 3, "Download",
                                        type))))
@@ -105,7 +105,7 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
   # value box for main page -------------------------------------------------------------------------------
   # check type is one of value_box, filter_box, or group_by_box
   data_list$main_page <- data_list$main_page %>%
-    mutate(type = ifelse(stringdist::stringdist(type, "value_box", method = "lv") <= 2, "value_box",
+    dplyr::mutate(type = ifelse(stringdist::stringdist(type, "value_box", method = "lv") <= 2, "value_box",
                          ifelse(stringdist::stringdist(type, "filter_box", method = "lv") <= 3, "filter_box",
                                 ifelse(stringdist::stringdist(type, "group_by_box", method = "lv") <= 3, "group_by_box",
                                        type))))
