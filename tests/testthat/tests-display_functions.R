@@ -6,6 +6,8 @@ library(NHANES)
 # Load the NHANES dataset
 data(NHANES)
 
+example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+
 # Prepare the data by selecting individual records
 NHANES_by_ind <- NHANES %>%
   dplyr::group_by(ID) %>%
@@ -15,8 +17,6 @@ NHANES_by_ind <- NHANES %>%
 
 # Ensure that the ID column is in character format
 NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
-example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
-data_frame <- NHANES
 
 test_that("display_contents processes and returns display boxes", {
   contents <- example_excel$contents
@@ -97,7 +97,7 @@ test_that("create_tab_items generates tab items correctly", {
   expect_equal(class(display_box), "list")
   expect_equal(length(display_box), 2)
   
-  my_tab_items <- create_tab_items(data_list = data_list,
+  my_tab_items <- create_tab_items(data_list = example_excel,
                                    d_box = display_box,
                                    status = "primary",
                                    colour = "blue")
