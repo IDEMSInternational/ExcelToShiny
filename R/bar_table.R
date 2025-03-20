@@ -20,7 +20,7 @@ bar_table <- function(data, variable, type = c("freq", "summary"), spreadsheet, 
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)
   
-  if (class(data) == "list") {
+  if (inherits(data, "list")) {
     all_return$table <- data[[variable]]
     all_return$plot <- ggplot2::ggplot()
     return(all_return)

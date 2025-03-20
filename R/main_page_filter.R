@@ -20,7 +20,7 @@ main_page_filter <- function(spreadsheet){
 
   # if statement
   filter_data <- filter_data %>%
-    mutate(value = ifelse(stringdist::stringdist(value, "checkbox_group", method = "lv") <= 3, "checkbox_group",
+    dplyr::mutate(value = ifelse(stringdist::stringdist(value, "checkbox_group", method = "lv") <= 3, "checkbox_group",
                          ifelse(stringdist::stringdist(value, "date_range_group", method = "lv") <= 3, "date_range_group",
                                 ifelse(stringdist::stringdist(value, "date_group", method = "lv") <= 3, "date_group",
                                        value))))

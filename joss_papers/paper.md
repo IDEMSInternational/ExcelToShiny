@@ -74,10 +74,12 @@ This process generates and launches a complete Shiny dashboard based on the spec
 
 # Future Goals
 
-The ongoing development of `ExcelToShiny` aims to extend its functionality and usability. Planned improvements include optimisation changes on the R code to improve its efficiency. Furthermore, plans include adding more flexibility to the dashboards with additional features to include for the Shiny Dashboards - such as displaying data tables on the dashboard.
+The ongoing development of `ExcelToShiny` aims to extend its functionality and usability. Planned improvements include optimisation changes on the R code to improve its efficiency. Furthermore, plans include adding more flexibility to the dashboards with additional features to include for the Shiny Dashboards.
 
 Hosted on GitHub, `ExcelToShiny` encourages contributions from the community to ensure the package continues to evolve and meet the diverse needs of its users. This community-driven development fosters an open-source, collaborative approach to refining the tool.
 
 # Conclusion
 
 `ExcelToShiny` represents a significant advancement in simplifying the creation of interactive Shiny dashboards, lowering the barriers to entry for users without extensive programming experience. By automating the generation of dashboards from Excel templates, it ensures accessibility, reproducibility, and transparency in data visualisation. As the package evolves, it aims to serve as a tool for researchers, analysts, and decision-makers in a wide range of fields, providing an easy-to-use yet powerful solution for data presentation.
+
+# References
