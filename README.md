@@ -1,13 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# plhR
+# ExcelToShiny
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/IDEMSInternational/plhR/workflows/R-CMD-check/badge.svg)](https://github.com/IDEMSInternational/plhR/actions)
+[![R-CMD-check](https://github.com/IDEMSInternational/ExcelToShiny/workflows/R-CMD-check/badge.svg)](https://github.com/IDEMSInternational/ExcelToShiny/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/IDEMSInternational/plhR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/IDEMSInternational/plhR?branch=main)
+coverage](https://codecov.io/gh/IDEMSInternational/ExcelToShiny/branch/main/graph/badge.svg)](https://app.codecov.io/gh/IDEMSInternational/ExcelToShiny?branch=main)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![Project Status: WIP – Initial development is in progress, but there
@@ -20,7 +20,7 @@ A set of functions useful in analysing PLH data.
 
 ## Installation
 
-You can install the development version of plhR from
+You can install the development version of ExcelToShiny from
 [GitHub](https://github.com/) with:
 
 ``` r
