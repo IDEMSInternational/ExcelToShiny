@@ -43,6 +43,12 @@ Additionally, by lowering the technical barrier, `ExcelToShiny` allows researche
 
 By streamlining the creation of Shiny dashboards, `ExcelToShiny` directly supports research activities by making it easier for researchers to interact with data, visualise results, and share reproducible analysis in a transparent, flexible format.
 
+# State of the Field
+
+Several R packages exist for creating Shiny applications, each designed for different use cases and levels of technical expertise. For instance, `golem` promotes modularisation and best practices for large-scale applications but requires a deeper understanding of Shiny’s architecture. Similarly, `flexdashboard` enables the creation of interactive dashboards with minimal explicit Shiny code, though it relies on RMarkdown and R, which can be a barrier for users with limited programming experience.
+
+While these tools are powerful, they introduce complexities that may not suit all users. In contrast, `ExcelToShiny` lowers the entry barrier by leveraging structured Excel templates, making it particularly well-suited for those who prefer spreadsheet-based interfaces for data management and visualisation. By bridging the gap between non-technical users and interactive dashboard creation, `ExcelToShiny` offers a more accessible alternative to traditional Shiny development approaches.
+
 # Functionality and Features
 
 `ExcelToShiny` leverages a simple, structured Excel format to automatically generate Shiny dashboards, making the process highly accessible. The package interprets Excel template elements like tabs, graphs, tables, and menus, converting them into Shiny UI components and server logic with minimal user input. The dashboards can have regular display pages, display pages with tabs, or have a page that downloads the data. Furthermore, while much of the process is automated, users can further customise their dashboards, enabling fine-tuning of both layout and behavior to meet specific requirements. This allows  users to fine-tune both the appearance and functionality without needing to dive into R code.
