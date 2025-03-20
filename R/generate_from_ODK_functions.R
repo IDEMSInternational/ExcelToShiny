@@ -40,7 +40,7 @@ create_from_type_ODK <- function(metadata = ODK_sample_survey_group, value = "bo
       ),
       parameter_list = paste0("text = \"", label, "\", colour = \"blue\""),
       variable = name,
-      row = row_number()
+      row = dplyr::row_number()
     ) %>%
     dplyr::rowwise() %>%
     dplyr::summarise(
@@ -135,7 +135,7 @@ generate_data_list <- function(input_data, output_data) {
   excel_template <- list()
   
   # The contents is built from `begin_group` labels
-  data_bg <- filter(input_data, type == "begin_group")
+  data_bg <- dplyr::filter(input_data, type == "begin_group")
   excel_template$contents <- data.frame(
     name = data_bg$label,
     type = "Display",
