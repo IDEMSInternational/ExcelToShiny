@@ -52,10 +52,12 @@ test_that("create_shiny_dashboard runs successfully", {
   # print(ls(server_env))  # List variables in the server function
 
   # Define the app-running background process
+  message("Current working directory: ", getwd())
   project_dir <- rprojroot::find_root(rprojroot::has_file("DESCRIPTION"))
   shiny_process <- callr::r_bg(
     function(project_path) {
       setwd(project_path)
+      devtools::load_all()
       library(shiny)
       library(shinydashboard)
       library(dplyr)
@@ -63,8 +65,8 @@ test_that("create_shiny_dashboard runs successfully", {
       library(plotly)
       library(rio)
       library(NHANES)
-      devtools::load_all()
-
+      message("Current working directory: ", getwd())
+      
       # Load data inside background session too!
       data(NHANES)
       # Prepare the data by selecting individual records
@@ -84,7 +86,7 @@ test_that("create_shiny_dashboard runs successfully", {
         stringsAsFactors = FALSE
       )
 
-      example_excel <- rio::import_list(testthat::test_path("testdata/nhanes_data.xlsx"))
+      example_excel <- rio::import_list("tests/testthat/testdata/nhanes_data.xlsx")
       
       app <- build_shiny(
         title = "Test Dashboard",
