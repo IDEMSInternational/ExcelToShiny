@@ -1,5 +1,5 @@
 # Helper Function 1: Prepare the data_list and extract df names
-prepare_data_list <- function(data_list, data_frame_name) {
+extract_df_names <- function(data_list, data_frame_name) {
   for (i in seq_along(data_list)) {
     if ("data" %in% names(data_list[[i]])) {
       data_list[[i]] <- data_list[[i]] %>%
@@ -14,7 +14,7 @@ prepare_data_list <- function(data_list, data_frame_name) {
 }
 
 # Helper Function 2: Generate complete_dfs environment
-generate_complete_dfs <- function(df_names, env = parent.frame()) {
+copy_dfs_for_filtering <- function(df_names, env = parent.frame()) {
   complete_dfs <- list()
   for (df_name in df_names) {
     new_name <- paste0(df_name, "_1")
@@ -193,11 +193,11 @@ render_tabbed_display_items <- function(display_box, display_content, data_list,
 # Server function factory
 build_server <- function(data_list, data_frame, key_var, data_frame_name) {
   function(input, output, session) {
-    prepared <- prepare_data_list(data_list, data_frame_name)
+    prepared <- extract_df_names(data_list, data_frame_name)
     data_list <- prepared$data_list
     list_of_df_names <- prepared$list_of_df_names
     
-    complete_dfs <- generate_complete_dfs(list_of_df_names)
+    complete_dfs <- copy_dfs_for_filtering(list_of_df_names)
     filtered_data <- shiny::reactive({ data_frame })
     list_of_reactives <- list()
     

@@ -5,13 +5,17 @@ on:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+
 name: test-coverage.yaml
+
 permissions: read-all
+
 jobs:
   test-coverage:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +27,7 @@ jobs:
         with:
           extra-packages: any::covr, any::xml2
           needs: coverage
+
       - name: Test coverage
         run: |
           cov <- covr::package_coverage(
@@ -33,7 +38,14 @@ jobs:
           covr::to_cobertura(cov)
         shell: Rscript {0}
 
-	@@ -49,13 +59,12 @@ jobs:
+      - uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: ${{ github.event_name != 'pull_request' && true || false }}
+          file: ./cobertura.xml
+          plugin: noop
+          disable_search: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Show testthat output
         if: always()
         run: |

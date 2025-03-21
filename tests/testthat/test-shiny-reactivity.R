@@ -1,26 +1,55 @@
-test_that("prepare_data_list replaces NA with df name and extracts df names", {
+example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+
+# Helper Function 1: Prepare the data_list and extract df names
+test_that("extract_df_names replaces NA with df name and extracts df names", {
   data_list <- list(
     data.frame(type = "Display", data = NA),
     data.frame(type = "Display", data = "df2")
   )
-  result <- prepare_data_list(data_list, "my_df")
+  result <- extract_df_names(data_list, "my_df")
   
   expect_equal(result$data_list[[1]]$data[1], "my_df")
   expect_equal(sort(result$list_of_df_names), sort(c("my_df", "df2")))
 })
 
-test_that("generate_complete_dfs copies dataframes into environment with _1 suffix", {
+test_that("extract_df_names replaces NA with df name and extracts df names", {
+  data_list <- example_excel
+  
+  result <- extract_df_names(data_list, "NHANES")
+  
+  expect_equal(result$list_of_df_names, c("NHANES", "NHANES_by_ind"))
+})
+
+# Helper Function 2: Generate complete_dfs environment
+test_that("copy_dfs_for_filtering copies dataframes into environment with _1 suffix", {
   df1 <- data.frame(a = 1:3)
   df2 <- data.frame(b = 4:6)
   df_names <- c("df1", "df2")
   
-  complete_dfs <- generate_complete_dfs(df_names, env = environment())
+  complete_dfs <- copy_dfs_for_filtering(df_names, env = environment())
   
   expect_true(exists("df1_1", envir = environment()))
   expect_true(exists("df2_1", envir = environment()))
   expect_equal(complete_dfs$df1_1, df1)
   expect_equal(complete_dfs$df2_1, df2)
 })
+
+test_that("copy_dfs_for_filtering copies dataframes into environment with _1 suffix", {
+  df1 <- data.frame(a = 1:3)
+  df2 <- data.frame(b = 4:6)
+  df_names <- c("df1", "df2")
+  
+  complete_dfs <- copy_dfs_for_filtering(df_names, env = environment())
+  
+  expect_true(exists("df1_1", envir = environment()))
+  expect_true(exists("df2_1", envir = environment()))
+  expect_equal(complete_dfs$df1_1, df1)
+  expect_equal(complete_dfs$df2_1, df2)
+})
+
+
+
+
 
 test_that("display_content_by_tab returns NULL if tab doesn't match", {
   input <- list(tab = "summary")
@@ -47,7 +76,7 @@ test_that("process_main_page_function extracts and splits parameter list", {
 
 
 # Helper Function 2: Generate complete_dfs environment
-test_that("generate_complete_dfs works correctly", {
+test_that("copy_dfs_for_filtering works correctly", {
   df_names <- c("df1", "df2")
   df1 <- data.frame(a = 1:3)
   df2 <- data.frame(b = 4:6)
@@ -56,7 +85,7 @@ test_that("generate_complete_dfs works correctly", {
   assign("df1", df1, envir = env)
   assign("df2", df2, envir = env)
   
-  complete_dfs <- generate_complete_dfs(df_names, env)
+  complete_dfs <- copy_dfs_for_filtering(df_names, env)
   
   expect_equal(complete_dfs$df1_1, df1)
   expect_equal(complete_dfs$df2_1, df2)
@@ -66,7 +95,6 @@ test_that("generate_complete_dfs works correctly", {
 
 # Helper Function 5: Process spreadsheet for value boxes
 test_that("process_main_page_function works correctly", {
-  example_excel <- rio::import_list("tests/testthat/testdata/nhanes_data.xlsx")
   spreadsheet <- example_excel$main_page
   spreadsheet$name <- paste0("box", 1:nrow(spreadsheet))
   result <- data.frame(process_main_page_function(spreadsheet))
