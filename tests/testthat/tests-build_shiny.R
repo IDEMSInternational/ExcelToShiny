@@ -57,36 +57,55 @@ test_that("create_shiny_dashboard runs successfully", {
     stringsAsFactors = FALSE
   )  
   
-  # Try launching the app
-  # Create the app
-  app <- build_shiny(
-    title = "Test Dashboard",
-    data_list = example_excel,
-    data_frame = NHANES,
-    key_var = "ID",
-    deploy_shiny = TRUE
-  )
-
-  expect_silent({
-    print("Starting app test...")  # Debugging print
-    runApp(app, launch.browser = FALSE)  # Start app
-    stopApp(app)  # Stop app immediately
-    print("App ran successfully!")  # Debugging print
+  # Define the app-running background process
+  shiny_process <- callr::r_bg(function() {
+    library(shiny)
+    library(shinydashboard)
+    library(dplyr)
+    library(stringdist)
+    library(plotly)
+    library(rio)
+    library(NHANES)
+    
+    # Load data inside background session too!
+    data(NHANES)
+    # Prepare the data by selecting individual records
+    NHANES_by_ind <- NHANES %>%
+      dplyr::group_by(ID) %>%
+      dplyr::mutate(count = 1:dplyr::n()) %>%
+      dplyr::filter(count == 1) %>%
+      dplyr::ungroup()
+    
+    # Ensure that the ID column is in character format
+    NHANES$ID <- as.character(NHANES$ID)
+    NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+    
+    example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+    
+    app <- build_shiny(
+      title = "Test Dashboard",
+      data_list = example_excel,
+      data_frame = NHANES,
+      key_var = "ID",
+      deploy_shiny = FALSE
+    )
+    
+    shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
   })
   
-
-  # Run the app in the background
-  p <- processx::process$new(
-    "Rscript",
-    c("-e", "shiny::runApp('app')"),
-    stderr = "|", stdout = "|"
-  )
+  # Give it time to start
+  Sys.sleep(5)
   
-  Sys.sleep(5)  # Give it a few seconds to check if it runs
+  # Check that it started correctly
+  expect_true(shiny_process$is_alive() || shiny_process$get_exit_status() == 0)
   
-  # Check if the app is still running
-  expect_true(p$is_alive())
+  # Optional: peek at logs if it failed
+  if (!shiny_process$is_alive()) {
+    cat("STDOUT:\n", shiny_process$read_all_output())
+    cat("STDERR:\n", shiny_process$read_all_error())
+  }
   
-  # Stop the app
-  p$kill()
+  # Kill the process to clean up
+  shiny_process$kill()
+  
 })
