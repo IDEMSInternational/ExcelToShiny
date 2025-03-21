@@ -34,6 +34,7 @@ test_that("create_shiny_dashboard runs successfully", {
     dplyr::ungroup()
   
   # Ensure that the ID column is in character format
+  NHANES$ID <- as.character(NHANES$ID)
   NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
   example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
   
@@ -46,14 +47,46 @@ test_that("create_shiny_dashboard runs successfully", {
                                  deploy_shiny = FALSE)
   expect_equal(class(shiny_dashboard), "list")
   
+  # # Manually inspect reactives
+  # server_env <- environment(shiny_dashboard$server)
+  # print(ls(server_env))  # List variables in the server function
+  
   credentials_data <- data.frame(
     user = c("admin"),
     password = c("password"),
     stringsAsFactors = FALSE
   )  
+  
   # Try launching the app
+  # Create the app
+  app <- build_shiny(
+    title = "Test Dashboard",
+    data_list = example_excel,
+    data_frame = NHANES,
+    key_var = "ID",
+    deploy_shiny = TRUE
+  )
+
   expect_silent({
-    app <- shiny::shinyApp(ui = shiny_dashboard$ui, server = shiny_dashboard$server)
-    shiny::stopApp(app)  # Immediately stop it to prevent blocking execution
+    print("Starting app test...")  # Debugging print
+    runApp(app, launch.browser = FALSE)  # Start app
+    stopApp(app)  # Stop app immediately
+    print("App ran successfully!")  # Debugging print
   })
+  
+
+  # Run the app in the background
+  p <- processx::process$new(
+    "Rscript",
+    c("-e", "shiny::runApp('app')"),
+    stderr = "|", stdout = "|"
+  )
+  
+  Sys.sleep(5)  # Give it a few seconds to check if it runs
+  
+  # Check if the app is still running
+  expect_true(p$is_alive())
+  
+  # Stop the app
+  p$kill()
 })
