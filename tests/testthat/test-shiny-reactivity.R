@@ -141,20 +141,19 @@ test_that("draw_top_value_boxes works correctly", {
 })
 
 # Helper Function 7: Render download UI
-# test_that("render_download_ui works correctly", {
-#   j <- 1
-#   spreadsheet <- data.frame(
-#     type = c("Data label", "Download label", "Data"),
-#     name = c("label1", "download1", "data1")
-#   )
-#   datasets <- list(data1 = data.frame(a = 1:3))
-#   input <- list(dataset1 = "data1")
-#   output <- list()
-#   
-#   expect_silent(render_download_ui(j, spreadsheet, datasets, input, output))
-# })
+test_that("render_download_ui works correctly", {
+  j <- 1
+  spreadsheet <- example_excel$download
+  datasets <- list(NHANES = data.frame(a = 1:3),
+                   NHANES_by_ind = data.frame(b = 1:10))
+  input <- list(dataset1 = "data1")
+  output <- list()
+  x <- render_download_ui(j, spreadsheet, datasets, input, output)
+  expect_true("shiny.render.function" %in% class(x))
+})
 
-# Helper Function 8: Extract group input IDs from UI
+
+  # Helper Function 8: Extract group input IDs from UI
 test_that("extract_group_input_ids works correctly", {
   group_ui_list <- list(
     list(children = list(list(children = list(list(children = list(list(attribs = list(id = "id1")))))))),
