@@ -99,7 +99,7 @@ test_that("create_shiny_dashboard runs successfully", {
         deploy_shiny = FALSE
       )
       
-      shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
+      shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = TRUE)
     },
     args = list(project_dir)
   )
@@ -170,4 +170,74 @@ test_that("build_shiny launches app correctly", {
   }, label = "build_shiny app test")
   
   expect_true(result)
+})
+
+library(shinytest2)
+library(testthat)
+
+test_that("Shiny app works as expected", {
+  # Load data
+  data(NHANES)
+  NHANES_by_ind <- NHANES %>%
+    group_by(ID) %>%
+    mutate(count = 1:n()) %>%
+    filter(count == 1) %>%
+    ungroup()
+  
+  NHANES$ID <- as.character(NHANES$ID)
+  NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+  
+  credentials_data <- data.frame(
+    user = "admin",
+    password = "password",
+    stringsAsFactors = FALSE
+  )
+  
+  example_excel <- rio::import_list("tests/testthat/testdata/nhanes_data.xlsx")
+  
+  devtools::load_all()
+  # Create the Shiny app
+  build_shiny1(
+    title = "Test Dashboard",
+    data_list = example_excel,
+    data_frame = NHANES,
+    key_var = "ID",
+    deploy_shiny = TRUE
+  )
+  
+  # Launch the app in test mode
+  shiny_app <- shinyApp(
+    ui = app$ui,
+    server = app$server,
+    options = list(test.mode = TRUE)  # Enable test mode
+  )
+  
+  app <- AppDriver$new(
+    shiny_app,
+    name = "shiny_app_test",
+    view = interactive()
+  )
+  
+  # Test 1: Check the initial state of the app
+  expect_equal(app$get_value(output = "title"), "Test Dashboard Dashboard")
+  
+  # Test 2: Simulate user interaction (e.g., selecting a filter)
+  app$set_inputs(filter_value = "A")  # Replace with your actual input ID
+  app$click("goButton_group")  # Replace with your actual button ID
+  
+  # Test 3: Check the output after interaction
+  filtered_data <- app$get_value(output = "filtered_data")
+  expect_equal(nrow(filtered_data), 10)  # Replace with expected number of rows
+  
+  # Test 4: Check a plot or table output
+  plot_data <- app$get_value(output = "plot_1_1")
+  expect_true(!is.null(plot_data))  # Replace with specific expectations
+  
+  # Test 5: Test the download functionality
+  app$set_inputs(dataset1 = "example_dataset")  # Replace with your actual input ID
+  app$click("downloadData1")  # Replace with your actual button ID
+  expect_true(file.exists("example_dataset.csv"))  # Check if the file was downloaded
+  
+  # Close the app
+  app$stop()
 })
