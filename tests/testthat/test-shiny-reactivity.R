@@ -47,15 +47,30 @@ test_that("copy_dfs_for_filtering copies dataframes into environment with _1 suf
   expect_equal(complete_dfs$df2_1, df2)
 })
 
+# Helper Function 3: Create reactive data filtering
+# TODO
 
-
-
-
+# Helper Function 4: Display content by tab
 test_that("display_content_by_tab returns NULL if tab doesn't match", {
   input <- list(tab = "summary")
-  output <- display_content_by_tab("details", input, reactive({mtcars}), NULL, NULL, NULL)
+  output <- display_content_by_tab("details", input, shiny::reactive({mtcars}), NULL, NULL, NULL)
   expect_null(output)
 })
+
+# TODO Create better version of this.
+contents <- example_excel$contents
+tab_names <- contents$ID
+display_content <- shiny::reactiveVal()
+display_content_by_tab(input$tab, input, filtered_data, contents, data_list, list_of_reactives)
+
+shiny::observeEvent(c(input$tab, ifelse(input$goButton_group == 0, 1, input$goButton_group)), {
+  display_content(display_content_by_tab(input$tab, input, filtered_data, contents, data_list, list_of_reactives))
+})
+
+
+
+
+
 
 test_that("process_main_page_function extracts and splits parameter list", {
   spreadsheet <- data.frame(
@@ -119,7 +134,7 @@ test_that("draw_top_value_boxes works correctly", {
     names = c("param1", "param2"),
     values = c("value1", "value2")
   )
-  filtered_data <- reactive(data.frame(a = 1:3))
+  filtered_data <- shiny::reactive(data.frame(a = 1:3))
   list_of_reactives <- list()
   output <- list()
   
@@ -156,7 +171,7 @@ test_that("render_display_items works correctly", {
     list(list(label_table = "table1", plot_obj = "plot1")),
     list(list(label_table = NULL, plot_obj = "plot2"))
   )
-  display_content <- reactive(list(
+  display_content <- shiny::reactive(list(
     list(list(table_obj = "table1", plot_obj = "plot1")),
     list(list(table_obj = NULL, plot_obj = "plot2"))
   ))
@@ -172,7 +187,7 @@ test_that("render_tabbed_display_items works correctly", {
     list(list(table_obj = "table1", plot_obj = "plot1")),
     list(list(table_obj = "table2", plot_obj = "plot2"))
   )
-  display_content <- reactive(list(
+  display_content <- shiny::reactive(list(
     list(list(table_obj = "table1", plot_obj = "plot1")),
     list(list(table_obj = "table2", plot_obj = "plot2"))
   ))
