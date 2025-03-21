@@ -51,12 +51,6 @@ test_that("create_shiny_dashboard runs successfully", {
   # server_env <- environment(shiny_dashboard$server)
   # print(ls(server_env))  # List variables in the server function
   
-  credentials_data <- data.frame(
-    user = c("admin"),
-    password = c("password"),
-    stringsAsFactors = FALSE
-  )  
-  
   # Define the app-running background process
   shiny_process <- callr::r_bg(function() {
     library(shiny)
@@ -79,6 +73,12 @@ test_that("create_shiny_dashboard runs successfully", {
     # Ensure that the ID column is in character format
     NHANES$ID <- as.character(NHANES$ID)
     NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+    
+    credentials_data <- data.frame(
+      user = c("admin"),
+      password = c("password"),
+      stringsAsFactors = FALSE
+    )  
     
     example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
     
