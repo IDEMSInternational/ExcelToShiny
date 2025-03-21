@@ -28,6 +28,7 @@ Imports:
   tidyr,
   viridis
 Suggests: 
+    callr,
     knitr,
     NHANES, 
     readxl,

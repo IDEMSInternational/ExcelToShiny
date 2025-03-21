@@ -34,6 +34,7 @@ test_that("create_shiny_dashboard runs successfully", {
     dplyr::ungroup()
   
   # Ensure that the ID column is in character format
+  NHANES$ID <- as.character(NHANES$ID)
   NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
   example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
   
@@ -46,14 +47,65 @@ test_that("create_shiny_dashboard runs successfully", {
                                  deploy_shiny = FALSE)
   expect_equal(class(shiny_dashboard), "list")
   
-  credentials_data <- data.frame(
-    user = c("admin"),
-    password = c("password"),
-    stringsAsFactors = FALSE
-  )  
-  # Try launching the app
-  expect_silent({
-    app <- shiny::shinyApp(ui = shiny_dashboard$ui, server = shiny_dashboard$server)
-    shiny::stopApp(app)  # Immediately stop it to prevent blocking execution
+  # # Manually inspect reactives
+  # server_env <- environment(shiny_dashboard$server)
+  # print(ls(server_env))  # List variables in the server function
+  
+  # Define the app-running background process
+  shiny_process <- callr::r_bg(function() {
+    library(shiny)
+    library(shinydashboard)
+    library(dplyr)
+    library(stringdist)
+    library(plotly)
+    library(rio)
+    library(NHANES)
+    
+    # Load data inside background session too!
+    data(NHANES)
+    # Prepare the data by selecting individual records
+    NHANES_by_ind <- NHANES %>%
+      dplyr::group_by(ID) %>%
+      dplyr::mutate(count = 1:dplyr::n()) %>%
+      dplyr::filter(count == 1) %>%
+      dplyr::ungroup()
+    
+    # Ensure that the ID column is in character format
+    NHANES$ID <- as.character(NHANES$ID)
+    NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+    
+    credentials_data <- data.frame(
+      user = c("admin"),
+      password = c("password"),
+      stringsAsFactors = FALSE
+    )  
+    
+    example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+    
+    app <- build_shiny(
+      title = "Test Dashboard",
+      data_list = example_excel,
+      data_frame = NHANES,
+      key_var = "ID",
+      deploy_shiny = FALSE
+    )
+    
+    shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
   })
+  
+  # Give it time to start
+  Sys.sleep(5)
+  
+  # Check that it started correctly
+  expect_true(shiny_process$is_alive() || shiny_process$get_exit_status() == 0)
+  
+  # Optional: peek at logs if it failed
+  if (!shiny_process$is_alive()) {
+    cat("STDOUT:\n", shiny_process$read_all_output())
+    cat("STDERR:\n", shiny_process$read_all_error())
+  }
+  
+  # Kill the process to clean up
+  shiny_process$kill()
+  
 })
