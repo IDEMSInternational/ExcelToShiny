@@ -1,5 +1,3 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
     branches: [main, master]
@@ -19,22 +17,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install dependencies for shinytest2 / chromote
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libnss3 libatk-bridge2.0-0 libgtk-3-0 libdrm2 libgbm1 libasound2
+          sudo apt-get install -y chromium-browser
+          echo "CHROMOTE_CHROME_PATH=/usr/bin/chromium-browser" >> $GITHUB_ENV
+
       - uses: r-lib/actions/setup-r@v2
         with:
           use-public-rspm: true
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::covr, any::xml2
-          needs: coverage
+          extra-packages: |
+            any::covr
+            any::xml2
+            any::rio
+            any::NHANES
+            any::callr
+            any::shiny
+            any::shinydashboard
+            any::stringdist
+            any::plotly
+            any::shinytest2
 
-      - name: Test coverage
+      - name: Run tests and collect coverage
         run: |
-          cov <- covr::package_coverage(
-            quiet = FALSE,
-            clean = FALSE,
-            install_path = file.path(normalizePath(Sys.getenv("RUNNER_TEMP"), winslash = "/"), "package")
-          )
+          cov <- covr::package_coverage(quiet = FALSE)
           covr::to_cobertura(cov)
         shell: Rscript {0}
 
@@ -49,8 +59,7 @@ jobs:
       - name: Show testthat output
         if: always()
         run: |
-          ## --------------------------------------------------------------------
-          find '${{ runner.temp }}/package' -name 'testthat.Rout*' -exec cat '{}' \; || true
+          find '${{ runner.temp }}' -name 'testthat.Rout*' -exec cat '{}' \; || true
         shell: bash
 
       - name: Upload test results
@@ -58,4 +67,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-test-failures
-          path: ${{ runner.temp }}/package
+          path: ${{ runner.temp }}

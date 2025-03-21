@@ -32,11 +32,12 @@ Suggests:
     devtools,
     here,
     knitr,
-    NHANES, 
+    NHANES,
     readxl,
     rio,
     rmarkdown,
     rprojroot,
+    shinytest2,
     testthat
 VignetteBuilder: knitr
 Depends: 
