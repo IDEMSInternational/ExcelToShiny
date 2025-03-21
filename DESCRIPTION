@@ -29,6 +29,8 @@ Imports:
   viridis
 Suggests: 
     callr,
+    devtools,
+    here,
     knitr,
     NHANES, 
     readxl,
