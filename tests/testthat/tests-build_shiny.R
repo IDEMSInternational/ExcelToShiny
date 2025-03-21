@@ -52,7 +52,7 @@ test_that("create_shiny_dashboard runs successfully", {
   # print(ls(server_env))  # List variables in the server function
 
   # Define the app-running background process
-  project_dir <- rprojroot::find_root(rprojroot::has_file("DESCRIPTION"))
+  project_dir <- Sys.getenv("GITHUB_WORKSPACE", unset = getwd())
   
   shiny_process <- callr::r_bg(
     function(project_path) {
