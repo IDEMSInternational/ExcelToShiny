@@ -52,12 +52,17 @@ test_that("create_shiny_dashboard runs successfully", {
   # print(ls(server_env))  # List variables in the server function
 
   # Define the app-running background process
-  message("Current working directory: ", getwd())
   project_dir <- rprojroot::find_root(rprojroot::has_file("DESCRIPTION"))
+  
   shiny_process <- callr::r_bg(
     function(project_path) {
       setwd(project_path)
-      devtools::load_all()
+      message("Working directory in background: ", getwd())
+      
+      # Load your package
+      devtools::load_all(project_path)
+      
+      # Load libraries
       library(shiny)
       library(shinydashboard)
       library(dplyr)
@@ -65,37 +70,35 @@ test_that("create_shiny_dashboard runs successfully", {
       library(plotly)
       library(rio)
       library(NHANES)
-      message("Current working directory: ", getwd())
       
-      # Load data inside background session too!
+      # Load data
       data(NHANES)
-      # Prepare the data by selecting individual records
       NHANES_by_ind <- NHANES %>%
-        dplyr::group_by(ID) %>%
-        dplyr::mutate(count = 1:dplyr::n()) %>%
-        dplyr::filter(count == 1) %>%
-        dplyr::ungroup()
-
-      # Ensure that the ID column is in character format
+        group_by(ID) %>%
+        mutate(count = 1:n()) %>%
+        filter(count == 1) %>%
+        ungroup()
+      
       NHANES$ID <- as.character(NHANES$ID)
       NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
-
+      
       credentials_data <- data.frame(
-        user = c("admin"),
-        password = c("password"),
+        user = "admin",
+        password = "password",
         stringsAsFactors = FALSE
       )
-
+      
       example_excel <- rio::import_list("tests/testthat/testdata/nhanes_data.xlsx")
       
-      app <- build_shiny(
+      # Your shiny app
+      app <- ExcelToShiny::build_shiny(
         title = "Test Dashboard",
         data_list = example_excel,
         data_frame = NHANES,
         key_var = "ID",
         deploy_shiny = FALSE
       )
-
+      
       shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
     },
     args = list(project_dir)
