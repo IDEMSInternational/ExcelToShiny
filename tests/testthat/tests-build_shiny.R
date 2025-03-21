@@ -55,6 +55,7 @@ test_that("create_shiny_dashboard runs successfully", {
   project_dir <- here::here()
   shiny_process <- callr::r_bg(
     function(project_path) {
+      setwd(project_path)
       library(shiny)
       library(shinydashboard)
       library(dplyr)
