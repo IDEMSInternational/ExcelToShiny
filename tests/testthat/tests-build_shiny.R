@@ -99,7 +99,7 @@ test_that("create_shiny_dashboard runs successfully", {
         deploy_shiny = FALSE
       )
       
-      shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
+      shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = TRUE)
     },
     args = list(project_dir)
   )
