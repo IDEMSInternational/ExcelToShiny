@@ -81,8 +81,7 @@ test_that("create_shiny_dashboard runs successfully", {
       stringsAsFactors = FALSE
     )  
     
-    example_excel <- rio::import_list("tests/testthat/testdata/nhanes_data.xlsx")
-    #example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+    example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
     
     app <- build_shiny(
       title = "Test Dashboard",
