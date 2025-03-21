@@ -28,14 +28,128 @@ test_that("display_content_by_tab returns NULL if tab doesn't match", {
   expect_null(output)
 })
 
-test_that("process_spreadsheet_function extracts and splits parameter list", {
+test_that("process_main_page_function extracts and splits parameter list", {
   spreadsheet <- data.frame(
     type = "value_box",
     name = "box1",
     parameter_list = "label = \"Revenue\", value = revenue"
   )
-  result <- process_spreadsheet_function(spreadsheet)
+  result <- process_main_page_function(spreadsheet)
   
   expect_equal(result$names, c("label", "value"))
   expect_equal(result$values, c("Revenue", "revenue"))
+})
+
+
+
+
+
+
+
+# Helper Function 2: Generate complete_dfs environment
+test_that("generate_complete_dfs works correctly", {
+  df_names <- c("df1", "df2")
+  df1 <- data.frame(a = 1:3)
+  df2 <- data.frame(b = 4:6)
+  
+  env <- new.env()
+  assign("df1", df1, envir = env)
+  assign("df2", df2, envir = env)
+  
+  complete_dfs <- generate_complete_dfs(df_names, env)
+  
+  expect_equal(complete_dfs$df1_1, df1)
+  expect_equal(complete_dfs$df2_1, df2)
+  expect_equal(get("df1_1", envir = env), df1)
+  expect_equal(get("df2_1", envir = env), df2)
+})
+
+# Helper Function 5: Process spreadsheet for value boxes
+test_that("process_main_page_function works correctly", {
+  example_excel <- rio::import_list("tests/testthat/testdata/nhanes_data.xlsx")
+  spreadsheet <- example_excel$main_page
+  spreadsheet$name <- paste0("box", 1:nrow(spreadsheet))
+  result <- data.frame(process_main_page_function(spreadsheet))
+  
+  expected_result <- data.frame(
+    name = c(rep("box1", 3), rep("box2", 3), rep("box3", 3), rep("box4", 3)),
+    names = c(rep(c("text", "colour", "icon"), 4)),
+    values = c("Total individuals in the study", "aqua", "tick",
+               "Men in the study", "yellow", "male",
+               "Women in the study", "purple", "female",
+               "Average age", "green", "active")
+  )
+  
+  expect_equal(result, expected_result)
+})
+
+# Helper Function 6: Render value boxes
+test_that("draw_top_value_boxes works correctly", {
+  spreadsheet_shiny_value_box <- data.frame(name = c("box1", "box2"))
+  processed_spreadsheet_data <- data.frame(
+    name = c("box1", "box2"),
+    names = c("param1", "param2"),
+    values = c("value1", "value2")
+  )
+  filtered_data <- reactive(data.frame(a = 1:3))
+  list_of_reactives <- list()
+  output <- list()
+  
+  expect_silent(draw_top_value_boxes(spreadsheet_shiny_value_box, processed_spreadsheet_data, filtered_data, list_of_reactives, output))
+})
+
+# Helper Function 7: Render download UI
+# test_that("render_download_ui works correctly", {
+#   j <- 1
+#   spreadsheet <- data.frame(
+#     type = c("Data label", "Download label", "Data"),
+#     name = c("label1", "download1", "data1")
+#   )
+#   datasets <- list(data1 = data.frame(a = 1:3))
+#   input <- list(dataset1 = "data1")
+#   output <- list()
+#   
+#   expect_silent(render_download_ui(j, spreadsheet, datasets, input, output))
+# })
+
+# Helper Function 8: Extract group input IDs from UI
+test_that("extract_group_input_ids works correctly", {
+  group_ui_list <- list(
+    list(children = list(list(children = list(list(children = list(list(attribs = list(id = "id1")))))))),
+    list(children = list(list(children = list(list(children = list(list(attribs = list(id = "id2")))))))))
+         
+  result <- extract_group_input_ids(group_ui_list)
+  expect_equal(result, c("id1", "id2"))
+})
+
+# Helper Function 9: Render plots and tables for Display tabs
+test_that("render_display_items works correctly", {
+  display_box <- list(
+    list(list(label_table = "table1", plot_obj = "plot1")),
+    list(list(label_table = NULL, plot_obj = "plot2"))
+  )
+  display_content <- reactive(list(
+    list(list(table_obj = "table1", plot_obj = "plot1")),
+    list(list(table_obj = NULL, plot_obj = "plot2"))
+  ))
+  data_list <- list(contents = data.frame(type = c("Display", "Display")))
+  output <- list()
+  
+  expect_silent(render_display_items(display_box, display_content, data_list, output))
+})
+
+# Helper Function 10: Render plots and tables for Tabbed_display tabs
+test_that("render_tabbed_display_items works correctly", {
+  display_box <- list(
+    list(list(table_obj = "table1", plot_obj = "plot1")),
+    list(list(table_obj = "table2", plot_obj = "plot2"))
+  )
+  display_content <- reactive(list(
+    list(list(table_obj = "table1", plot_obj = "plot1")),
+    list(list(table_obj = "table2", plot_obj = "plot2"))
+  ))
+  data_list <- list(contents = data.frame(type = c("Tabbed_display", "Tabbed_display")))
+  output <- list()
+  
+  expect_silent(render_tabbed_display_items(display_box, display_content, data_list, output))
 })

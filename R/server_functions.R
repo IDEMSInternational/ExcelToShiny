@@ -62,7 +62,7 @@ display_content_by_tab <- function(tab_name, input, filtered_data, contents, dat
 }
 
 # Helper Function 5: Process spreadsheet for value boxes
-process_spreadsheet_function <- function(spreadsheet) {
+process_main_page_function <- function(spreadsheet) {
   spreadsheet_df <- spreadsheet %>%
     dplyr::filter(type == "value_box") %>%
     dplyr::select(name, parameter_list) %>%
@@ -283,7 +283,7 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
       })
       
       spreadsheet_shiny_value_box <- dplyr::filter(data_list$main_page, type == "value_box")
-      processed_spreadsheet_data <- process_spreadsheet_function(spreadsheet_shiny_value_box)
+      processed_spreadsheet_data <- process_main_page_function(spreadsheet_shiny_value_box)
       draw_top_value_boxes(spreadsheet_shiny_value_box, processed_spreadsheet_data, filtered_data, list_of_reactives, output)
       
       display_box <- display_contents(
