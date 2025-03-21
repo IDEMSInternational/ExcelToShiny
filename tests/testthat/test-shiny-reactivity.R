@@ -21,6 +21,23 @@ test_that("extract_df_names replaces NA with df name and extracts df names", {
 })
 
 # Helper Function 2: Generate complete_dfs environment
+test_that("copy_dfs_for_filtering works correctly", {
+  df_names <- c("df1", "df2")
+  df1 <- data.frame(a = 1:3)
+  df2 <- data.frame(b = 4:6)
+  
+  env <- new.env()
+  assign("df1", df1, envir = env)
+  assign("df2", df2, envir = env)
+  
+  complete_dfs <- copy_dfs_for_filtering(df_names, env)
+  
+  expect_equal(complete_dfs$df1_1, df1)
+  expect_equal(complete_dfs$df2_1, df2)
+  expect_equal(get("df1_1", envir = env), df1)
+  expect_equal(get("df2_1", envir = env), df2)
+})
+
 test_that("copy_dfs_for_filtering copies dataframes into environment with _1 suffix", {
   df1 <- data.frame(a = 1:3)
   df2 <- data.frame(b = 4:6)
@@ -64,47 +81,6 @@ test_that("display_content_by_tab returns NULL if tab doesn't match", {
 #                        data_list = example_excel,
 #                        list_of_reactives = NULL)
 
-
-
-
-
-
-test_that("process_main_page_function extracts and splits parameter list", {
-  spreadsheet <- data.frame(
-    type = "value_box",
-    name = "box1",
-    parameter_list = "label = \"Revenue\", value = revenue"
-  )
-  result <- process_main_page_function(spreadsheet)
-  
-  expect_equal(result$names, c("label", "value"))
-  expect_equal(result$values, c("Revenue", "revenue"))
-})
-
-
-
-
-
-
-
-# Helper Function 2: Generate complete_dfs environment
-test_that("copy_dfs_for_filtering works correctly", {
-  df_names <- c("df1", "df2")
-  df1 <- data.frame(a = 1:3)
-  df2 <- data.frame(b = 4:6)
-  
-  env <- new.env()
-  assign("df1", df1, envir = env)
-  assign("df2", df2, envir = env)
-  
-  complete_dfs <- copy_dfs_for_filtering(df_names, env)
-  
-  expect_equal(complete_dfs$df1_1, df1)
-  expect_equal(complete_dfs$df2_1, df2)
-  expect_equal(get("df1_1", envir = env), df1)
-  expect_equal(get("df2_1", envir = env), df2)
-})
-
 # Helper Function 5: Process spreadsheet for value boxes
 test_that("process_main_page_function works correctly", {
   spreadsheet <- example_excel$main_page
@@ -123,7 +99,33 @@ test_that("process_main_page_function works correctly", {
   expect_equal(result, expected_result)
 })
 
+test_that("process_main_page_function extracts and splits parameter list", {
+  spreadsheet <- data.frame(
+    type = "value_box",
+    name = "box1",
+    parameter_list = "label = \"Revenue\", value = revenue"
+  )
+  result <- process_main_page_function(spreadsheet)
+  
+  expect_equal(result$names, c("label", "value"))
+  expect_equal(result$values, c("Revenue", "revenue"))
+})
+
 # Helper Function 6: Render value boxes
+test_that("draw_top_value_boxes works correctly", {
+  spreadsheet_shiny_value_box <- data.frame(name = c("box1", "box2"))
+  processed_spreadsheet_data <- data.frame(
+    name = c("box1", "box2"),
+    names = c("param1", "param2"),
+    values = c("value1", "value2")
+  )
+  filtered_data <- shiny::reactive(data.frame(a = 1:3))
+  list_of_reactives <- list()
+  output <- list()
+  
+  expect_silent(draw_top_value_boxes(spreadsheet_shiny_value_box, processed_spreadsheet_data, filtered_data, list_of_reactives, output))
+})
+
 test_that("draw_top_value_boxes works correctly", {
   spreadsheet_shiny_value_box <- data.frame(name = c("box1", "box2"))
   processed_spreadsheet_data <- data.frame(
