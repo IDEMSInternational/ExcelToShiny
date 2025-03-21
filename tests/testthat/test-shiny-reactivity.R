@@ -57,15 +57,12 @@ test_that("display_content_by_tab returns NULL if tab doesn't match", {
   expect_null(output)
 })
 
-# TODO Create better version of this.
-contents <- example_excel$contents
-tab_names <- contents$ID
-display_content <- shiny::reactiveVal()
-display_content_by_tab(input$tab, input, filtered_data, contents, data_list, list_of_reactives)
-
-shiny::observeEvent(c(input$tab, ifelse(input$goButton_group == 0, 1, input$goButton_group)), {
-  display_content(display_content_by_tab(input$tab, input, filtered_data, contents, data_list, list_of_reactives))
-})
+# display_content_by_tab(tab_name = input$tab,
+#                        input = input,
+#                        filtered_data = NHANES,
+#                        contents = example_excel$td_diagnostics,
+#                        data_list = example_excel,
+#                        list_of_reactives = NULL)
 
 
 

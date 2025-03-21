@@ -47,18 +47,8 @@ create_reactive_expression <- function(df_name, complete_dfs, key_var, valid_ids
 
 # Helper Function 4: Display content by tab
 display_content_by_tab <- function(tab_name, input, filtered_data, contents, data_list, list_of_reactives) {
-  if (input$tab == tab_name) {
-    server_display_contents(
-      data_frame = filtered_data(),
-      contents = contents,
-      data_list = data_list,
-      k = which(data_list$contents$type == "Tabbed_display"),
-      id_name = tab_name,
-      list_of_reactives = list_of_reactives
-    )
-  } else {
-    NULL
-  }
+  if (input$tab == tab_name) server_display_contents(data_frame = filtered_data(), contents = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"), id_name = tab_name, list_of_reactives = list_of_reactives)
+  else NULL
 }
 
 # Helper Function 5: Process spreadsheet for value boxes
