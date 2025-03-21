@@ -60,6 +60,7 @@ test_that("create_shiny_dashboard runs successfully", {
     library(plotly)
     library(rio)
     library(NHANES)
+    devtools::load_all()
     
     # Load data inside background session too!
     data(NHANES)
