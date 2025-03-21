@@ -36,6 +36,7 @@ Suggests:
     readxl,
     rio,
     rmarkdown,
+    rprojroot,
     testthat
 VignetteBuilder: knitr
 Depends: 
