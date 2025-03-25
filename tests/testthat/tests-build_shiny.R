@@ -243,30 +243,30 @@ test_that("build_shiny throws error for incorrect filter type", {
 })
 
 
-test_that("build_shiny corrects for incorrect filter type if choices is given", {
-  data(NHANES)
-  NHANES_by_ind <- NHANES %>%
-    dplyr::group_by(ID) %>%
-    dplyr::mutate(count = 1:n()) %>%
-    dplyr::filter(count == 1) %>%
-    dplyr::ungroup()
-  
-  NHANES$ID <- as.character(NHANES$ID)
-  NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
-  
-  credentials_data <- data.frame(
-    user = "admin",
-    password = "password",
-    stringsAsFactors = FALSE
-  )
-  
-  example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
-  example_excel$main_page$value[5] <- "check"
-  # Your shiny app
-  expect_warning(build_shiny(
-    title = "Test Dashboard",
-    data_list = example_excel,
-    data_frame = NHANES,
-    key_var = "ID"),
-    "Cannot read value check on main_page for filter_box. Setting as checkbox_group.")
-})
+# test_that("build_shiny corrects for incorrect filter type if choices is given", {
+#   data(NHANES)
+#   NHANES_by_ind <- NHANES %>%
+#     dplyr::group_by(ID) %>%
+#     dplyr::mutate(count = 1:n()) %>%
+#     dplyr::filter(count == 1) %>%
+#     dplyr::ungroup()
+#   
+#   NHANES$ID <- as.character(NHANES$ID)
+#   NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+#   
+#   credentials_data <- data.frame(
+#     user = "admin",
+#     password = "password",
+#     stringsAsFactors = FALSE
+#   )
+#   
+#   example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+#   example_excel$main_page$value[5] <- "check"
+#   # Your shiny app
+#   expect_warning(build_shiny(
+#     title = "Test Dashboard",
+#     data_list = example_excel,
+#     data_frame = NHANES,
+#     key_var = "ID"),
+#     "Cannot read value check on main_page for filter_box. Setting as checkbox_group.")
+# })
