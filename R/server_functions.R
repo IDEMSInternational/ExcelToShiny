@@ -109,7 +109,7 @@ render_download_ui <- function(j, spreadsheet, datasets, input, output) {
     return(selected_dataset)
   })
   
-  output[[paste0("table", j)]] <- shiny::renderDataTable({ datasetInput() })
+  output[[paste0("table", j)]] <- DT::renderDT({ datasetInput() })
   
   output[[paste0("downloadData", j)]] <- shiny::downloadHandler(
     filename = function() {
