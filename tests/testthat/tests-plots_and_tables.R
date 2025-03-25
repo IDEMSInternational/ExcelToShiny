@@ -111,3 +111,33 @@ test_that("bar_table handles invalid manipulation gracefully", {
   )
 })
 
+test_that("bar_table handles list input and exits early", {
+  dummy <- list(gear = mtcars[1:3, ])
+  out <- bar_table(data = dummy, variable = "gear", spreadsheet = list())
+  expect_s3_class(out$plot, "gg")
+  expect_equal(out$table, dummy$gear)
+})
+
+test_that("bar_table performs data manipulation if spreadsheet$data_manip is provided", {
+  spreadsheet <- list(data_manip = "%>% dplyr::filter(mpg > 25)")
+  out <- suppressWarnings(bar_table(data = mtcars, variable = "gear", spreadsheet = spreadsheet))
+  expect_true(nrow(out$table) <= nrow(mtcars))
+})
+
+test_that("bar_table adds graph manipulation if spreadsheet$graph_manip is provided", {
+  spreadsheet <- list(graph_manip = "ggplot2::theme_minimal()")
+  out <- suppressWarnings(bar_table(data = mtcars, variable = "gear", spreadsheet = spreadsheet))
+  expect_s3_class(out$plot, "gg")
+})
+
+test_that("scatter_table handles spreadsheet$data_manip correctly", {
+  ss <- list(variable = "mpg, hp", data_manip = "%>% dplyr::filter(mpg > 25)")
+  out <- scatter_table(mtcars, variable = NULL, spreadsheet = ss)
+  expect_s3_class(out$table, "data.frame")
+})
+
+test_that("scatter_table applies spreadsheet$graph_manip correctly", {
+  ss <- list(variable = "mpg, hp", graph_manip = "ggplot2::theme_minimal()")
+  out <- scatter_table(mtcars, variable = NULL, spreadsheet = ss)
+  expect_s3_class(out$plot, "gg")
+})
