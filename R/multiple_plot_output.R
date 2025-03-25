@@ -11,12 +11,12 @@
 #'
 #' @return A list of ggplot2 objects, where each object is a plot for the corresponding variable.
 multiple_plot_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.",
-                                 replace_after = NULL, plot_type = c("histogram", "boxplot")){
-  variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
-  summary_plot_values <- data %>%
-    purrr::map(.x = columns_to_summarise,
-               .f = ~summary_plot(columns_to_summarise = .x, plot_type = plot_type, replace = replace, replace_after = replace_after))
-  
-  names(summary_plot_values) <- variable_display_names
-  return(summary_plot_values)
+                                  replace_after = NULL, plot_type = c("histogram", "boxplot")){
+#   variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
+#   summary_plot_values <- data %>%
+#     purrr::map(.x = columns_to_summarise,
+#                .f = ~summary_plot(columns_to_summarise = .x, plot_type = plot_type, replace = replace, replace_after = replace_after))
+#   
+#   names(summary_plot_values) <- variable_display_names
+#   return(summary_plot_values)
 }

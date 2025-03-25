@@ -12,20 +12,20 @@
 #'
 #' @return A list of summary tables, where each table corresponds to the summary of the respective variable.
 multiple_table_output <- function(data = plhdata_org_clean, columns_to_summarise, replace = "rp.contact.field.", replace_after = NULL, summaries = c("frequencies", "mean"), na.rm = TRUE){
-  summaries <- match.arg(summaries)
-  
-  # run: add_na_variable here with warning 
-  data <- add_na_variable(data = data, variable = columns_to_summarise)
-  
-  variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
-  summary_table_values <- data %>%
-    purrr::map(.x = columns_to_summarise, .f = ~tidyr::replace_na(.x, "unknown"))  %>%
-    purrr::map(.x = columns_to_summarise, .f = ~summary_table(columns_to_summarise = .x,
-                                                              display = FALSE,
-                                                              include_margins = TRUE,
-                                                              summaries = summaries,
-                                                              na.rm = na.rm))
-  
-  names(summary_table_values) <- variable_display_names
-  return(summary_table_values)
+#   summaries <- match.arg(summaries)
+#   
+#   # run: add_na_variable here with warning 
+#   data <- add_na_variable(data = data, variable = columns_to_summarise)
+#   
+#   variable_display_names <- naming_conventions(columns_to_summarise, replace = replace, replace_after = replace_after)
+#   summary_table_values <- data %>%
+#     purrr::map(.x = columns_to_summarise, .f = ~tidyr::replace_na(.x, "unknown"))  %>%
+#     purrr::map(.x = columns_to_summarise, .f = ~summary_table(columns_to_summarise = .x,
+#                                                               display = FALSE,
+#                                                               include_margins = TRUE,
+#                                                               summaries = summaries,
+#                                                               na.rm = na.rm))
+#   
+#   names(summary_table_values) <- variable_display_names
+#   return(summary_table_values)
 }
