@@ -13,11 +13,11 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
   type <- match.arg(type)
   all_return <- list(table = NULL, plot = NULL)
 
-  if (inherits(data, "list")) {
-    all_return$table <- data[[variable]]
-    all_return$plot <- ggplot2::ggplot()
-    return(all_return)
-  }
+  # if (inherits(data, "list")) {
+  #   all_return$table <- data[[variable]]
+  #   all_return$plot <- ggplot2::ggplot()
+  #   return(all_return)
+  # }
   
   if (!is.null(grouped_vars) && (grouped_vars %in% variable)) grouped_vars <- NULL
   

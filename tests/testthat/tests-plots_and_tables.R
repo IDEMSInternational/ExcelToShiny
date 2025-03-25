@@ -32,6 +32,56 @@ test_that("boxplot_table creates valid output", {
   expect_s3_class(out$plot, "gg")
 })
 
+test_that("boxplot_table handles list input and returns early", {
+  dummy_data <- list(mpg = mtcars[1:3, ])
+  result <- boxplot_table(data = dummy_data, variable = "mpg", spreadsheet = list())
+  
+  expect_type(result, "list")
+  expect_s3_class(result$plot, "gg")
+  expect_equal(result$table, dummy_data$mpg)
+})
+
+test_that("boxplot_table runs data manipulation if spreadsheet$data_manip is not NULL or NA", {
+  spreadsheet <- list(data_manip = "%>% dplyr::filter(mpg > 20)")
+  result <- boxplot_table(data = mtcars, variable = "mpg", spreadsheet = spreadsheet)
+  
+  expect_s3_class(result$plot, "gg")
+  expect_s3_class(result$table, "data.frame")
+  expect_true(all(result$table$Median >= median(mtcars$mpg[mtcars$mpg > 20])))
+})
+
+test_that("boxplot_table produces freq table if type is freq", {
+  spreadsheet <- list()
+  result <- boxplot_table(data = mtcars, variable = "cyl", type = "freq", spreadsheet = spreadsheet)
+  
+  expect_s3_class(result$table, "data.frame")
+  expect_true(any(grepl("Count", names(result$table))) || any(grepl("cyl", names(result$table))))
+})
+
+test_that("boxplot_table skips table if spreadsheet$table_manip == 'none'", {
+  spreadsheet <- list(table_manip = "none")
+  result <- boxplot_table(data = mtcars, variable = "mpg", spreadsheet = spreadsheet)
+  
+  expect_equal(result$table, "No Table Given")
+})
+
+test_that("boxplot_table applies graph_manip if present", {
+  spreadsheet <- list(graph_manip = "ggplot2::theme_minimal()")
+  result <- boxplot_table(data = mtcars, variable = "mpg", spreadsheet = spreadsheet)
+  
+  expect_s3_class(result$plot, "gg")
+})
+
+test_that("boxplot_table handles invalid data_manip or graph_manip safely", {
+  spreadsheet <- list(data_manip = "%>% mutate(wrong = logg(mpg))",
+                      graph_manip = "ggtitle(TitleDoesNotWorkBecauseMissingQuote)")
+  expect_message({
+    result <- boxplot_table(data = mtcars, variable = "mpg", spreadsheet = spreadsheet)
+  }, "Ignoring manipulations")
+  
+  expect_s3_class(result$plot, "gg")
+})
+
 test_that("scatter_table works with two numeric vars", {
   spreadsheet <- list(variable = "mpg, hp", graph_manip = NULL)
   out <- scatter_table(data = test_data, variable = NULL, spreadsheet = spreadsheet, grouped_vars = NULL)
@@ -59,5 +109,86 @@ test_that("bar_table handles invalid manipulation gracefully", {
     suppressWarnings(bar_table(data = test_data, variable = "gear", spreadsheet = bad_ss)),
     "Ignoring manipulations"
   )
+})
+
+test_that("bar_table handles list input and exits early", {
+  dummy <- list(gear = mtcars[1:3, ])
+  out <- bar_table(data = dummy, variable = "gear", spreadsheet = list())
+  expect_s3_class(out$plot, "gg")
+  expect_equal(out$table, dummy$gear)
+})
+
+test_that("bar_table performs data manipulation if spreadsheet$data_manip is provided", {
+  spreadsheet <- list(data_manip = "%>% dplyr::filter(mpg > 25)")
+  out <- suppressWarnings(bar_table(data = mtcars, variable = "gear", spreadsheet = spreadsheet))
+  expect_true(nrow(out$table) <= nrow(mtcars))
+})
+
+test_that("bar_table adds graph manipulation if spreadsheet$graph_manip is provided", {
+  spreadsheet <- list(graph_manip = "ggplot2::theme_minimal()")
+  out <- suppressWarnings(bar_table(data = mtcars, variable = "gear", spreadsheet = spreadsheet))
+  expect_s3_class(out$plot, "gg")
+})
+
+test_that("scatter_table handles spreadsheet$data_manip correctly", {
+  ss <- list(variable = "mpg, hp", data_manip = "%>% dplyr::filter(mpg > 25)")
+  out <- scatter_table(mtcars, variable = NULL, spreadsheet = ss)
+  expect_s3_class(out$table, "data.frame")
+})
+
+test_that("scatter_table applies spreadsheet$graph_manip correctly", {
+  ss <- list(variable = "mpg, hp", graph_manip = "ggplot2::theme_minimal()")
+  out <- scatter_table(mtcars, variable = NULL, spreadsheet = ss)
+  expect_s3_class(out$plot, "gg")
+})
+
+# test_that("specify_plot exits early if data is a list", {
+#   spreadsheet <- list(graph_manip = "geom_point()", table_manip = NULL, data_manip = NULL)
+#   out <- specify_plot(mtcars, spreadsheet)
+#   expect_s3_class(out$plot, "gg")
+# })
+
+test_that("specify_plot applies spreadsheet$data_manip correctly", {
+  spreadsheet <- list(
+    data_manip = "%>% dplyr::filter(mpg > 25)",
+    graph_manip = "geom_point(aes(x = mpg, y = hp))"
+  )
+  out <- specify_plot(mtcars, spreadsheet)
+  expect_s3_class(out$plot, "gg")
+})
+
+test_that("specify_plot applies spreadsheet$graph_manip correctly", {
+  spreadsheet <- list(
+    graph_manip = "geom_histogram(aes(x = mpg), bins = 5)",
+    data_manip = NULL
+  )
+  out <- specify_plot(mtcars, spreadsheet)
+  expect_s3_class(out$plot, "gg")
+  expect_true("GeomBar" %in% class(out$plot$layers[[1]]$geom))
+})
+
+test_that("specify_table exits early if data is a list", {
+  spreadsheet <- list(table_manip = "%>% summarise(mean_mpg = mean(mpg))")
+  out <- specify_table(mtcars, spreadsheet)
+  expect_equal(out$table, mtcars %>% summarise(mean_mpg = mean(mpg)))
+})
+
+test_that("specify_table applies spreadsheet$table_manip correctly", {
+  spreadsheet <- list(table_manip = "%>% summarise(mean_mpg = mean(mpg))")
+  out <- specify_table(mtcars, spreadsheet)
+  expect_s3_class(out$table, "data.frame")
+  expect_true("mean_mpg" %in% names(out$table))
+})
+
+test_that("specify_table falls back to spreadsheet$data_manip if table_manip is missing", {
+  spreadsheet <- list(
+    table_manip = NULL,
+    data_manip = "%>% summarise(med_mpg = median(mpg))"
+  )
+  out <- suppressWarnings(specify_table(mtcars, spreadsheet))
+  expect_s3_class(out$table, "data.frame")
+  expect_true("med_mpg" %in% names(out$table))
+  
+  expect_warning(specify_table(mtcars, spreadsheet), "Manipulations for specify_table are given in data_manip. These should be in table_manip.")
 })
 
