@@ -141,3 +141,56 @@ test_that("scatter_table applies spreadsheet$graph_manip correctly", {
   out <- scatter_table(mtcars, variable = NULL, spreadsheet = ss)
   expect_s3_class(out$plot, "gg")
 })
+
+test_that("specify_plot exits early if data is a list", {
+  dummy <- list(x = head(mtcars))
+  spreadsheet <- list(graph_manip = "geom_point()", table_manip = NULL, data_manip = NULL)
+  out <- specify_plot(dummy, spreadsheet)
+  expect_s3_class(out$plot, "gg")
+  expect_null(out$table)
+})
+
+test_that("specify_plot applies spreadsheet$data_manip correctly", {
+  spreadsheet <- list(
+    data_manip = "%>% dplyr::filter(mpg > 25)",
+    graph_manip = "geom_point(aes(x = mpg, y = hp))"
+  )
+  out <- specify_plot(mtcars, spreadsheet)
+  expect_s3_class(out$plot, "gg")
+})
+
+test_that("specify_plot applies spreadsheet$graph_manip correctly", {
+  spreadsheet <- list(
+    graph_manip = "geom_histogram(aes(x = mpg), bins = 5)",
+    data_manip = NULL
+  )
+  out <- specify_plot(mtcars, spreadsheet)
+  expect_s3_class(out$plot, "gg")
+  expect_true("GeomBar" %in% class(out$plot$layers[[1]]$geom))
+})
+
+test_that("specify_table exits early if data is a list", {
+  spreadsheet <- list(table_manip = "%>% summarise(mean_mpg = mean(mpg))")
+  out <- specify_table(mtcars, spreadsheet)
+  expect_equal(out$table, mtcars %>% summarise(mean_mpg = mean(mpg)))
+})
+
+test_that("specify_table applies spreadsheet$table_manip correctly", {
+  spreadsheet <- list(table_manip = "%>% summarise(mean_mpg = mean(mpg))")
+  out <- specify_table(mtcars, spreadsheet)
+  expect_s3_class(out$table, "data.frame")
+  expect_true("mean_mpg" %in% names(out$table))
+})
+
+test_that("specify_table falls back to spreadsheet$data_manip if table_manip is missing", {
+  spreadsheet <- list(
+    table_manip = NULL,
+    data_manip = "%>% summarise(med_mpg = median(mpg))"
+  )
+  out <- suppressWarnings(specify_table(mtcars, spreadsheet))
+  expect_s3_class(out$table, "data.frame")
+  expect_true("med_mpg" %in% names(out$table))
+  
+  expect_warning(specify_table(mtcars, spreadsheet), "Manipulations for specify_table are given in data_manip. These should be in table_manip.")
+})
+
