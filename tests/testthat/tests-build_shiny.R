@@ -270,3 +270,56 @@ test_that("build_shiny throws error for incorrect filter type", {
 #     key_var = "ID"),
 #     "Cannot read value check on main_page for filter_box. Setting as checkbox_group.")
 # })
+
+
+test_that("create_shiny_dashboard runs successfully for filter by date_range", {
+  # Define the app-running background process
+  project_dir <- Sys.getenv("GITHUB_WORKSPACE", unset = getwd())
+  
+  shiny_process <- callr::r_bg(
+    function(project_path) {
+      setwd(project_path)
+      message("Working directory in background: ", getwd())
+      
+      # Load your package
+      devtools::load_all(project_path)
+      
+      # Load libraries
+      library(shiny)
+      library(shinydashboard)
+      library(dplyr)
+      library(stringdist)
+      library(plotly)
+      library(rio)
+      library(ggplot2)
+      
+      data(economics)
+      economics_data_list <- rio::import_list("tests/testthat/testdata/economics_data.xlsx")
+      app <- build_shiny(title = "New Dashboard", 
+                                     data_list = economics_data_list,
+                                     data_fram = economics,
+                                     status = "primary",
+                                     colour = "blue",
+                                     key_var = "date",
+                                     deploy_shiny = FALSE)
+      shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = TRUE)
+    },
+    args = list(project_dir)
+  )
+  
+  # Give it time to start
+  Sys.sleep(5)
+  
+  # Check that it started correctly
+  expect_true(shiny_process$is_alive() || shiny_process$get_exit_status() == 0)
+  
+  # Optional: peek at logs if it failed
+  if (!shiny_process$is_alive()) {
+    cat("STDOUT:\n", shiny_process$read_all_output())
+    cat("STDERR:\n", shiny_process$read_all_error())
+  }
+  
+  # Kill the process to clean up
+  shiny_process$kill()
+  
+})
