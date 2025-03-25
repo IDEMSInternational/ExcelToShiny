@@ -1,3 +1,5 @@
+library(NHANES)
+library(ggplot2)
 # library(testthat)
 # library(ExcelToShiny)
 # 
@@ -244,10 +246,10 @@ test_that("build_shiny throws error for incorrect filter type", {
 test_that("build_shiny corrects for incorrect filter type if choices is given", {
   data(NHANES)
   NHANES_by_ind <- NHANES %>%
-    group_by(ID) %>%
-    mutate(count = 1:n()) %>%
-    filter(count == 1) %>%
-    ungroup()
+    dplyr::group_by(ID) %>%
+    dplyr::mutate(count = 1:n()) %>%
+    dplyr::filter(count == 1) %>%
+    dplyr::ungroup()
   
   NHANES$ID <- as.character(NHANES$ID)
   NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
