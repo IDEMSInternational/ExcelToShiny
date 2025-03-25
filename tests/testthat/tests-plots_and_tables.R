@@ -32,6 +32,56 @@ test_that("boxplot_table creates valid output", {
   expect_s3_class(out$plot, "gg")
 })
 
+test_that("boxplot_table handles list input and returns early", {
+  dummy_data <- list(mpg = mtcars[1:3, ])
+  result <- boxplot_table(data = dummy_data, variable = "mpg", spreadsheet = list())
+  
+  expect_type(result, "list")
+  expect_s3_class(result$plot, "gg")
+  expect_equal(result$table, dummy_data$mpg)
+})
+
+test_that("boxplot_table runs data manipulation if spreadsheet$data_manip is not NULL or NA", {
+  spreadsheet <- list(data_manip = "%>% dplyr::filter(mpg > 20)")
+  result <- boxplot_table(data = mtcars, variable = "mpg", spreadsheet = spreadsheet)
+  
+  expect_s3_class(result$plot, "gg")
+  expect_s3_class(result$table, "data.frame")
+  expect_true(all(result$table$Median >= median(mtcars$mpg[mtcars$mpg > 20])))
+})
+
+test_that("boxplot_table produces freq table if type is freq", {
+  spreadsheet <- list()
+  result <- boxplot_table(data = mtcars, variable = "cyl", type = "freq", spreadsheet = spreadsheet)
+  
+  expect_s3_class(result$table, "data.frame")
+  expect_true(any(grepl("Count", names(result$table))) || any(grepl("cyl", names(result$table))))
+})
+
+test_that("boxplot_table skips table if spreadsheet$table_manip == 'none'", {
+  spreadsheet <- list(table_manip = "none")
+  result <- boxplot_table(data = mtcars, variable = "mpg", spreadsheet = spreadsheet)
+  
+  expect_equal(result$table, "No Table Given")
+})
+
+test_that("boxplot_table applies graph_manip if present", {
+  spreadsheet <- list(graph_manip = "ggplot2::theme_minimal()")
+  result <- boxplot_table(data = mtcars, variable = "mpg", spreadsheet = spreadsheet)
+  
+  expect_s3_class(result$plot, "gg")
+})
+
+test_that("boxplot_table handles invalid data_manip or graph_manip safely", {
+  spreadsheet <- list(data_manip = "%>% mutate(wrong = logg(mpg))",
+                      graph_manip = "ggtitle(TitleDoesNotWorkBecauseMissingQuote)")
+  expect_message({
+    result <- boxplot_table(data = mtcars, variable = "mpg", spreadsheet = spreadsheet)
+  }, "Ignoring manipulations")
+  
+  expect_s3_class(result$plot, "gg")
+})
+
 test_that("scatter_table works with two numeric vars", {
   spreadsheet <- list(variable = "mpg, hp", graph_manip = NULL)
   out <- scatter_table(data = test_data, variable = NULL, spreadsheet = spreadsheet, grouped_vars = NULL)
