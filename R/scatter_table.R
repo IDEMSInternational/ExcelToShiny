@@ -71,7 +71,7 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
   }
   all_return$table <- data.frame(table_to_return %>% dplyr::summarise(Correlation = stats::cor(!!rlang::sym(variable[1]), !!rlang::sym(variable[2]), use = "pairwise.complete.obs")))
   
-  plot_obj <- create_scatter_plot(data, variable)
+  plot_obj <- create_scatter_plot(data, variable, grouped_vars)
   if (!is.null(spreadsheet$graph_manip) && !is.na(spreadsheet$graph_manip)) {
     command_string <- spreadsheet$graph_manip
     
