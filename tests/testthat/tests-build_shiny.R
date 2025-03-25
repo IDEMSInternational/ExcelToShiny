@@ -91,7 +91,7 @@ test_that("create_shiny_dashboard runs successfully", {
       example_excel <- rio::import_list("tests/testthat/testdata/nhanes_data.xlsx")
       
       # Your shiny app
-      app <- ExcelToShiny::build_shiny(
+      app <- build_shiny(
         title = "Test Dashboard",
         data_list = example_excel,
         data_frame = NHANES,
@@ -170,4 +170,101 @@ test_that("build_shiny launches app correctly", {
   }, label = "build_shiny app test")
   
   expect_true(result)
+})
+
+
+test_that("build_shiny launches app correctly when we run for date range filter", {
+  result <- test_app_runs_ok(function() {
+    setwd(here::here())
+    devtools::load_all()
+    
+    library(shiny)
+    library(dplyr)
+    library(rio)
+    library(ggplot2)
+
+    data(economics)
+    economics_data_list <- rio::import_list("tests/testthat/testdata/economics_data.xlsx")
+    shiny_dashboard <- build_shiny(title = "New Dashboard", 
+                                   data_list = economics_data_list,
+                                   data_fram = economics,
+                                   status = "primary",
+                                   colour = "blue",
+                                   key_var = "date",
+                                   deploy_shiny = FALSE)
+    
+    shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
+  }, label = "build_shiny app test")
+  
+  expect_true(result)
+})
+
+
+test_that("build_shiny launches app correctly when we run for date filter", {
+  result <- test_app_runs_ok(function() {
+    setwd(here::here())
+    devtools::load_all()
+    
+    library(shiny)
+    library(dplyr)
+    library(rio)
+    library(ggplot2)
+    
+    data(economics)
+    economics_data_list <- rio::import_list("tests/testthat/testdata/economics_singledate_data.xlsx")
+    shiny_dashboard <- build_shiny(title = "New Dashboard", 
+                                   data_list = economics_data_list,
+                                   data_fram = economics,
+                                   status = "primary",
+                                   colour = "blue",
+                                   key_var = "date",
+                                   deploy_shiny = FALSE)
+    
+    shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
+  }, label = "build_shiny app test")
+  
+  expect_true(result)
+})
+
+
+test_that("build_shiny throws error for incorrect filter type", {
+    data(economics)
+    economics_data_list <- rio::import_list("testdata/economics_singledate_data.xlsx")
+    economics_data_list$main_page$value <- c("mean_box", "mean_box", "date")
+    expect_error(build_shiny(title = "New Dashboard", 
+                                   data_list = economics_data_list,
+                                   data_fram = economics,
+                                   status = "primary",
+                                   colour = "blue",
+                                   key_var = "date",
+                                   deploy_shiny = FALSE))
+})
+
+
+test_that("build_shiny corrects for incorrect filter type if choices is given", {
+  data(NHANES)
+  NHANES_by_ind <- NHANES %>%
+    group_by(ID) %>%
+    mutate(count = 1:n()) %>%
+    filter(count == 1) %>%
+    ungroup()
+  
+  NHANES$ID <- as.character(NHANES$ID)
+  NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+  
+  credentials_data <- data.frame(
+    user = "admin",
+    password = "password",
+    stringsAsFactors = FALSE
+  )
+  
+  example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+  example_excel$main_page$value[5] <- "check"
+  # Your shiny app
+  expect_warning(build_shiny(
+    title = "Test Dashboard",
+    data_list = example_excel,
+    data_frame = NHANES,
+    key_var = "ID"),
+    "Cannot read value check on main_page for filter_box. Setting as checkbox_group.")
 })
