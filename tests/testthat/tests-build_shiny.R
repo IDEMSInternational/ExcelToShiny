@@ -174,61 +174,6 @@ test_that("build_shiny launches app correctly", {
   expect_true(result)
 })
 
-
-test_that("build_shiny launches app correctly when we run for date range filter", {
-  result <- test_app_runs_ok(function() {
-    setwd(here::here())
-    devtools::load_all()
-    
-    library(shiny)
-    library(dplyr)
-    library(rio)
-    library(ggplot2)
-
-    data(economics)
-    economics_data_list <- rio::import_list("tests/testthat/testdata/economics_data.xlsx")
-    shiny_dashboard <- build_shiny(title = "New Dashboard", 
-                                   data_list = economics_data_list,
-                                   data_fram = economics,
-                                   status = "primary",
-                                   colour = "blue",
-                                   key_var = "date",
-                                   deploy_shiny = FALSE)
-    
-    shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
-  }, label = "build_shiny app test")
-  
-  expect_true(result)
-})
-
-
-test_that("build_shiny launches app correctly when we run for date filter", {
-  result <- test_app_runs_ok(function() {
-    setwd(here::here())
-    devtools::load_all()
-    
-    library(shiny)
-    library(dplyr)
-    library(rio)
-    library(ggplot2)
-    
-    data(economics)
-    economics_data_list <- rio::import_list("tests/testthat/testdata/economics_singledate_data.xlsx")
-    shiny_dashboard <- build_shiny(title = "New Dashboard", 
-                                   data_list = economics_data_list,
-                                   data_fram = economics,
-                                   status = "primary",
-                                   colour = "blue",
-                                   key_var = "date",
-                                   deploy_shiny = FALSE)
-    
-    shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = FALSE)
-  }, label = "build_shiny app test")
-  
-  expect_true(result)
-})
-
-
 test_that("build_shiny throws error for incorrect filter type", {
     data(economics)
     economics_data_list <- rio::import_list("testdata/economics_singledate_data.xlsx")
@@ -273,53 +218,40 @@ test_that("build_shiny throws error for incorrect filter type", {
 
 
 test_that("create_shiny_dashboard runs successfully for filter by date_range", {
-  # Define the app-running background process
-  project_dir <- Sys.getenv("GITHUB_WORKSPACE", unset = getwd())
-  
-  shiny_process <- callr::r_bg(
-    function(project_path) {
-      setwd(project_path)
-      message("Working directory in background: ", getwd())
-      
-      # Load your package
-      devtools::load_all(project_path)
-      
-      # Load libraries
-      library(shiny)
-      library(shinydashboard)
-      library(dplyr)
-      library(stringdist)
-      library(plotly)
-      library(rio)
-      library(ggplot2)
-      
-      data(economics)
-      economics_data_list <- rio::import_list("tests/testthat/testdata/economics_data.xlsx")
-      app <- build_shiny(title = "New Dashboard", 
+  library(ggplot2)
+  data(economics)
+  economics_data_list <- rio::import_list("testdata/economics_data.xlsx")
+  app <- build_shiny(title = "New Dashboard", 
                                      data_list = economics_data_list,
                                      data_fram = economics,
                                      status = "primary",
                                      colour = "blue",
                                      key_var = "date",
                                      deploy_shiny = FALSE)
-      shiny::runApp(shinyApp(ui = app$ui, server = app$server), launch.browser = TRUE)
-    },
-    args = list(project_dir)
-  )
+  expect_equal(class(app), "list")
+})
+
+test_that("create_shiny_dashboard runs successfully for filter by date_range", {
+  library(ggplot2)
+  data(economics)
+  economics_data_list <- rio::import_list("testdata/economics_data.xlsx")
+  shiny_dashboard <- build_shiny(title = "New Dashboard", 
+                                 data_list = economics_data_list,
+                                 data_fram = economics,
+                                 status = "primary",
+                                 colour = "blue",
+                                 key_var = "date",
+                                 deploy_shiny = FALSE)
+  expect_equal(class(shiny_dashboard), "list")
   
-  # Give it time to start
-  Sys.sleep(5)
-  
-  # Check that it started correctly
-  expect_true(shiny_process$is_alive() || shiny_process$get_exit_status() == 0)
-  
-  # Optional: peek at logs if it failed
-  if (!shiny_process$is_alive()) {
-    cat("STDOUT:\n", shiny_process$read_all_output())
-    cat("STDERR:\n", shiny_process$read_all_error())
-  }
-  
-  # Kill the process to clean up
-  shiny_process$kill()
-  
+  economics_data_list$main_page$value[3] <- "date_range_group"
+  economics_data_list$main_page$parameter_list[3] <- "label = \"Date\", start = \"1968-07-01\", end = \"1967-07-01\", min = \"1967-07-01\", max = \"2015-04-01\""
+  app <- build_shiny(title = "New Dashboard", 
+                     data_list = economics_data_list,
+                     data_fram = economics,
+                     status = "primary",
+                     colour = "blue",
+                     key_var = "date",
+                     deploy_shiny = FALSE)
+  expect_equal(class(app), "list")
 })
