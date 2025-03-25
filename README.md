@@ -44,22 +44,43 @@ Below is an example of how to load an Excel file and use it to generate
 a Shiny dashboard:
 
 ``` r
+# Load libraries
 library(ExcelToShiny)
-library(readxl)
-library(shiny)
-library(shinydashboard)
 library(dplyr)
+library(rio)
+library(NHANES)
 
-# Load example Excel file
-data_list <- rio::import_list("data/example_dashboard.xlsx")
+# Load your data you want to run
+data(NHANES)
 
-# Build the Shiny dashboard
+# Run manipulations. Here's an example of where we use a second data frame in our Shiny Excel
+NHANES_by_ind <- NHANES %>%
+  group_by(ID) %>%
+  mutate(count = 1:n()) %>%
+  filter(count == 1) %>%
+  ungroup()
+
+# Set the key variable to be the same type
+NHANES$ID <- as.character(NHANES$ID)
+NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
+
+# Run any credentials data for downloading page
+credentials_data <- data.frame(
+  user = "admin",
+  password = "password",
+  stringsAsFactors = FALSE
+)
+
+# Call in the test data
+path <- system.file("extdata", "example_data.xlsx", package = "ExcelToShiny")
+all_sheets <- rio::import_list(path)
+
+# Your shiny app
 build_shiny(
-  title = "Example Shiny Dashboard",
-  data_list = data_list,
-  key_var = "ID",
-  status = "primary",
-  colour = "blue"
+  title = "Test Dashboard",
+  data_list = example_excel,
+  data_frame = NHANES,
+  key_var = "ID"
 )
 ```
 
