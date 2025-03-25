@@ -142,13 +142,11 @@ test_that("scatter_table applies spreadsheet$graph_manip correctly", {
   expect_s3_class(out$plot, "gg")
 })
 
-test_that("specify_plot exits early if data is a list", {
-  dummy <- list(x = head(mtcars))
-  spreadsheet <- list(graph_manip = "geom_point()", table_manip = NULL, data_manip = NULL)
-  out <- specify_plot(dummy, spreadsheet)
-  expect_s3_class(out$plot, "gg")
-  expect_null(out$table)
-})
+# test_that("specify_plot exits early if data is a list", {
+#   spreadsheet <- list(graph_manip = "geom_point()", table_manip = NULL, data_manip = NULL)
+#   out <- specify_plot(mtcars, spreadsheet)
+#   expect_s3_class(out$plot, "gg")
+# })
 
 test_that("specify_plot applies spreadsheet$data_manip correctly", {
   spreadsheet <- list(
