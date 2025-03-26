@@ -276,4 +276,99 @@ test_that("specify_plot catches error in graph manipulation", {
   expect_s3_class(result$plot, "gg")
 })
 
+test_that("summary_calculation handles mean summaries with margins", {
+  data <- mtcars
+  data$cyl <- as.factor(data$cyl)  # factor is expected for grouping
+  result <- summary_calculation(data = data,
+                                factors = cyl,
+                                columns_to_summarise = "mpg",
+                                summaries = "mean",
+                                include_margins = TRUE)
+  
+  expect_s3_class(result, "data.frame")
+  expect_true("Total" %in% result$cyl)
+  expect_true("mpg" %in% names(result))
+  expect_gt(nrow(result), 1)
+})
+
+test_that("summary_calculation handles frequency summaries with margins", {
+  data <- mtcars
+  data$cyl <- as.factor(data$cyl)
+  data$gear <- as.factor(data$gear)
+  
+  result <- summary_calculation(data = data,
+                                factors = cyl,
+                                columns_to_summarise = "gear",
+                                summaries = "frequencies",
+                                include_margins = TRUE,
+                                together = FALSE)
+  
+  expect_s3_class(result, "data.frame")
+  expect_true(all(c("gear", "cyl", "n", "perc") %in% names(result)))
+  expect_true(any(result$cyl == "Total"))
+  expect_true(any(result$gear == "Total"))
+})
+
+
+test_that("summary_table handles mean summaries with naming_convention", {
+  data <- mtcars
+  data$cyl <- as.factor(data$cyl)
+  
+  result <- summary_table(data = data,
+                          factors = cyl,
+                          columns_to_summarise = "mpg",
+                          summaries = "mean",
+                          naming_convention = TRUE)
+  
+  expect_s3_class(result, "data.frame")
+  expect_true("cyl" %in% tolower(names(result)) || any(grepl("cyl", names(result))))
+})
+
+test_that("summary_table returns gt table when display_table = TRUE and summaries = frequencies", {
+  data <- mtcars
+  data$cyl <- as.factor(data$cyl)
+  data$gear <- as.factor(data$gear)
+  
+  result <- summary_table(data = data,
+                          factors = cyl,
+                          columns_to_summarise = "gear",
+                          summaries = "frequencies",
+                          display_table = TRUE,
+                          together = FALSE)
+  
+  expect_s3_class(result, "gt_tbl")
+})
+
+test_that("summary_table pivots wider when wider_table is TRUE and factors ≠ columns_to_summarise", {
+  data <- mtcars
+  data$cyl <- as.factor(data$cyl)
+  data$gear <- as.factor(data$gear)
+  
+  result <- summary_table(data = data,
+                          factors = cyl,
+                          columns_to_summarise = "gear",
+                          summaries = "frequencies",
+                          display_table = FALSE,
+                          wider_table = TRUE,
+                          together = TRUE)
+  
+  expect_true(any(grepl("Cyl", names(result))))
+})
+
+test_that("summary_table relocates 'Total' column to the end if present", {
+  data <- mtcars
+  data$cyl <- as.factor(data$cyl)
+  data$gear <- as.factor(data$gear)
+  
+  result <- summary_table(data = data,
+                          factors = cyl,
+                          columns_to_summarise = "gear",
+                          summaries = "frequencies",
+                          include_margins = TRUE,
+                          together = TRUE)
+  
+  # Only meaningful if the pivot creates a "Total" column
+  expect_true("Total" %in% names(result))
+  expect_equal(names(result)[length(result)], "Total")
+})
 
