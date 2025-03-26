@@ -353,3 +353,35 @@ test_that("build_server sets up download UI without credentials", {
     expect_type(output$build_download1, "list")
   })
 })
+
+
+test_that("download sheet handles credentials", {
+  assign("credentials_data", data.frame(
+    user = "admin",
+    password = "test123",
+    stringsAsFactors = FALSE
+  ), envir = .GlobalEnv)
+  withr::defer(rm(credentials_data, envir = .GlobalEnv))
+  
+  contents_df <- data.frame(
+    ID = "download_sheet",
+    type = "Download",
+    stringsAsFactors = FALSE
+  )
+  spreadsheet <- data.frame(
+    type = c("Credentials", "Download label", "Format", "Data"),
+    name = c("credentials", "Download", NA, "mtcars"),
+    value = c(NA, NA, "csv", "mtcars"),
+    stringsAsFactors = FALSE
+  )
+  data_list <- list(
+    contents = contents_df,
+    download_sheet = spreadsheet
+  )
+  
+  server_fn <- build_server(data_list, mtcars, key_var = "row.names", data_frame_name = "mtcars")
+  
+  testServer(server_fn, {
+    expect_type(output$build_download1, "list")
+  })
+})

@@ -40,7 +40,8 @@ Suggests:
     rmarkdown,
     rprojroot,
     shinytest2,
-    testthat
+    testthat,
+    withr
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)
