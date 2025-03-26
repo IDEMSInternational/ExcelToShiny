@@ -276,4 +276,37 @@ test_that("specify_plot catches error in graph manipulation", {
   expect_s3_class(result$plot, "gg")
 })
 
+test_that("summary_calculation handles mean summaries with margins", {
+  data <- mtcars
+  data$cyl <- as.factor(data$cyl)  # factor is expected for grouping
+  result <- summary_calculation(data = data,
+                                factors = cyl,
+                                columns_to_summarise = "mpg",
+                                summaries = "mean",
+                                include_margins = TRUE)
+  
+  expect_s3_class(result, "data.frame")
+  expect_true("Total" %in% result$cyl)
+  expect_true("mpg" %in% names(result))
+  expect_gt(nrow(result), 1)
+})
+
+test_that("summary_calculation handles frequency summaries with margins", {
+  data <- mtcars
+  data$cyl <- as.factor(data$cyl)
+  data$gear <- as.factor(data$gear)
+  
+  result <- summary_calculation(data = data,
+                                factors = cyl,
+                                columns_to_summarise = "gear",
+                                summaries = "frequencies",
+                                include_margins = TRUE,
+                                together = FALSE)
+  
+  expect_s3_class(result, "data.frame")
+  expect_true(all(c("gear", "cyl", "n", "perc") %in% names(result)))
+  expect_true(any(result$cyl == "Total"))
+  expect_true(any(result$gear == "Total"))
+})
+
 
