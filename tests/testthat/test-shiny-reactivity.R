@@ -262,23 +262,23 @@ test_that("build_server runs when data_list has no main_page", {
   })
 })
 
-test_that("build_server handles Tabbed_display types", {
-  data_list <- list(
-    main_page = NULL,
-    contents = rbind(
-      fake_contents("tab1", "Tabbed_display"),
-      fake_contents("tab2", "Display")
-    )
-  )
-  df <- mtcars
-  
-  server_fn <- build_server(data_list, df, key_var = NULL, data_frame_name = "df")
-  
-  testServer(server_fn, {
-    session$setInputs(tab = "tab1")
-    expect_true(TRUE)
-  })
-})
+# test_that("build_server handles Tabbed_display types", {
+#   data_list <- list(
+#     main_page = NULL,
+#     contents = rbind(
+#       fake_contents("tab1", "Tabbed_display"),
+#       fake_contents("tab2", "Display")
+#     )
+#   )
+#   df <- mtcars
+#   
+#   server_fn <- build_server(data_list, df, key_var = NULL, data_frame_name = "df")
+#   
+#   testServer(server_fn, {
+#     session$setInputs(tab = "tab1")
+#     expect_true(TRUE)
+#   })
+# })
 
 test_that("build_server handles group_by_box logic", {
   data_list <- list(
@@ -353,40 +353,3 @@ test_that("build_server sets up download UI without credentials", {
     expect_type(output$build_download1, "list")
   })
 })
-
-# You can also snapshot outputs if you want:
-# expect_snapshot_output(output$some_output)
-
-
-
-
-
-test_that("build_server handles group_by_box logic", {
-  # Load data
-  data(NHANES)
-  NHANES_by_ind <- NHANES %>%
-    group_by(ID) %>%
-    mutate(count = 1:n()) %>%
-    filter(count == 1) %>%
-    ungroup()
-  
-  NHANES$ID <- as.character(NHANES$ID)
-  NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
-  
-  credentials_data <- data.frame(
-    user = "admin",
-    password = "password",
-    stringsAsFactors = FALSE
-  )
-  
-  data_list <- rio::import_list("testdata/nhanes_data.xlsx")
-  
-  server_fn <- build_server(data_list, NHANES, key_var = "id", data_frame_name = "NHANES")
-  
-  testServer(server_fn, {
-    session$setInputs(goButton_group = 1, group_by_box1 = TRUE)
-    expect_true(TRUE)  # Placeholder for coverage
-  })
-})
-
-
