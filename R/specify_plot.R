@@ -47,9 +47,19 @@ specify_plot <- function(data, spreadsheet, grouped_vars = NULL) {
     #command_string <- paste0("data %>%", command_string)       # Append the dataset reference
     
     if (startsWith(trimws(spreadsheet$table_manip), "%>%")){
-      all_return$table <- eval(parse(text = paste0("data ", group_cmd, command_string)))
+      all_return$table <- tryCatch({
+        eval(parse(text = paste0("data ", group_cmd, command_string)))
+      }, error = function(e) {
+        message("Ignoring manipulations. Error in evaluating data manipulation command in `specify_plot`: ", e$message)
+        NULL  # Return NULL or handle the error as appropriate
+      })
     } else{
-      all_return$table <- eval(parse(text = command_string))      
+      all_return$table <- tryCatch({
+        eval(parse(text = command_string))
+      }, error = function(e) {
+        message("Ignoring manipulations. Error in evaluating data manipulation command in `specify_plot`: ", e$message)
+        NULL  # Return NULL or handle the error as appropriate
+      })
     }
   } else {
     all_return$table <- "No Table Given"
@@ -100,13 +110,12 @@ specify_plot <- function(data, spreadsheet, grouped_vars = NULL) {
   } else {
     plot_command <- paste0("plot_obj + ", add_string)
   }
-  plot_obj <- tryCatch({
+
+  all_return$plot <- tryCatch({
     eval(parse(text = plot_command))
   }, error = function(e) {
     message("Error in evaluating graph manipulation code: ", e$message)
-    plot_obj  # Return the original plot object in case of an error
+    ggplot2::ggplot(data)  # Return empty plot
   })
-  
-  all_return$plot <- plot_obj
   return(all_return)
 }

@@ -192,3 +192,88 @@ test_that("specify_table falls back to spreadsheet$data_manip if table_manip is 
   expect_warning(specify_table(mtcars, spreadsheet), "Manipulations for specify_table are given in data_manip. These should be in table_manip.")
 })
 
+test_that("bar_table catches and handles error in data manipulation", {
+  spreadsheet <- list(data_manip = "%>% non_existent_function()")
+  expect_message(
+    result <- suppressWarnings(bar_table(data = mtcars, variable = "gear", spreadsheet = spreadsheet)),
+    "Ignoring manipulations"
+  )
+  expect_s3_class(result$plot, "gg")
+  expect_s3_class(result$table, "data.frame")
+})
+
+test_that("bar_table catches and handles error in graph manipulation", {
+  spreadsheet <- list(graph_manip = "this is not valid R code")
+  expect_message(
+    result <- suppressWarnings(bar_table(data = mtcars, variable = "gear", spreadsheet = spreadsheet)),
+    "Error in evaluating graph manipulation"
+  )
+  expect_s3_class(result$plot, "gg")
+})
+
+test_that("scatter_table catches error in data manipulation", {
+  ss <- list(variable = "mpg, hp", data_manip = "%>% dplyr::not_a_function()")
+  expect_message(
+    result <- scatter_table(mtcars, variable = NULL, spreadsheet = ss),
+    "Ignoring manipulations"
+  )
+  expect_s3_class(result$table, "data.frame")
+})
+
+test_that("scatter_table catches error in graph manipulation", {
+  ss <- list(variable = "mpg, hp", graph_manip = "broken + code + here")
+  expect_message(
+    result <- scatter_table(mtcars, variable = NULL, spreadsheet = ss),
+    "Error in evaluating graph manipulation"
+  )
+  expect_s3_class(result$plot, "gg")
+})
+
+
+test_that("specify_plot catches error in data manipulation", {
+  spreadsheet <- list(data_manip = "%>% invalid_code()", graph_manip = "geom_point(aes(x = mpg, y = hp))")
+  expect_message(
+    result <- specify_plot(mtcars, spreadsheet),
+    "Ignoring manipulations"
+  )
+  expect_s3_class(result$plot, "gg")
+})
+
+test_that("specify_table handles invalid table_manip", {
+  spreadsheet <- list(table_manip = "%>% doesnotexist()")
+  expect_message(
+    result <- specify_table(mtcars, spreadsheet),
+    "Ignoring manipulations"
+  )
+  expect_type(result$table, "NULL")  # Falls back to unmodified
+  
+  spreadsheet <- list(table_manip = "doesnotexist()")
+  expect_message(
+    result <- specify_table(mtcars, spreadsheet),
+    "Ignoring manipulations"
+  )
+  expect_type(result$table, "NULL")  # Falls back to unmodified
+})
+
+test_that("specify_plot catches error in graph manipulation", {
+  spreadsheet <- list(table_manip = "%>% doesnotexist()")
+  expect_message(
+    result <- specify_plot(mtcars, spreadsheet),
+    "Ignoring manipulations"
+  )
+  expect_type(result$table, "NULL")  # Falls back to unmodified
+  
+  spreadsheet <- list(table_manip = "doesnotexist()")
+  expect_message(
+    result <- specify_plot(mtcars, spreadsheet),
+    "Ignoring manipulations"
+  )
+  expect_type(result$table, "NULL")  # Falls back to unmodified
+  
+  spreadsheet <- list(graph_manip = "geom_point(,,)", data_manip = NULL)
+    result <- specify_plot(mtcars, spreadsheet)
+    
+  expect_s3_class(result$plot, "gg")
+})
+
+
