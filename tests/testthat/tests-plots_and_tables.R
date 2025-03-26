@@ -26,7 +26,49 @@ test_that("bar_table handles spreadsheet commands", {
   expect_s3_class(out$plot, "gg")
 })
 
-test_that("boxplot_table creates valid output", {
+test_that("bar_table returns 'No Table Given' when table_manip == 'none'", {
+  result <- suppressWarnings(bar_table(
+    data = mtcars,
+    variable = "gear",
+    type = "freq",
+    spreadsheet = list(table_manip = "none")
+  ))
+  
+  expect_type(result, "list")
+  expect_equal(result$table, "No Table Given")
+  expect_s3_class(result$plot, "gg")
+})
+
+test_that("bar_table calculates median and SD when type = 'summary'", {
+  result <- suppressWarnings(bar_table(
+    data = mtcars,
+    variable = "mpg",
+    type = "summary",
+    spreadsheet = list()  # No table_manip
+  ))
+  
+  expect_type(result, "list")
+  expect_s3_class(result$table, "data.frame")
+  expect_true(all(c("Median", "SD") %in% names(result$table)))
+  expect_s3_class(result$plot, "gg")
+})
+
+test_that("bar_table groups summary stats when grouped_vars is provided", { 
+  result <- suppressWarnings(bar_table(
+    data = mtcars,
+    variable = "mpg",
+    type = "summary",
+    grouped_vars = "cyl",
+    spreadsheet = list()
+  ))
+  
+  expect_s3_class(result$table, "data.frame")
+  expect_true("cyl" %in% names(result$table))
+  expect_true("Median" %in% names(result$table))
+})
+
+
+test_that("boxplot_table creates valid output with grouped variables", {
   out <- boxplot_table(data = test_data, variable = "mpg", spreadsheet = list(), grouped_vars = "cyl")
   expect_named(out, c("table", "plot"))
   expect_s3_class(out$plot, "gg")
@@ -85,6 +127,14 @@ test_that("boxplot_table handles invalid data_manip or graph_manip safely", {
 test_that("scatter_table works with two numeric vars", {
   spreadsheet <- list(variable = "mpg, hp", graph_manip = NULL)
   out <- scatter_table(data = test_data, variable = NULL, spreadsheet = spreadsheet, grouped_vars = NULL)
+  expect_named(out, c("table", "plot"))
+  expect_s3_class(out$table, "data.frame")
+  expect_s3_class(out$plot, "gg")
+})
+
+test_that("scatter_table works with a grouped variable", {
+  spreadsheet <- list(variable = "mpg, hp", graph_manip = NULL)
+  out <- scatter_table(data = test_data, variable = NULL, spreadsheet = spreadsheet, grouped_vars = "cyl")
   expect_named(out, c("table", "plot"))
   expect_s3_class(out$table, "data.frame")
   expect_s3_class(out$plot, "gg")
@@ -157,6 +207,15 @@ test_that("specify_plot applies spreadsheet$data_manip correctly", {
   expect_s3_class(out$plot, "gg")
 })
 
+test_that("specify_plot works for grouped variables", {
+  spreadsheet <- list(
+    data_manip = "mtcars %>% dplyr::filter(mpg > 25)",
+    graph_manip = "geom_point(aes(x = mpg, y = hp))"
+  )
+  out <- specify_plot(mtcars, spreadsheet, "cyl")
+  expect_s3_class(out$plot, "gg")
+})
+
 test_that("specify_plot applies spreadsheet$graph_manip correctly", {
   spreadsheet <- list(
     graph_manip = "geom_histogram(aes(x = mpg), bins = 5)",
@@ -168,9 +227,22 @@ test_that("specify_plot applies spreadsheet$graph_manip correctly", {
 })
 
 test_that("specify_table exits early if data is a list", {
-  spreadsheet <- list(table_manip = "%>% summarise(mean_mpg = mean(mpg))")
+  spreadsheet <- list(table_manip = "%>% dplyr::summarise(mean_mpg = mean(mpg))")
   out <- specify_table(mtcars, spreadsheet)
-  expect_equal(out$table, mtcars %>% summarise(mean_mpg = mean(mpg)))
+  expect_equal(out$table, mtcars %>% dplyr::summarise(mean_mpg = mean(mpg)))
+})
+
+test_that("specify_table works for grouping variables", {
+  spreadsheet <- list(table_manip = "mtcars %>% summarise(mean_mpg = mean(mpg))")
+  out <- specify_table(mtcars, spreadsheet, c("cyl", "CYL"))
+  expect_s3_class(out$table, "data.frame")
+  expect_true("mean_mpg" %in% names(out$table))
+})
+
+test_that("specify_table works if missing manipulations", {
+  spreadsheet <- list()
+  out <- specify_table(mtcars, spreadsheet)
+  expect_match(out$table, "No Table Given")
 })
 
 test_that("specify_table applies spreadsheet$table_manip correctly", {

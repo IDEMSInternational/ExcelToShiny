@@ -33,6 +33,7 @@ Suggests:
     devtools,
     here,
     knitr,
+    mockery,
     NHANES,
     readxl,
     rio,

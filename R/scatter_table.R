@@ -20,7 +20,6 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
   # }
   
   if (!is.null(grouped_vars) && (grouped_vars %in% variable)) grouped_vars <- NULL
-  
   # Check if data manipulation command is not null or NA
   if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
     # Command string from the spreadsheet
@@ -65,7 +64,7 @@ scatter_table <- function(data, variable, type = c("freq", "summary"), spreadshe
   # group by?
   
   if (!is.null(grouped_vars)){
-    table_to_return <- data %>% dplyr::group_by(!!rlang::sym(group))
+    table_to_return <- data %>% dplyr::group_by(!!rlang::sym(grouped_vars))
   } else {
     table_to_return <- data
   }

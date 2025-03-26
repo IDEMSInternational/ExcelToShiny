@@ -39,6 +39,9 @@ test_that("create_shiny_dashboard runs successfully", {
   NHANES$ID <- as.character(NHANES$ID)
   NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
   example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
+  example_excel$main_page <- rbind(example_excel$main_page, example_excel$main_page[2,])
+  example_excel$main_page$variable_value[2] <- NA
+  example_excel$main_page$variable_value[7] <- "MALE"
   
   shiny_dashboard <- build_shiny(title = "New Dashboard", 
                                  data_list = example_excel,
@@ -311,7 +314,8 @@ test_that("build_shiny runs successfully for incorrect values", {
   
   economics_data_list_1 <- economics_data_list
   economics_data_list_1$main_page <- rbind(economics_data_list_1$main_page, economics_data_list_1$main_page, economics_data_list_1$main_page)
-  app <- build_shiny(title = "New Dashboard", 
+  economics_data_list_1$main_page$value[1] <- "average_box"
+    app <- build_shiny(title = "New Dashboard", 
                      data_list = economics_data_list_1,
                      data_fram = economics,
                      status = "primary",

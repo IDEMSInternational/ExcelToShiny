@@ -33,23 +33,11 @@
 #' # Parameter not found
 #' param_not_found <- 'other_param = 42'
 #' get_parameter_value(param_not_found)  # Returns NULL
-get_parameter_value <- function(spreadsheet_parameters, name = "label", list = FALSE, logical = FALSE, date = FALSE){
-  #spreadsheet_parameters <- trimws(spreadsheet_parameters)
-  if (stringr::str_detect(spreadsheet_parameters, paste0(name, " ="))) {
-    if (stringr::str_detect(spreadsheet_parameters, paste0(name, " = "))) {
-      label_form = paste0(name, " = ")
-    } else {
-      label_form = paste0(name, " =")
-    }
-  } else if (stringr::str_detect(spreadsheet_parameters, paste0(name, "="))){
-    if (stringr::str_detect(spreadsheet_parameters, paste0(name, "= "))) {
-      label_form = paste0(name, "= ")
-    } else {
-      label_form = paste0(name, "=")
-    }
-  } else {
-    label_form = NULL
-  }
+get_parameter_value <- function(spreadsheet_parameters, name = "label", list = FALSE, logical = FALSE, date = FALSE) {
+  matches <- stringr::str_extract(spreadsheet_parameters, paste0(name, "\\s*=\\s*"))
+  label_form <- unique(matches[!is.na(matches)])
+  
+  if (length(label_form) == 0) label_form <- NULL
   
   if (!is.null(label_form)){
     if (date == TRUE){

@@ -20,12 +20,12 @@ specify_table <- function(data, spreadsheet, grouped_vars = NULL) {
   
   # TODO: need to fix this up to work for grouped_vars.
   # but if I have facets, it removes them. I think (see facilitator mexico, with the df having grouped var)
-  if (!is.null(grouped_vars)) grouped_vars <- NULL
+  #if (!is.null(grouped_vars)) grouped_vars <- NULL
   if (!is.null(grouped_vars)){
     if (!all(grouped_vars %in% names(data))) {
       grouped_vars <- grouped_vars[which(grouped_vars %in% names(data))]
     }
-    group_cmd <- paste0("%>% group_by(", grouped_vars, ")")
+    group_cmd <- paste0("%>% dplyr::group_by(", grouped_vars, ")")
   } else {
     group_cmd <- paste0("")
   }
