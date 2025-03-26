@@ -173,8 +173,7 @@ test_that("server_box_function errors on unknown value", {
                "Invalid value type.")
 })
 
-################################################################################
-# box_function #################################################################
+### box_function ###############################################################
 test_that("box_function handles case where table_manip == 'none'", {
   spreadsheet <- data.frame(
     name = "box1",
