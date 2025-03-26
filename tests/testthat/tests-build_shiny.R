@@ -195,16 +195,16 @@ test_that("build_shiny throws error for incorrect filter type", {
 #     dplyr::mutate(count = 1:n()) %>%
 #     dplyr::filter(count == 1) %>%
 #     dplyr::ungroup()
-#   
+# 
 #   NHANES$ID <- as.character(NHANES$ID)
 #   NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
-#   
+# 
 #   credentials_data <- data.frame(
 #     user = "admin",
 #     password = "password",
 #     stringsAsFactors = FALSE
 #   )
-#   
+# 
 #   example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
 #   example_excel$main_page$value[5] <- "check"
 #   # Your shiny app
@@ -235,6 +235,18 @@ test_that("create_shiny_dashboard runs successfully for filter by date_range", {
   library(ggplot2)
   data(economics)
   economics_data_list <- rio::import_list("testdata/economics_data.xlsx")
+  shiny_dashboard <- build_shiny(title = "New Dashboard", 
+                                 data_list = economics_data_list,
+                                 data_fram = economics,
+                                 status = "primary",
+                                 colour = "blue",
+                                 key_var = "date",
+                                 deploy_shiny = FALSE)
+  expect_equal(class(shiny_dashboard), "list")
+  
+  # when we don' have min/max/value given:
+  economics_data_list$main_page$value[3] <- "date_group"
+  economics_data_list$main_page$parameter_list[3] <- "label = \"Date\""
   shiny_dashboard <- build_shiny(title = "New Dashboard", 
                                  data_list = economics_data_list,
                                  data_fram = economics,
