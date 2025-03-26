@@ -26,6 +26,48 @@ test_that("bar_table handles spreadsheet commands", {
   expect_s3_class(out$plot, "gg")
 })
 
+test_that("bar_table returns 'No Table Given' when table_manip == 'none'", {
+  result <- suppressWarnings(bar_table(
+    data = mtcars,
+    variable = "gear",
+    type = "freq",
+    spreadsheet = list(table_manip = "none")
+  ))
+  
+  expect_type(result, "list")
+  expect_equal(result$table, "No Table Given")
+  expect_s3_class(result$plot, "gg")
+})
+
+test_that("bar_table calculates median and SD when type = 'summary'", {
+  result <- suppressWarnings(bar_table(
+    data = mtcars,
+    variable = "mpg",
+    type = "summary",
+    spreadsheet = list()  # No table_manip
+  ))
+  
+  expect_type(result, "list")
+  expect_s3_class(result$table, "data.frame")
+  expect_true(all(c("Median", "SD") %in% names(result$table)))
+  expect_s3_class(result$plot, "gg")
+})
+
+test_that("bar_table groups summary stats when grouped_vars is provided", { 
+  result <- suppressWarnings(bar_table(
+    data = mtcars,
+    variable = "mpg",
+    type = "summary",
+    grouped_vars = "cyl",
+    spreadsheet = list()
+  ))
+  
+  expect_s3_class(result$table, "data.frame")
+  expect_true("cyl" %in% names(result$table))
+  expect_true("Median" %in% names(result$table))
+})
+
+
 test_that("boxplot_table creates valid output with grouped variables", {
   out <- boxplot_table(data = test_data, variable = "mpg", spreadsheet = list(), grouped_vars = "cyl")
   expect_named(out, c("table", "plot"))
