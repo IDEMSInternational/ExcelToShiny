@@ -6,13 +6,13 @@
 #' @param i An integer index for iteration, typically used within a loop context. Default is `1`.
 #'
 #' @return A named list of data sets prepared for download. The names of the list elements correspond to the `name` column in `data_to_download`.
-get_data_to_download <- function(data_to_download, i){
+get_data_to_download <- function(data_to_download, i, env = parent.frame()) {
   data_names <- data_to_download$name
   data_to_download <- data_to_download$value
-  data_sets <- list()
+  data_sets <- NULL
   if (length(data_to_download) > 0){
     for (i in 1:length(data_to_download)){
-      data_sets[[i]] <- eval(parse(text = data_to_download[i]))
+      data_sets[[i]] <- eval(parse(text = data_to_download[i]), envir = env)
     }
     names(data_sets) <- data_names
   }
