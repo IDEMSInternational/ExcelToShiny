@@ -70,6 +70,56 @@ test_that("server_display_contents_tabbed processes multiple rows", {
   expect_type(result, "list")
 })
 
+test_that("server_display_contents_tabbed handles Tabbed_display by calling server_display_contents()", {
+  # Define the outer tabbed display row
+  outer_contents <- data.frame(
+    ID = "tab1",
+    type = "Tabbed_display",
+    name = "tab1",
+    stringsAsFactors = FALSE
+  )
+  
+  # Define the inner spreadsheet that tab1 points to
+  inner_contents <- data.frame(
+    ID = "box1",
+    type = "Display",
+    name = "box1",
+    value = "bar_table",
+    variable = "cyl",
+    stringsAsFactors = FALSE
+  )
+  
+  dummy_df <- mtcars
+  dummy_reactives <- list()
+  
+  # Patch server_display_contents just for this test
+  fake_server_display_contents <- function(contents1, data_frame, data_list, loop, list_of_reactives, id_name = NULL, k = 1) {
+    return(list(paste0("called_with_loop_", loop)))
+  }
+  
+  # Use mockery::stub to inject the fake version
+  mockery::stub(
+    server_display_contents_tabbed,
+    "server_display_contents",
+    fake_server_display_contents
+  )
+  
+  data_list <- list(tab1 = inner_contents, box1 = inner_contents)
+  
+  result <- server_display_contents_tabbed(
+    contents1 = outer_contents,
+    data_frame = dummy_df,
+    data_list = data_list,
+    loop = 2,
+    list_of_reactives = dummy_reactives,
+    k = 2
+  )
+  
+  expect_type(result, "list")
+  expect_equal(result[[1]][[1]], "called_with_loop_2")
+})
+
+
 # Testing server_display_sheet_setup
 test_that("server_display_sheet_setup generates boxes for type == 'box'", {
   spreadsheet_data <- data.frame(
@@ -172,6 +222,66 @@ test_that("server_box_function errors on unknown value", {
                                    list_of_reactives = dummy_reactives),
                "Invalid value type.")
 })
+
+test_that("server_box_function stops when required inputs are missing", {
+  expect_error(
+    server_box_function(data_frame = NULL, spreadsheet = NULL, unique_ID = NULL, list_of_reactives = NULL),
+    "Invalid input parameters"
+  )
+})
+
+test_that("server_box_function filters by filter_variable and filter_value correctly", {
+  spreadsheet <- data.frame(
+    name = "box1",
+    type = "box",
+    value = "bar_table",
+    variable = "gear",
+    filter_variable = "cyl",
+    filter_value = 6,
+    stringsAsFactors = FALSE
+  )
+  
+  dummy_df <- mtcars
+  dummy_reactives <- list(df = function() dummy_df)
+  
+  result <- suppressWarnings(server_box_function(
+    data_frame = dummy_df,
+    spreadsheet = spreadsheet,
+    unique_ID = "box1",
+    list_of_reactives = dummy_reactives
+  ))
+  
+  expect_equal(class(result), "list")
+  expect_true("table_obj" %in% names(result))
+})
+
+test_that("server_box_function filters to NA values when filter_value is NA", {
+  data <- mtcars
+  data$cyl[1:3] <- NA  # Introduce some NAs
+  
+  spreadsheet <- data.frame(
+    name = "box1",
+    type = "box",
+    value = "bar_table",
+    variable = "gear",
+    filter_variable = "cyl",
+    filter_value = NA,
+    stringsAsFactors = FALSE
+  )
+  
+  dummy_reactives <- list(df = function() data)
+  
+  result <- suppressWarnings(server_box_function(
+    data_frame = data,
+    spreadsheet = spreadsheet,
+    unique_ID = "box1",
+    list_of_reactives = dummy_reactives
+  ))
+  
+  expect_equal(class(result), "list")
+  expect_equal(class(result$table_obj$Gear), "factor")
+})
+
 
 ### box_function ###############################################################
 test_that("box_function handles case where table_manip == 'none'", {

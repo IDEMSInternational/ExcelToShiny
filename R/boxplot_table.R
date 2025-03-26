@@ -19,7 +19,7 @@ boxplot_table <- function(data, variable, type = c("summary", "freq"), spreadshe
     return(all_return)
   }
   
-  if (!is.null(grouped_vars) && (grouped_vars %in% variable)) grouped_vars <- NULL
+  #if (!is.null(grouped_vars) && (grouped_vars %in% variable)) grouped_vars <- NULL
   
   # Check if data manipulation command is not null or NA
   if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {
