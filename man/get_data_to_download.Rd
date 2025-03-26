@@ -4,12 +4,14 @@
 \alias{get_data_to_download}
 \title{Prepare Data for Download in Shiny Application}
 \usage{
-get_data_to_download(data_to_download, i)
+get_data_to_download(data_to_download, i, env = parent.frame())
 }
 \arguments{
 \item{data_to_download}{A data frame containing the names and expressions for the data sets to be prepared for download. It should include columns \code{name} (the names of the data sets) and \code{value} (the expressions to be evaluated to retrieve the data).}
 
 \item{i}{An integer index for iteration, typically used within a loop context. Default is \code{1}.}
+
+\item{env}{The environment to get the data from (for testing purposes primarily).}
 }
 \value{
 A named list of data sets prepared for download. The names of the list elements correspond to the \code{name} column in \code{data_to_download}.

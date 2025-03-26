@@ -64,8 +64,9 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
   status <- status_map[colour]
   
   if (is.na(status)) {
-    warning("Valid colours are: blue, green, light blue, orange, red")
+    warning("Valid colours are: blue, green, light blue, orange, red. Setting colour to 'blue'.")
     status <- "primary"
+    colour <- "blue"
   }
   
   # Setting up (pre-UI and pre-server items) --------------------------------
@@ -110,21 +111,21 @@ build_shiny <- function (title, data_list, data_frame, status = "primary", colou
   
   # value box for main page -------------------------------------------------------------------------------
   # check type is one of value_box, filter_box, or group_by_box
-  data_list$main_page <- data_list$main_page %>%
-    dplyr::mutate(type = ifelse(stringdist::stringdist(type, "value_box", method = "lv") <= 2, "value_box",
-                         ifelse(stringdist::stringdist(type, "filter_box", method = "lv") <= 3, "filter_box",
-                                ifelse(stringdist::stringdist(type, "group_by_box", method = "lv") <= 3, "group_by_box",
-                                       type))))
-  valid_boxes <- c("value_box", "filter_box", "group_by_box")
-  if (!all(data_list$main_page$type %in% valid_boxes)){
-    invalid_type <- data_list$main_page %>%
-      dplyr::filter(!type %in% valid_boxes) %>%
-      dplyr::pull(type)
-    stop("Cannot read type: ", paste0(invalid_type, sep = ", "), "on main_page. Should be one of ", paste0(valid_boxes, sep = ", "))
-  }
-  
   shiny_top_box_i <- NULL
   if (!is.null(data_list$main_page)){
+    data_list$main_page <- data_list$main_page %>%
+      dplyr::mutate(type = ifelse(stringdist::stringdist(type, "value_box", method = "lv") <= 2, "value_box",
+                                  ifelse(stringdist::stringdist(type, "filter_box", method = "lv") <= 3, "filter_box",
+                                         ifelse(stringdist::stringdist(type, "group_by_box", method = "lv") <= 3, "group_by_box",
+                                                type))))
+    valid_boxes <- c("value_box", "filter_box", "group_by_box")
+    if (!all(data_list$main_page$type %in% valid_boxes)){
+      invalid_type <- data_list$main_page %>%
+        dplyr::filter(!type %in% valid_boxes) %>%
+        dplyr::pull(type)
+      stop("Cannot read type: ", paste0(invalid_type, sep = ", "), "on main_page. Should be one of ", paste0(valid_boxes, sep = ", "))
+    }
+    
     # value boxes
     spreadsheet_shiny_value_box <- data_list$main_page %>% dplyr::filter(type %in% c("value_box"))
     for (i in 1:nrow(spreadsheet_shiny_value_box)){

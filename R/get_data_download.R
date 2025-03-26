@@ -4,7 +4,8 @@
 #'
 #' @param data_to_download A data frame containing the names and expressions for the data sets to be prepared for download. It should include columns `name` (the names of the data sets) and `value` (the expressions to be evaluated to retrieve the data).
 #' @param i An integer index for iteration, typically used within a loop context. Default is `1`.
-#'
+#' @param env The environment to get the data from (for testing purposes primarily).
+#' 
 #' @return A named list of data sets prepared for download. The names of the list elements correspond to the `name` column in `data_to_download`.
 get_data_to_download <- function(data_to_download, i, env = parent.frame()) {
   data_names <- data_to_download$name
