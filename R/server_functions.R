@@ -31,15 +31,9 @@ create_reactive_expression <- function(df_name, complete_dfs, key_var, valid_ids
   shiny::reactive({
     filtered_data_frame <- complete_dfs[[paste0(df_name, "_1")]]
     
-    if (!is.null(grouped_vars)) {
-      filtered_data_frame <- filtered_data_frame %>%
-        dplyr::full_join(grouped_vars)
-    }
+    if (!is.null(grouped_vars)) filtered_data_frame <- filtered_data_frame %>% dplyr::full_join(grouped_vars)
     
-    if (!is.null(key_var) && key_var %in% names(filtered_data_frame)) {
-      filtered_data_frame <- filtered_data_frame %>% 
-        dplyr::filter(.data[[key_var]] %in% valid_ids())
-    }
+    if (!is.null(key_var) && key_var %in% names(filtered_data_frame)) filtered_data_frame <- filtered_data_frame %>%  dplyr::filter(.data[[key_var]] %in% valid_ids())
     
     return(filtered_data_frame)
   })
@@ -71,13 +65,7 @@ draw_top_value_boxes <- function(spreadsheet_shiny_value_box, processed_spreadsh
   shiny::observe({
     lapply(seq_len(length(unique(spreadsheet_shiny_value_box$name))), function(i) {
       ID <- spreadsheet_shiny_value_box[i,]$name
-      top_box <- top_value_boxes(
-        data_frame = filtered_data(),
-        spreadsheet = spreadsheet_shiny_value_box,
-        processed_spreadsheet = processed_spreadsheet_data,
-        unique_ID = ID,
-        list_of_reactives = list_of_reactives
-      )
+      top_box <- top_value_boxes(data_frame = filtered_data(), spreadsheet = spreadsheet_shiny_value_box, processed_spreadsheet = processed_spreadsheet_data, unique_ID = ID, list_of_reactives = list_of_reactives)
       output[[ID]] <- shinydashboard::renderValueBox(top_box)
     })
   })
@@ -210,8 +198,7 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
             
             if (length(active_groups) > 0) {
               group_box_data_i <- dplyr::filter(group_box_data, name == active_groups[1])
-              grouped_data <- grouped_data %>%
-                dplyr::group_by(!!rlang::sym(group_box_data_i$variable), .add = TRUE)
+              grouped_data <- grouped_data %>% dplyr::group_by(!!rlang::sym(group_box_data_i$variable), .add = TRUE)
             } else {
               grouped_data <- grouped_data %>% dplyr::ungroup()
             }
@@ -234,12 +221,10 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
             current_data <- filter_box_data$data[[i]]
             
             if (is.null(current_data)) {
-              filtered_data <- filtered_data %>%
-                dplyr::filter(.data[[current_var]] %in% current_name)
+              filtered_data <- filtered_data %>% dplyr::filter(.data[[current_var]] %in% current_name)
             } else {
               current_data <- get(current_data)
-              key_vars <- dplyr::filter(current_data, .data[[current_var]] %in% current_name) %>%
-                dplyr::pull(key)
+              key_vars <- dplyr::filter(current_data, .data[[current_var]] %in% current_name) %>% dplyr::pull(key)
               filtered_data <- dplyr::filter(filtered_data, key %in% key_vars)
             }
           }
@@ -273,12 +258,21 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
       tab_names <- contents$ID
       display_content <- shiny::reactiveVal()
       shiny::observeEvent(c(input$tab, ifelse(input$goButton_group == 0, 1, input$goButton_group)), {
-        display_content(display_content_by_tab(input$tab, input, filtered_data, contents, data_list, list_of_reactives))
+        display_content(display_content_by_tab(input$tab,
+                                               input,
+                                               filtered_data,
+                                               contents,
+                                               data_list,
+                                               list_of_reactives))
       })
 
       spreadsheet_shiny_value_box <- dplyr::filter(data_list$main_page, type == "value_box")
       processed_spreadsheet_data <- process_main_page_function(spreadsheet_shiny_value_box)
-      draw_top_value_boxes(spreadsheet_shiny_value_box, processed_spreadsheet_data, filtered_data, list_of_reactives, output)
+      draw_top_value_boxes(spreadsheet_shiny_value_box,
+                           processed_spreadsheet_data,
+                           filtered_data,
+                           list_of_reactives,
+                           output)
 
       display_box <- display_contents(
         data_frame = data_frame,
@@ -286,8 +280,14 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
         data_list = data_list,
         k = which(data_list$contents$type == "Tabbed_display")
       )
-      render_display_items(display_box, display_content, data_list, output)
-      render_tabbed_display_items(display_box, display_content, data_list, output)
+      render_display_items(display_box,
+                           display_content,
+                           data_list,
+                           output)
+      render_tabbed_display_items(display_box,
+                                  display_content,
+                                  data_list,
+                                  output)
     }
 
     # Setup downloads (with optional credentials)
