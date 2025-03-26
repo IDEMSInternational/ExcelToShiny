@@ -34,35 +34,43 @@
 #' param_not_found <- 'other_param = 42'
 #' get_parameter_value(param_not_found)  # Returns NULL
 get_parameter_value <- function(spreadsheet_parameters, name = "label", list = FALSE, logical = FALSE, date = FALSE) {
-  param_string <- spreadsheet_parameters
+  matches <- stringr::str_extract(spreadsheet_parameters, paste0(name, "\\s*=\\s*"))
+  label_form <- unique(matches[!is.na(matches)])
   
-  # Pattern: name = value (with optional spaces)
-  if (date) {
-    # Match date as string or wrapped in as.Date()
-    date_pattern <- paste0(name, "\\s*=\\s*(?:as.Date\\()?[\"'](.*?)[\"']\\)?")
-    match <- stringr::str_match(param_string, date_pattern)[, 2]
-    return(if (!is.na(match)) match else NULL)
-  }
+  if (length(label_form) == 0) label_form <- NULL
   
-  if (logical) {
-    logic_pattern <- paste0(name, "\\s*=\\s*(TRUE|FALSE)")
-    match <- stringr::str_match(param_string, logic_pattern)[, 2]
-    return(if (!is.na(match)) as.logical(match) else NULL)
-  }
-  
-  if (list) {
-    list_pattern <- paste0(name, "\\s*=\\s*c\\((.*?)\\)")
-    match <- stringr::str_match(param_string, list_pattern)[, 2]
-    if (!is.na(match)) {
-      list_str <- paste0("c(", match, ")")
-      return(eval(parse(text = list_str)))
+  if (!is.null(label_form)){
+    if (date == TRUE){
+      label_pattern <- paste0(label_form, '"(.*?)"')  # Match as.Date("value")
+      label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]
+      
+      # if it's NA, check in case as.Date has been added:
+      if (is.na(label_match)){
+        # Match for both simple and as.Date formats
+        label_form <- paste0(label_form, "as.Date\\(")  # Adjust for as.Date() structure
+        label_pattern <- paste0(label_form, '"(.*?)"\\)')  # Match as.Date("value")
+        
+        # Extract the full match
+        label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]
+      }
+      # Clean up to extract the date (removes name=as.Date( and the surrounding quotes)
+      label <- gsub(paste0(label_form, '"|"|\\)'), '', label_match)
+    } else if (list == FALSE){
+      if (logical == FALSE){
+        label_pattern <- paste0(label_form, '"(.*?)"')
+        label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]
+        label <- gsub(paste0(label_form, '"|"'), '', label_match)
+      } else {
+        label <- as.logical(trimws(gsub(paste0(".*", label_form), "", spreadsheet_parameters)))
+      }
     } else {
-      return(NULL)
+      label_pattern <- paste0(label_form, 'c\\((.*?)\\)')
+      label_match <- regmatches(spreadsheet_parameters, regexec(label_pattern, spreadsheet_parameters))[[1]][1]
+      label <- gsub(paste0(label_form), '', label_match)
+      label <- eval(parse(text = label))
     }
+  } else {
+    label <- NULL
   }
-  
-  # Default: quoted string
-  str_pattern <- paste0(name, "\\s*=\\s*['\"](.*?)['\"]")
-  match <- stringr::str_match(param_string, str_pattern)[, 2]
-  return(if (!is.na(match)) match else NULL)
+  return(label)
 }

@@ -47,8 +47,12 @@ create_reactive_expression <- function(df_name, complete_dfs, key_var, valid_ids
 
 # Helper Function 4: Display content by tab
 display_content_by_tab <- function(tab_name, input, filtered_data, contents, data_list, list_of_reactives) {
-  if (input$tab == tab_name) server_display_contents(data_frame = filtered_data(), contents = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"), id_name = tab_name, list_of_reactives = list_of_reactives)
-  else NULL
+  if (!is.null(tab_name)){
+    if (input$tab == tab_name) server_display_contents(data_frame = filtered_data(), contents = contents, data_list = data_list, k = which(data_list$contents$type == "Tabbed_display"), id_name = tab_name, list_of_reactives = list_of_reactives)
+    else NULL
+  } else {
+    NULL
+  }
 }
 
 # Helper Function 5: Process spreadsheet for value boxes
@@ -271,22 +275,21 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
       shiny::observeEvent(c(input$tab, ifelse(input$goButton_group == 0, 1, input$goButton_group)), {
         display_content(display_content_by_tab(input$tab, input, filtered_data, contents, data_list, list_of_reactives))
       })
-      
+
       spreadsheet_shiny_value_box <- dplyr::filter(data_list$main_page, type == "value_box")
       processed_spreadsheet_data <- process_main_page_function(spreadsheet_shiny_value_box)
       draw_top_value_boxes(spreadsheet_shiny_value_box, processed_spreadsheet_data, filtered_data, list_of_reactives, output)
-      
+
       display_box <- display_contents(
         data_frame = data_frame,
         contents = contents,
         data_list = data_list,
         k = which(data_list$contents$type == "Tabbed_display")
       )
-      
       render_display_items(display_box, display_content, data_list, output)
       render_tabbed_display_items(display_box, display_content, data_list, output)
     }
-    
+
     # Setup downloads (with optional credentials)
     datasets <- list()
     for (j in which(data_list$contents$type == "Download")) {
