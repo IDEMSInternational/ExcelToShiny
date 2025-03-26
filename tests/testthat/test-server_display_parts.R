@@ -172,3 +172,34 @@ test_that("server_box_function errors on unknown value", {
                                    list_of_reactives = dummy_reactives),
                "Invalid value type.")
 })
+
+################################################################################
+# box_function #################################################################
+test_that("box_function handles case where table_manip == 'none'", {
+  spreadsheet <- data.frame(
+    name = "box1",
+    value = "bar_table",
+    table_manip = "none",
+    parameter_list = paste(
+      'content_text="Some explanation",',
+      'text="My Box",',
+      'width="12",',
+      'colour="green",',
+      'footer="Footer text"'
+    ),
+    stringsAsFactors = FALSE
+  )
+  
+  dummy_df <- mtcars
+  
+  out <- box_function(data_frame = dummy_df,
+                      spreadsheet = spreadsheet,
+                      unique_ID = "box1",
+                      label_table = "table_1",
+                      label_plot = "plot_1")
+  
+  expect_named(out, c("gui_obj", "table_obj", "plot_obj", "label_table", "label_plot", "ID"))
+  expect_s3_class(out$gui_obj, "shiny.tag")  # box is a tag object
+  expect_equal(out$label_table, NULL)        # no table
+  expect_equal(out$label_plot, "plot_1")     # plot included
+})
