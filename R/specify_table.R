@@ -13,16 +13,14 @@
 #' }
 specify_table <- function(data, spreadsheet, grouped_vars = NULL) {
   all_return <- list(table = NULL, plot_obj = NULL)
-  
-  if (any(class(data) %in% "list")) {
-    all_return$table <- data[[variable]]
-    return(all_return)
-  }
+  # if (any(class(data) %in% "list")) {
+  #   all_return$table <- data[[variable]]
+  #   return(all_return)
+  # }
   
   # TODO: need to fix this up to work for grouped_vars.
   # but if I have facets, it removes them. I think (see facilitator mexico, with the df having grouped var)
   if (!is.null(grouped_vars)) grouped_vars <- NULL
-  
   if (!is.null(grouped_vars)){
     if (!all(grouped_vars %in% names(data))) {
       grouped_vars <- grouped_vars[which(grouped_vars %in% names(data))]
@@ -43,9 +41,19 @@ specify_table <- function(data, spreadsheet, grouped_vars = NULL) {
     #command_string <- gsub("^%>%\\s*", "", command_string) # Remove leading %>% if present
 
     if (startsWith(trimws(spreadsheet$table_manip), "%>%")){
-      all_return$table <- eval(parse(text = paste0("data ", group_cmd, command_string)))
+      all_return$table <- tryCatch({
+        eval(parse(text = paste0("data ", group_cmd, command_string)))
+      }, error = function(e) {
+        message("Ignoring manipulations. Error in `specify_table`: ", e$message)
+        NULL  # Return NULL or handle the error as appropriate
+      })
     } else{
-      all_return$table <- eval(parse(text = command_string))      
+      all_return$table <- tryCatch({
+        eval(parse(text = command_string))
+      }, error = function(e) {
+        message("Ignoring manipulations. Error in `specify_table`: ", e$message)
+        NULL  # Return NULL or handle the error as appropriate
+      })
     }
   } else {
     if (!is.null(spreadsheet$data_manip) && !is.na(spreadsheet$data_manip)) {

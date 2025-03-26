@@ -36,19 +36,21 @@ box_function <- function(data_frame, spreadsheet, unique_ID, label_table, label_
   if (length(colour) == 0){
     status = "primary"
   } else {
-    if (colour == "blue") {
-      status = "primary"
-    } else if (colour == "green") {
-      status = "success"
-    } else if (colour == "light blue") {
-      status = "info"
-    } else if (colour == "orange") {
-      status = "warning"
-    } else if (colour == "red") {
-      status = "danger"
-    } else {
-      warning("Valid colours are blue, green, light blue, orange, red")
-      status = "primary"
+    colour <- tolower(colour)
+    
+    status_map <- c(
+      "blue" = "primary",
+      "green" = "success",
+      "light blue" = "info",
+      "orange" = "warning",
+      "red" = "danger"
+    )
+    
+    status <- status_map[colour]
+    
+    if (is.na(status)) {
+      warning("Valid colours are: blue, green, light blue, orange, red. Setting colour to 'blue'.")
+      status <- "primary"
     }
   }
   
