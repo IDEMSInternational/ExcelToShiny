@@ -226,6 +226,19 @@ test_that("create_shiny_dashboard runs successfully for filter by date_range", {
   data(economics)
   economics_data_list <- rio::import_list("testdata/economics_data.xlsx")
   app <- build_shiny(title = "New Dashboard", 
+                     data_list = economics_data_list,
+                     data_fram = economics,
+                     status = "primary",
+                     colour = "blue",
+                     key_var = "date",
+                     deploy_shiny = FALSE)
+  expect_equal(class(app), "list")
+  
+  #and with a range
+  economics_data_list$main_page[3,]$value <- "date_range_group"
+  economics_data_list$main_page[3,]$parameter_list <- 
+    "label = \"date goes from\", start = \"1968-07-01\""
+  app <- build_shiny(title = "New Dashboard", 
                                      data_list = economics_data_list,
                                      data_fram = economics,
                                      status = "primary",
