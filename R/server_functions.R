@@ -214,14 +214,20 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
       if (nrow(filter_box_data) > 0) {
         filtered_data <- shiny::eventReactive(ifelse(input$goButton_group == 0, 1, input$goButton_group), {
           filtered_data <- grouped_data()
-          
+
           for (i in seq_len(nrow(filter_box_data))) {
             current_var <- filter_box_data$variable[[i]]
             current_name <- input[[filter_box_data$name[[i]]]]
             current_data <- filter_box_data$data[[i]]
             
             if (is.null(current_data)) {
-              filtered_data <- filtered_data %>% dplyr::filter(.data[[current_var]] %in% current_name)
+              if (length(current_name) > 1){
+                filtered_data <- filtered_data %>%
+                  dplyr::filter(.data[[current_var]] >= current_name[1]) %>%
+                  dplyr::filter(.data[[current_var]] <= current_name[2])
+              } else {
+                filtered_data <- filtered_data %>% dplyr::filter(.data[[current_var]] %in% current_name)
+              }
             } else {
               current_data <- get(current_data)
               key_vars <- dplyr::filter(current_data, .data[[current_var]] %in% current_name) %>% dplyr::pull(key)
