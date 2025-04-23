@@ -93,7 +93,7 @@ test_that("create_shiny_dashboard runs successfully", {
         stringsAsFactors = FALSE
       )
       
-      example_excel <- rio::import_list("tests/testthat/testdata/nhanes_data.xlsx")
+      example_excel <- rio::import_list("testdata/nhanes_data.xlsx")
       
       # Your shiny app
       app <- build_shiny(
@@ -349,4 +349,3 @@ test_that("build_shiny runs successfully for incorrect values", {
                      deploy_shiny = FALSE)
   expect_equal(class(app), "list")
 })
-

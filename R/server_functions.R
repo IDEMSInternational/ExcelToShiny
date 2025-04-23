@@ -7,11 +7,12 @@ extract_df_names <- function(data_list, data_frame_name) {
     }
   }
   
-  df_names <- purrr::map(data_list, ~ .x$data) %>% unlist() %>% unique()
+  df_names <- purrr::map(data_list, ~ .x[["data"]]) %>% unlist() %>% unique()
   df_names <- df_names[!is.na(df_names)]
   
   return(list(data_list = data_list, list_of_df_names = df_names))
 }
+
 
 # Helper Function 2: Generate complete_dfs environment
 copy_dfs_for_filtering <- function(df_names, env = parent.frame()) {
@@ -178,7 +179,6 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
     prepared <- extract_df_names(data_list, data_frame_name)
     data_list <- prepared$data_list
     list_of_df_names <- prepared$list_of_df_names
-    
     complete_dfs <- copy_dfs_for_filtering(list_of_df_names)
     filtered_data <- shiny::reactive({ data_frame })
     list_of_reactives <- list()
@@ -318,18 +318,15 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
             render_download_ui(j, spreadsheet, datasets, input, output)
           }
         })
+        
+        # Don't expose data unless logged in
+        observe({
+          shiny::req(credentials()$user_auth)
+          render_download_ui(j, spreadsheet, datasets, input, output)
+        })
       } else {
         render_download_ui(j, spreadsheet, datasets, input, output)
       }
-    }
-    datasets <- list()
-    for (j in which(data_list$contents$type == "Download")) {
-      sheet_name <- data_list$contents$ID[j]
-      spreadsheet <- data_list[[sheet_name]]
-      data_to_download <- dplyr::filter(spreadsheet, type == "Data")
-      datasets[[j]] <- get_data_to_download(data_to_download)
-      
-      render_download_ui(j, spreadsheet, datasets, input, output)
     }
   }
 }
