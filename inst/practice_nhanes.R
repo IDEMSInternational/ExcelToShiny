@@ -1,32 +1,30 @@
-library(rio)
-#library(plhR)
-library(readxl)
-library(here)
-library(shiny)
-library(shinydashboard)
-library(tidyverse)
-library(NHANES)
-
+setwd("C:/Users/lclem/OneDrive/Documents/GitHub/ExcelToShiny")
+devtools::load_all()
 
 # load data sets and excel spreadsheet in
 example_excel <- rio::import_list("vignettes/data/nhanes_data.xlsx")
 
-View(NHANES)
+data(NHANES)
+NHANES_by_ind <- NHANES %>%
+  group_by(ID) %>%
+  mutate(count = 1:n()) %>%
+  filter(count == 1) %>%
+  ungroup()
 
-build_shiny(title = "Testing Shiny Dashboard",
-            data_list = example_excel,
-            data_frame = NHANES_by_ind,
-            status = "primary",
-            colour = "blue",
-            key_var = "ID")
+NHANES$ID <- as.character(NHANES$ID)
+NHANES_by_ind$ID <- as.character(NHANES_by_ind$ID)
 
-NHANES %>% filter(!is.na(Depressed))
+credentials_data <- data.frame(
+  user = "admin",
+  password = "password",
+  stringsAsFactors = FALSE
+)
 
-
-
-x <- NHANES_by_ind %>% filter(Diabetes == "Yes")
-
-# DiabetesAge
-
-ggplot(x) + geom_boxplot(aes(y = DiabetesAge))
+# Your shiny app
+build_shiny(
+  title = "Test Dashboard",
+  data_list = example_excel,
+  data_frame = NHANES,
+  key_var = "ID",
+)
 
