@@ -75,7 +75,7 @@ stringsAsFactors = FALSE
 )
 
 # Run the dashboard
-shinyApp(ui = PLH_shiny("My Dashboard", data_list, data_frame), server = function(input, output) {})
+shinyApp(ui = build_shiny("My Dashboard", data_list, data_frame), server = function(input, output) {})
 }
 
 }
