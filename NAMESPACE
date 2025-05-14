@@ -3,7 +3,6 @@
 export("%>%")
 export(add_na_variable)
 export(build_shiny)
-export(generate_data_list)
 export(get_parameter_value)
 export(naming_conventions)
 importFrom(magrittr,"%>%")

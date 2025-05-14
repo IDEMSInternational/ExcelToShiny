@@ -29,8 +29,3 @@ This function filters variables that are defined in the form but not present in 
 the contents into groups for tabbed display. Variables without a specific group are organised under "miscellaneous."
 The resulting list includes \code{contents}, a \code{main_page}, and individual display tabs for each group.
 }
-\examples{
-# Assuming `ODK_sample_survey` and `ODK_sample_data` are loaded:
-# result <- generate_data_list(input_data = ODK_sample_survey, output_data = ODK_sample_data)
-
-}
