@@ -21,8 +21,8 @@ You can install the development version of ExcelToShiny from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("devtools")
-# devtools::install_github("IDEMSInternational/ExcelToShiny")
+install.packages("devtools")
+devtools::install_github("IDEMSInternational/ExcelToShiny")
 ```
 
 ## Overview
@@ -55,10 +55,10 @@ data(NHANES)
 
 # Run manipulations. Here's an example of where we use a second data frame in our Shiny Excel
 NHANES_by_ind <- NHANES %>%
-  group_by(ID) %>%
-  mutate(count = 1:n()) %>%
-  filter(count == 1) %>%
-  ungroup()
+  dplyr::group_by(ID) %>%
+  dplyr::mutate(count = 1:n()) %>%
+  dplyr::filter(count == 1) %>%
+  dplyr::ungroup()
 
 # Set the key variable to be the same type
 NHANES$ID <- as.character(NHANES$ID)
@@ -78,7 +78,7 @@ all_sheets <- rio::import_list(path)
 # Your shiny app
 build_shiny(
   title = "Test Dashboard",
-  data_list = example_excel,
+  data_list = all_sheets,
   data_frame = NHANES,
   key_var = "ID"
 )

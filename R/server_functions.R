@@ -176,6 +176,8 @@ render_tabbed_display_items <- function(display_box, display_content, data_list,
 # Server function factory
 build_server <- function(data_list, data_frame, key_var, data_frame_name) {
   function(input, output, session) {
+    print("A")
+    
     prepared <- extract_df_names(data_list, data_frame_name)
     data_list <- prepared$data_list
     list_of_df_names <- prepared$list_of_df_names
@@ -219,12 +221,18 @@ build_server <- function(data_list, data_frame, key_var, data_frame_name) {
             current_var <- filter_box_data$variable[[i]]
             current_name <- input[[filter_box_data$name[[i]]]]
             current_data <- filter_box_data$data[[i]]
+            current_type_of_filter <- filter_box_data$value[[i]]
             
             if (is.null(current_data)) {
               if (length(current_name) > 1){
-                filtered_data <- filtered_data %>%
-                  dplyr::filter(.data[[current_var]] >= current_name[1]) %>%
-                  dplyr::filter(.data[[current_var]] <= current_name[2])
+                if (current_type_of_filter == "checkbox_group"){
+                  filtered_data <- filtered_data %>%
+                    dplyr::filter(.data[[current_var]] %in% current_name)
+                } else { # date_range_group, date_group
+                  filtered_data <- filtered_data %>%
+                    dplyr::filter(.data[[current_var]] >= current_name[1]) %>%
+                    dplyr::filter(.data[[current_var]] <= current_name[2])
+                }
               } else {
                 filtered_data <- filtered_data %>% dplyr::filter(.data[[current_var]] %in% current_name)
               }
