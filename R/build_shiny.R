@@ -46,7 +46,7 @@
 #' )
 #'
 #' # Run the dashboard
-#' shinyApp(ui = PLH_shiny("My Dashboard", data_list, data_frame), server = function(input, output) {})
+#' shinyApp(ui = build_shiny("My Dashboard", data_list, data_frame), server = function(input, output) {})
 #' }
 #'
 #' @note Ensure that the data_list and data_frame parameters are correctly formatted to match the expected structure for the dashboard to function properly.
