@@ -106,10 +106,16 @@ render_download_ui <- function(j, spreadsheet, datasets, input, output) {
   
   output[[paste0("downloadData", j)]] <- shiny::downloadHandler(
     filename = function() {
-      paste(input[[paste0("dataset", j)]], ".csv", sep = "")
+      paste(format(Sys.Date(), "%Y%m%d"), "_", input[[paste0("dataset", j)]], ".csv", sep = "")
     },
     content = function(file) {
-      utils::write.csv(datasetInput(), file, row.names = FALSE)
+      df <- datasetInput()
+      # Convert list-columns to character strings
+      df <- as.data.frame(lapply(df, function(col) {
+        if (is.list(col)) sapply(col, toString) else col
+      }), stringsAsFactors = FALSE)
+      
+      utils::write.csv(df, file, row.names = FALSE)
     }
   )
 }
