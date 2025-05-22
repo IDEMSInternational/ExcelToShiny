@@ -77,25 +77,45 @@ render_download_ui <- function(j, spreadsheet, datasets, input, output) {
   data_label <- dplyr::filter(spreadsheet, type == "Data label")$name
   download_label <- dplyr::filter(spreadsheet, type == "Download label")$name
   data_names <- dplyr::filter(spreadsheet, type == "Data")$name
+  show_data_raw <- dplyr::filter(spreadsheet, type == "Show data")$value
+  show_data <- if (length(show_data_raw) > 0 && !is.na(show_data_raw)) {
+    tolower(show_data_raw) %in% c("true", "1")
+  } else {
+    TRUE
+  }
   
-  output[[paste0("build_download", j)]] <- shiny::renderUI({
-    shiny::tagList(
-      shiny::fluidRow(
-        shinydashboard::box(
-          width = 6,
-          shiny::selectInput(paste0("dataset", j), data_label, choices = data_names),
-          shiny::downloadButton(paste0("downloadData", j), download_label)
-        ),
+  if (show_data) {
+    output[[paste0("build_download", j)]] <- shiny::renderUI({
+      shiny::tagList(
         shiny::fluidRow(
           shinydashboard::box(
-            width = 12,
-            shiny::dataTableOutput(paste0("table", j)),
-            style = 'width:100%;overflow-x: scroll;'
+            width = 6,
+            shiny::selectInput(paste0("dataset", j), data_label, choices = data_names),
+            shiny::downloadButton(paste0("downloadData", j), download_label)
+          ),
+          shiny::fluidRow(
+            shinydashboard::box(
+              width = 12,
+              shiny::dataTableOutput(paste0("table", j)),
+              style = 'width:100%;overflow-x: scroll;'
+            )
           )
         )
       )
-    )
-  })
+    })
+  } else {
+    output[[paste0("build_download", j)]] <- shiny::renderUI({
+      shiny::tagList(
+        shiny::fluidRow(
+          shinydashboard::box(
+            width = 6,
+            shiny::selectInput(paste0("dataset", j), data_label, choices = data_names),
+            shiny::downloadButton(paste0("downloadData", j), download_label)
+          )
+        )
+      )
+    })
+  }
   
   datasetInput <- shiny::reactive({
     selected_dataset <- datasets[[j]][[input[[paste0("dataset", j)]]]]
