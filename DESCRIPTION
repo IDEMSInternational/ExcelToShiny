@@ -1,6 +1,6 @@
 Package: ExcelToShiny
 Title: Automate Shiny Dashboard Creation from Excel Templates
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: 
     person("Lily", "Clements", , "lily@idems.international", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-8864-0552"))
